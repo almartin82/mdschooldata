@@ -49,9 +49,9 @@ test_that("validate_year rejects invalid years", {
   expect_true(validate_year(2024))
   expect_true(validate_year(2003))  # Default min
 
-  # Test with custom min_year (as used by fetch_enr)
-  expect_error(validate_year(2017, min_year = 2018), "must be between")
-  expect_true(validate_year(2018, min_year = 2018))
+  # Test with custom min_year (as used by fetch_enr with Education Data Portal)
+  expect_error(validate_year(2008, min_year = 2009), "must be between")
+  expect_true(validate_year(2009, min_year = 2009))
 })
 
 test_that("format_school_year formats correctly", {
@@ -68,9 +68,10 @@ test_that("get_available_years returns expected structure", {
   expect_true("max_year" %in% names(years))
   expect_true("available" %in% names(years))
 
-  expect_equal(years$min_year, 2018)
+  # Education Data Portal provides data from 2009+
+  expect_equal(years$min_year, 2009)
   expect_true(years$max_year >= 2024)
-  expect_true(length(years$available) >= 6)
+  expect_true(length(years$available) >= 15)  # 2009-2024 = 16 years
 })
 
 test_that("get_cache_dir returns valid path", {
@@ -174,6 +175,7 @@ test_that("fetch_enr validates year parameter", {
 })
 
 test_that("fetch_enr_multi validates years", {
+  # 2000-2001 are before the min_year of 2009
   expect_error(fetch_enr_multi(c(2000, 2001)), "Invalid years")
 })
 

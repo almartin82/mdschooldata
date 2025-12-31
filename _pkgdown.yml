@@ -44,6 +44,8 @@ home:
       href: https://reportcard.msde.maryland.gov/
     - text: MSDE Data Portal
       href: https://marylandpublicschools.org/about/Pages/DCAA/SSP/StudentStaff.aspx
+    - text: "Part of the 50 State Schooldata Family"
+      href: https://github.com/almartin82/njschooldata
 
 authors:
   Al Martin:

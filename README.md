@@ -1,238 +1,271 @@
 # mdschooldata
 
-Download and analyze Maryland public school enrollment data from the Maryland State Department of Education (MSDE).
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/almartin82/mdschooldata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/almartin82/mdschooldata/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/almartin82/mdschooldata/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/almartin82/mdschooldata/actions/workflows/pkgdown.yaml)
+<!-- badges: end -->
 
-## Installation
+**[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Getting Started](https://almartin82.github.io/mdschooldata/articles/quickstart.html)**
 
-```r
-# Install from GitHub
-remotes::install_github("almartin82/mdschooldata")
-```
+Fetch and analyze Maryland public school enrollment data from the Maryland State Department of Education (MSDE).
 
-## Quick Start
+## What can you find with mdschooldata?
 
-```r
-library(mdschooldata)
+**15+ years of enrollment data (2009-2024).** 890,000 students. 24 local school systems. Here are ten stories hiding in the numbers:
 
-# Get 2024 enrollment data (2023-24 school year)
-enr <- fetch_enr(2024)
+---
 
-# View state totals
-enr %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL")
+### 1. Montgomery County is bigger than most states
 
-# Get wide format data
-enr_wide <- fetch_enr(2024, tidy = FALSE)
-
-# Fetch multiple years
-enr_multi <- fetch_enr_multi(2020:2024)
-```
-
-## Data Availability
-
-### Years Available
-
-| Era | Years | Source | Notes |
-|-----|-------|--------|-------|
-| Maryland Report Card | 2018-present | API/Downloads | Full coverage |
-| Legacy | 2003-2017 | MSDE Archives | Limited availability |
-
-**Current Support**: This package currently supports data from **2018 onwards** via the Maryland Report Card system.
-
-### Geographic Coverage
-
-Maryland has 24 Local School Systems (LSS):
-- 23 counties (Allegany through Worcester)
-- Baltimore City (separate from Baltimore County)
-
-Data is available at three levels:
-- **State**: Maryland statewide totals
-- **District**: 24 Local School Systems
-- **School**: Individual schools (~1,400 public schools)
-
-### Demographics Available
-
-| Category | Available | Notes |
-|----------|-----------|-------|
-| Race/Ethnicity | Yes | White, Black, Hispanic, Asian, Native American, Pacific Islander, Multiracial |
-| Gender | Yes | Male, Female |
-| Grade Level | Yes | PK through 12 |
-| Special Populations | Limited | Varies by year |
-
-### Known Caveats
-
-1. **Race/ethnicity by grade**: Detailed race/ethnicity by grade level is only available from 2020 onwards. Earlier years have totals only.
-
-2. **School-level data**: School-level demographic breakdowns may have more suppressions due to small cell sizes.
-
-3. **September 30 counts**: Enrollment is based on September 30 official count dates.
-
-4. **Nonpublic schools**: This package covers public schools only. Nonpublic school data is collected separately by MSDE.
-
-5. **Pre-K categories**: Prekindergarten categories have changed over time (e.g., "Prekindergarten Age 4" vs "Prekindergarten").
-
-## Data Sources
-
-- **Maryland Report Card**: https://reportcard.msde.maryland.gov/
-- **MSDE Research Branch**: https://marylandpublicschools.org/about/Pages/ORSDU/index.aspx
-- **Enrollment Publications**: https://marylandpublicschools.org/about/Pages/DCAA/SSP/StudentStaff.aspx
-
-## Maryland ID System
-
-### Local School System (LSS) Codes
-
-Maryland uses 2-digit codes for its 24 school systems:
-
-| Code | LSS Name |
-|------|----------|
-| 01 | Allegany |
-| 02 | Anne Arundel |
-| 03 | Baltimore City |
-| 04 | Baltimore County |
-| 05 | Calvert |
-| 06 | Caroline |
-| 07 | Carroll |
-| 08 | Cecil |
-| 09 | Charles |
-| 10 | Dorchester |
-| 11 | Frederick |
-| 12 | Garrett |
-| 13 | Harford |
-| 14 | Howard |
-| 15 | Kent |
-| 16 | Montgomery |
-| 17 | Prince George's |
-| 18 | Queen Anne's |
-| 19 | St. Mary's |
-| 20 | Somerset |
-| 21 | Talbot |
-| 22 | Washington |
-| 23 | Wicomico |
-| 24 | Worcester |
-
-### School Numbers
-
-Schools are identified by their LSS code plus a 4-digit school number. For example:
-- `160023` = School 0023 in Montgomery County (16)
-
-## Functions
-
-### Main Functions
-
-- `fetch_enr(end_year)` - Download enrollment data for a single year
-- `fetch_enr_multi(end_years)` - Download enrollment data for multiple years
-- `tidy_enr(df)` - Convert wide data to tidy (long) format
-- `id_enr_aggs(df)` - Add aggregation level flags
-- `enr_grade_aggs(df)` - Create K-8, HS, K-12 aggregates
-- `get_available_years()` - List available years
-
-### Cache Functions
-
-- `cache_status()` - View cached data
-- `clear_cache()` - Remove cached data
-
-## Output Schema
-
-### Wide Format (tidy = FALSE)
-
-| Column | Type | Description |
-|--------|------|-------------|
-| end_year | integer | School year end (2024 = 2023-24) |
-| type | character | "State", "District", or "Campus" |
-| district_id | character | 2-digit LSS code |
-| campus_id | character | School identifier |
-| district_name | character | LSS name |
-| campus_name | character | School name |
-| row_total | integer | Total enrollment |
-| white | integer | White students |
-| black | integer | Black/African American students |
-| hispanic | integer | Hispanic/Latino students |
-| asian | integer | Asian students |
-| pacific_islander | integer | Native Hawaiian/Pacific Islander |
-| native_american | integer | American Indian/Alaska Native |
-| multiracial | integer | Two or more races |
-| male | integer | Male students |
-| female | integer | Female students |
-| grade_pk through grade_12 | integer | Grade-level enrollment |
-
-### Tidy Format (tidy = TRUE, default)
-
-| Column | Type | Description |
-|--------|------|-------------|
-| end_year | integer | School year end |
-| type | character | Aggregation level |
-| district_id | character | LSS code |
-| campus_id | character | School identifier |
-| district_name | character | LSS name |
-| campus_name | character | School name |
-| grade_level | character | "TOTAL", "PK", "K", "01"-"12" |
-| subgroup | character | Demographic category |
-| n_students | integer | Student count |
-| pct | numeric | Percentage (0-1 scale) |
-| is_state | logical | State-level row |
-| is_district | logical | District-level row |
-| is_campus | logical | School-level row |
-
-## Examples
-
-### Enrollment Trends
+With over 160,000 students, Montgomery County Public Schools is the largest district in Maryland and among the top 20 in the nation.
 
 ```r
 library(mdschooldata)
 library(dplyr)
-library(ggplot2)
 
-# Get state enrollment over time
-enr <- fetch_enr_multi(2018:2024)
-
-state_totals <- enr %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, n_students)
-
-ggplot(state_totals, aes(x = end_year, y = n_students)) +
-  geom_line() +
-  geom_point() +
-  scale_y_continuous(labels = scales::comma) +
-  labs(
-    title = "Maryland Public School Enrollment",
-    x = "School Year End",
-    y = "Total Students"
-  )
-```
-
-### District Comparison
-
-```r
-# Compare largest districts
 enr_2024 <- fetch_enr(2024)
 
-largest <- enr_2024 %>%
+enr_2024 %>%
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   arrange(desc(n_students)) %>%
+  select(district_name, n_students) %>%
   head(5)
-
-print(largest)
 ```
 
-### Demographic Analysis
+![Top districts](man/figures/top-districts.png)
+
+---
+
+### 2. Prince George's and Montgomery: A tale of two counties
+
+Maryland's two largest systems serve similar numbers but have very different demographics.
 
 ```r
-# Race/ethnicity breakdown
-demographics <- enr_2024 %>%
-  filter(
-    is_state,
-    grade_level == "TOTAL",
-    subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")
-  ) %>%
-  select(subgroup, n_students, pct)
-
-print(demographics)
+enr_2024 %>%
+  filter(is_district, grade_level == "TOTAL",
+         district_name %in% c("Montgomery", "Prince George's"),
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  select(district_name, subgroup, pct)
 ```
 
-## Related Packages
+![PG vs Montgomery](man/figures/pg-vs-montgomery.png)
 
-- [marylandedu](https://elipousson.github.io/marylandedu/) - Additional Maryland education data
-- [educationdata](https://urbaninstitute.github.io/education-data-package-r/) - Urban Institute education data API
+---
+
+### 3. Baltimore City's enrollment freefall
+
+Baltimore City has lost over 15,000 students in the past decade, a decline of nearly 20%.
+
+```r
+enr <- fetch_enr_multi(2015:2024)
+
+enr %>%
+  filter(is_district, district_name == "Baltimore City",
+         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  select(end_year, n_students)
+```
+
+![Baltimore decline](man/figures/baltimore-decline.png)
+
+---
+
+### 4. Maryland is a majority-minority state
+
+White students are now under 40% of enrollment. Hispanic students are the fastest-growing group.
+
+```r
+enr <- fetch_enr_multi(c(2010, 2015, 2020, 2024))
+
+enr %>%
+  filter(is_state, grade_level == "TOTAL",
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  select(end_year, subgroup, pct)
+```
+
+![Demographic transformation](man/figures/demographics.png)
+
+---
+
+### 5. The Eastern Shore tells a different story
+
+Rural counties like Worcester, Somerset, and Dorchester are losing students faster than the state average.
+
+```r
+eastern_shore <- c("Worcester", "Somerset", "Dorchester", "Wicomico", "Caroline")
+
+enr %>%
+  filter(is_district, district_name %in% eastern_shore,
+         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  group_by(district_name) %>%
+  mutate(index = n_students / first(n_students) * 100) %>%
+  select(end_year, district_name, n_students, index)
+```
+
+![Eastern Shore](man/figures/eastern-shore.png)
+
+---
+
+### 6. Kindergarten dipped during COVID
+
+Maryland lost 8% of kindergartners in 2021 and the cohort remains smaller.
+
+```r
+enr <- fetch_enr_multi(2018:2024)
+
+enr %>%
+  filter(is_state, subgroup == "total_enrollment",
+         grade_level %in% c("K", "01", "06", "12")) %>%
+  select(end_year, grade_level, n_students)
+```
+
+![COVID kindergarten](man/figures/covid-k.png)
+
+---
+
+### 7. Howard County: Suburban success story
+
+Howard County maintains high enrollment and exceptional diversity - a model for suburban integration.
+
+```r
+enr_2024 %>%
+  filter(is_district, district_name == "Howard",
+         grade_level == "TOTAL",
+         subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  select(subgroup, n_students, pct)
+```
+
+![Howard diversity](man/figures/howard-diversity.png)
+
+---
+
+### 8. Allegany and Garrett: Western Maryland's struggle
+
+The westernmost counties have lost over 20% of students since 2009, reflecting population decline.
+
+```r
+western <- c("Allegany", "Garrett")
+
+enr <- fetch_enr_multi(2009:2024)
+
+enr %>%
+  filter(is_district, district_name %in% western,
+         subgroup == "total_enrollment", grade_level == "TOTAL",
+         end_year %in% c(2009, 2014, 2019, 2024)) %>%
+  select(end_year, district_name, n_students)
+```
+
+![Western decline](man/figures/western-md.png)
+
+---
+
+### 9. Anne Arundel holds steady
+
+Maryland's fifth-largest district has maintained enrollment stability while others fluctuate.
+
+```r
+enr %>%
+  filter(is_district, district_name == "Anne Arundel",
+         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  select(end_year, n_students)
+```
+
+![Anne Arundel](man/figures/anne-arundel.png)
+
+---
+
+### 10. The I-95 corridor dominates
+
+Five counties along I-95 (Baltimore, Montgomery, Prince George's, Howard, Anne Arundel) enroll over 70% of all Maryland students.
+
+```r
+i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
+
+enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  mutate(corridor = ifelse(district_name %in% i95, "I-95 Corridor", "Rest of Maryland")) %>%
+  group_by(corridor) %>%
+  summarize(total = sum(n_students, na.rm = TRUE))
+```
+
+![I-95 corridor](man/figures/i95-corridor.png)
+
+---
+
+## Installation
+
+```r
+# install.packages("remotes")
+remotes::install_github("almartin82/mdschooldata")
+```
+
+## Quick start
+
+```r
+library(mdschooldata)
+library(dplyr)
+
+# Fetch one year
+enr_2024 <- fetch_enr(2024)
+
+# Fetch multiple years
+enr_multi <- fetch_enr_multi(2020:2024)
+
+# State totals
+enr_2024 %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL")
+
+# Compare largest districts
+enr_2024 %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(desc(n_students)) %>%
+  head(10)
+
+# Demographics by county
+enr_2024 %>%
+  filter(is_district, grade_level == "TOTAL",
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(district_name, subgroup, n_students, pct)
+```
+
+## Data availability
+
+| Years | Source | Notes |
+|-------|--------|-------|
+| **2009-2024** | Urban Institute / NCES CCD | Full coverage with demographics |
+
+Data is sourced from the Urban Institute Education Data Portal (NCES Common Core of Data):
+- https://educationdata.urban.org/
+- https://nces.ed.gov/ccd/
+
+### What's included
+
+- **Levels:** State, District (24 Local School Systems), School (~1,400)
+- **Demographics:** White, Black, Hispanic, Asian, Native American, Pacific Islander, Multiracial
+- **Gender:** Male, Female
+- **Grade levels:** PK through 12
+
+### Maryland-specific notes
+
+- Maryland has exactly **24 Local School Systems** (LSS) - one per county plus Baltimore City
+- **LSS Codes:** 2-digit codes (01 = Allegany through 24 = Worcester)
+- **Baltimore City** (03) is separate from **Baltimore County** (04)
+- **Enrollment date:** September 30 official counts
+- **Data lag:** NCES CCD data typically has a 1-2 year lag
+
+## Part of the 50 State Schooldata Family
+
+This package is part of a family of R packages providing school enrollment data for all 50 US states. Each package fetches data directly from the state's Department of Education.
+
+**See also:** [njschooldata](https://github.com/almartin82/njschooldata) - The original state schooldata package for New Jersey.
+
+**All packages:** [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
+
+## Author
+
+[Andy Martin](https://github.com/almartin82) (almartin@gmail.com)
 
 ## License
 

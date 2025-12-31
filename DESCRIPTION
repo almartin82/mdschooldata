@@ -1,12 +1,14 @@
 Package: mdschooldata
 Title: Fetch and Process Maryland School Enrollment Data
-Version: 0.1.0
+Version: 0.3.0
 Authors@R:
     person("Al", "Martin", , "almartin@example.com", role = c("aut", "cre"))
-Description: Downloads and processes school enrollment data from the Maryland
-    State Department of Education (MSDE). Provides functions for fetching
-    enrollment data from the Maryland Report Card system and transforming it
-    into tidy format for analysis. Supports historical data from 2003 to present.
+Description: Downloads and processes school enrollment data for Maryland public
+    schools from the Maryland State Department of Education (MSDE). Data sources
+    include the Maryland Report Card website and MSDE Staff and Student Publications.
+    Provides functions for fetching enrollment data at state, district (Local School
+    System), and school levels with demographic breakdowns and transforming it into
+    tidy format for analysis. Supports data from 2019 to present.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -18,14 +20,14 @@ Imports:
     readr,
     purrr,
     httr,
-    rappdirs,
-    jsonlite
+    rappdirs
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
     ggplot2,
-    scales
+    scales,
+    pdftools
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/almartin82/mdschooldata

@@ -30,17 +30,20 @@
 #' }
 #'
 #' @section Data Sources:
-#' Data is sourced from the Maryland State Department of Education:
+#' Data is sourced exclusively from the Maryland State Department of Education (MSDE):
 #' \itemize{
 #'   \item Maryland Report Card: \url{https://reportcard.msde.maryland.gov/}
-#'   \item MSDE Data Portal: \url{https://marylandpublicschools.org/about/Pages/DCAA/SSP/StudentStaff.aspx}
+#'   \item MSDE Staff and Student Publications: \url{https://marylandpublicschools.org/about/Pages/DCAA/SSP/}
 #' }
 #'
-#' @section Format Eras:
-#' Maryland enrollment data is available across multiple format eras:
+#' Note: This package does NOT use federal data sources (NCES, Urban Institute, etc.).
+#' All data comes directly from Maryland state sources.
+#'
+#' @section Data Availability:
+#' Maryland enrollment data from MSDE sources:
 #' \itemize{
-#'   \item 2018-present: Maryland Report Card API (JSON format)
-#'   \item 2003-2017: Legacy CSV downloads from MSDE
+#'   \item 2019-present: Data available via MSDE publications and Report Card
+#'   \item Data is collected as of September 30 each school year
 #' }
 #'
 #' @docType package
