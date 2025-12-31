@@ -1,0 +1,50 @@
+url: https://almartin82.github.io/mdschooldata/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/almartin82/mdschooldata
+
+reference:
+  - title: "Fetch Enrollment Data"
+    desc: "Functions for downloading enrollment data from MSDE"
+    contents:
+      - fetch_enr
+      - fetch_enr_multi
+      - get_available_years
+
+  - title: "Transform Data"
+    desc: "Functions for reshaping and annotating data"
+    contents:
+      - tidy_enr
+      - id_enr_aggs
+      - enr_grade_aggs
+
+  - title: "Cache Management"
+    desc: "Functions for managing locally cached data"
+    contents:
+      - cache_status
+      - clear_cache
+
+  - title: "Package"
+    contents:
+      - mdschooldata-package
+
+home:
+  links:
+    - text: Maryland Report Card
+      href: https://reportcard.msde.maryland.gov/
+    - text: MSDE Data Portal
+      href: https://marylandpublicschools.org/about/Pages/DCAA/SSP/StudentStaff.aspx
+
+authors:
+  Al Martin:
+    href: https://github.com/almartin82
