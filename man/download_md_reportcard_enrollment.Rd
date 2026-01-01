@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{download_md_reportcard_enrollment}
 \alias{download_md_reportcard_enrollment}
-\title{Download enrollment data from Maryland Report Card}
+\title{Download Maryland Report Card enrollment data}
 \usage{
 download_md_reportcard_enrollment(end_year)
 }
@@ -13,7 +13,11 @@ download_md_reportcard_enrollment(end_year)
 Data frame with enrollment data
 }
 \description{
-Downloads enrollment data from the Maryland Report Card system.
-The Report Card provides JSON data that we convert to a data frame.
+Attempts to fetch enrollment data from the Maryland Report Card website.
+This function handles the web interaction required to download data.
 }
-\keyword{internal}
+\examples{
+\dontrun{
+enr <- download_md_reportcard_enrollment(2024)
+}
+}

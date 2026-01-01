@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{download_school_enrollment_file}
 \alias{download_school_enrollment_file}
-\title{Download school enrollment from Report Card data files}
+\title{Download school enrollment Excel file (if available)}
 \usage{
 download_school_enrollment_file(end_year)
 }
@@ -10,9 +10,10 @@ download_school_enrollment_file(end_year)
 \item{end_year}{School year end}
 }
 \value{
-Data frame with school enrollment
+Path to downloaded file, or NULL if not available
 }
 \description{
-Download school enrollment from Report Card data files
+Attempts to download school enrollment data in Excel format.
+This is experimental as MSDE does not consistently publish Excel files.
 }
 \keyword{internal}

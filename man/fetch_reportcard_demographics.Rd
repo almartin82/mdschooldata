@@ -2,19 +2,19 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{fetch_reportcard_demographics}
 \alias{fetch_reportcard_demographics}
-\title{Fetch demographics data from Maryland Report Card}
+\title{Fetch demographics from Report Card (if available)}
 \usage{
-fetch_reportcard_demographics(end_year, level = "district")
+fetch_reportcard_demographics(end_year, level = "lea")
 }
 \arguments{
 \item{end_year}{School year end}
 
-\item{level}{One of "state", "district", or "school"}
+\item{level}{Level: "state", "lea", or "school"}
 }
 \value{
-Data frame with demographic data
+Data frame with demographics data
 }
 \description{
-Queries the Maryland Report Card system for demographic/enrollment data.
+Fetch demographics from Report Card (if available)
 }
 \keyword{internal}

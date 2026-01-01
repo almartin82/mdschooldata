@@ -10,7 +10,8 @@ get_available_years()
 Named list with min_year, max_year, and available years vector
 }
 \description{
-Returns the range of school years for which enrollment data is available.
+Returns the range of school years for which enrollment data is available
+from the Maryland State Department of Education.
 }
 \examples{
 \dontrun{

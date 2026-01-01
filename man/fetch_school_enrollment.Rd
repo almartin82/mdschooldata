@@ -2,17 +2,29 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{fetch_school_enrollment}
 \alias{fetch_school_enrollment}
-\title{Fetch school-level enrollment data}
+\title{Fetch school-level enrollment}
 \usage{
-fetch_school_enrollment(end_year)
+fetch_school_enrollment(end_year, lss_code = NULL)
 }
 \arguments{
 \item{end_year}{School year end}
+
+\item{lss_code}{Optional LSS code to filter results}
 }
 \value{
-Data frame with school-level enrollment
+Data frame with school enrollment data
 }
 \description{
-Downloads enrollment data for all schools in Maryland.
+Downloads school-level enrollment data for Maryland.
+Note: School-level data is primarily available through the Report Card
+website and may require manual download.
 }
-\keyword{internal}
+\examples{
+\dontrun{
+# Get all school enrollment
+schools <- fetch_school_enrollment(2024)
+
+# Get schools in Montgomery County (LSS 16)
+montgomery <- fetch_school_enrollment(2024, "16")
+}
+}

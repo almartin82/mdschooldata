@@ -2,17 +2,24 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{fetch_lss_enrollment}
 \alias{fetch_lss_enrollment}
-\title{Fetch LSS (District) level enrollment data}
+\title{Fetch enrollment for a specific LSS (district)}
 \usage{
-fetch_lss_enrollment(end_year)
+fetch_lss_enrollment(end_year, lss_code)
 }
 \arguments{
 \item{end_year}{School year end}
+
+\item{lss_code}{2-digit LSS code (e.g., "01" for Allegany)}
 }
 \value{
-Data frame with district-level enrollment
+Data frame with LSS enrollment data
 }
 \description{
-Downloads enrollment data for all 24 Local School Systems in Maryland.
+Downloads enrollment data for a specific Local School System.
 }
-\keyword{internal}
+\examples{
+\dontrun{
+# Get Baltimore City enrollment (LSS code 03)
+baltimore <- fetch_lss_enrollment(2024, "03")
+}
+}

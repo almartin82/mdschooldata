@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{get_raw_enr}
 \alias{get_raw_enr}
-\title{Download raw enrollment data from MSDE}
+\title{Download raw enrollment data for Maryland}
 \usage{
 get_raw_enr(end_year)
 }
@@ -13,7 +13,8 @@ get_raw_enr(end_year)
 Data frame with raw enrollment data
 }
 \description{
-Downloads enrollment data from the Maryland Report Card system.
-Uses the appropriate method based on the year requested.
+Downloads enrollment data from the Maryland State Department of Education.
+Data includes enrollment by race/ethnicity and gender at state, district
+(LSS), and school levels.
 }
 \keyword{internal}

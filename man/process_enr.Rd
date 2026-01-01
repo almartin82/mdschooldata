@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_enrollment.R
 \name{process_enr}
 \alias{process_enr}
-\title{Process raw MSDE enrollment data}
+\title{Process raw enrollment data from MSDE}
 \usage{
 process_enr(raw_data, end_year)
 }
@@ -15,6 +15,7 @@ process_enr(raw_data, end_year)
 Processed data frame with standardized columns
 }
 \description{
-Transforms raw enrollment data into a standardized schema.
+Transforms raw enrollment data from MSDE sources
+into a standardized schema with wide demographic columns.
 }
 \keyword{internal}

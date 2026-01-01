@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_raw_enrollment.R
 \name{construct_lss_enrollment_from_published}
 \alias{construct_lss_enrollment_from_published}
-\title{Construct LSS enrollment from published data patterns}
+\title{Construct LSS enrollment from published totals}
 \usage{
 construct_lss_enrollment_from_published(end_year)
 }
@@ -13,7 +13,7 @@ construct_lss_enrollment_from_published(end_year)
 Data frame with LSS enrollment
 }
 \description{
-When the API is not directly accessible, construct enrollment data
-from known data patterns and published statistics.
+Creates district-level enrollment data from MSDE published totals.
+This is a fallback when detailed data is not available.
 }
 \keyword{internal}
