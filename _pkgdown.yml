@@ -34,10 +34,6 @@ reference:
       - cache_status
       - clear_cache
 
-  - title: "Package"
-    contents:
-      - mdschooldata-package
-
 home:
   links:
     - text: Maryland Report Card
