@@ -234,11 +234,11 @@ enr_2024 %>%
 
 | Years | Source | Notes |
 |-------|--------|-------|
-| **2009-2024** | Urban Institute / NCES CCD | Full coverage with demographics |
+| **2019-2024** | Maryland State Department of Education | Full coverage with demographics |
 
-Data is sourced from the Urban Institute Education Data Portal (NCES Common Core of Data):
-- https://educationdata.urban.org/
-- https://nces.ed.gov/ccd/
+Data is sourced from the Maryland State Department of Education (MSDE):
+- Maryland Report Card: https://reportcard.msde.maryland.gov
+- MSDE Publications: https://marylandpublicschools.org/about/Pages/DCAA/SSP/
 
 ### What's included
 
@@ -253,7 +253,6 @@ Data is sourced from the Urban Institute Education Data Portal (NCES Common Core
 - **LSS Codes:** 2-digit codes (01 = Allegany through 24 = Worcester)
 - **Baltimore City** (03) is separate from **Baltimore County** (04)
 - **Enrollment date:** September 30 official counts
-- **Data lag:** NCES CCD data typically has a 1-2 year lag
 
 ## Part of the 50 State Schooldata Family
 

@@ -37,21 +37,21 @@ test_that("get_lss_codes returns all 24 Maryland school systems", {
 })
 
 test_that("validate_year rejects invalid years", {
-  # Too old - default min is 2003
+  # Too old - default min is 2014 (when MD Planning data begins)
   expect_error(validate_year(2000), "must be between")
-  expect_error(validate_year(2002), "must be between")
+  expect_error(validate_year(2013), "must be between")
 
   # Too new
   expect_error(validate_year(2050), "must be between")
 
-  # Valid years should not error (2003 is default min)
+  # Valid years should not error (2014 is default min)
   expect_true(validate_year(2020))
   expect_true(validate_year(2024))
-  expect_true(validate_year(2003))  # Default min
+  expect_true(validate_year(2014))  # Default min
 
-  # Test with custom min_year (as used by fetch_enr with Education Data Portal)
-  expect_error(validate_year(2008, min_year = 2009), "must be between")
-  expect_true(validate_year(2009, min_year = 2009))
+  # Test with custom min_year
+  expect_error(validate_year(2015, min_year = 2016), "must be between")
+  expect_true(validate_year(2016, min_year = 2016))
 })
 
 test_that("format_school_year formats correctly", {
@@ -67,11 +67,14 @@ test_that("get_available_years returns expected structure", {
   expect_true("min_year" %in% names(years))
   expect_true("max_year" %in% names(years))
   expect_true("available" %in% names(years))
+  expect_true("demographic_years" %in% names(years))
 
-  # Education Data Portal provides data from 2009+
-  expect_equal(years$min_year, 2009)
+  # MD Planning provides data from 2014+
+  expect_equal(years$min_year, 2014)
   expect_true(years$max_year >= 2024)
-  expect_true(length(years$available) >= 15)  # 2009-2024 = 16 years
+  expect_true(length(years$available) >= 10)  # 2014-2024 = 11 years
+  # Demographic data (from MSDE) available from 2019+
+  expect_true(min(years$demographic_years) == 2019)
 })
 
 test_that("get_cache_dir returns valid path", {
@@ -175,7 +178,7 @@ test_that("fetch_enr validates year parameter", {
 })
 
 test_that("fetch_enr_multi validates years", {
-  # 2000-2001 are before the min_year of 2009
+  # 2000-2001 are before the min_year of 2014
   expect_error(fetch_enr_multi(c(2000, 2001)), "Invalid years")
 })
 
