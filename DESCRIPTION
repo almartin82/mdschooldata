@@ -1,14 +1,10 @@
 Package: mdschooldata
-Title: Fetch and Process Maryland School Enrollment Data
+Title: Maryland School Data
 Version: 0.3.0
 Authors@R:
     person("Al", "Martin", , "almartin@example.com", role = c("aut", "cre"))
-Description: Downloads and processes school enrollment data for Maryland public
-    schools from the Maryland State Department of Education (MSDE). Data sources
-    include the Maryland Report Card website and MSDE Staff and Student Publications.
-    Provides functions for fetching enrollment data at state, district (Local School
-    System), and school levels with demographic breakdowns and transforming it into
-    tidy format for analysis. Supports data from 2019 to present.
+Description: A simple, consistent interface for accessing Maryland
+    school data in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
