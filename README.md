@@ -2,12 +2,13 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/almartin82/mdschooldata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/almartin82/mdschooldata/actions/workflows/R-CMD-check.yaml)
+[![Python Tests](https://github.com/almartin82/mdschooldata/actions/workflows/python-test.yaml/badge.svg)](https://github.com/almartin82/mdschooldata/actions/workflows/python-test.yaml)
 [![pkgdown](https://github.com/almartin82/mdschooldata/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/almartin82/mdschooldata/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
 **[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Getting Started](https://almartin82.github.io/mdschooldata/articles/quickstart.html)**
 
-Fetch and analyze Maryland public school enrollment data from the Maryland State Department of Education (MSDE).
+Fetch and analyze Maryland school enrollment data from the Maryland State Department of Education (MSDE) in R or Python.
 
 ## What can you find with mdschooldata?
 
@@ -203,6 +204,8 @@ remotes::install_github("almartin82/mdschooldata")
 
 ## Quick start
 
+### R
+
 ```r
 library(mdschooldata)
 library(dplyr)
@@ -228,6 +231,39 @@ enr_2024 %>%
   filter(is_district, grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
   select(district_name, subgroup, n_students, pct)
+```
+
+### Python
+
+```python
+import pymdschooldata as md
+
+# Fetch one year
+enr_2024 = md.fetch_enr(2024)
+
+# Fetch multiple years
+enr_multi = md.fetch_enr_multi([2020, 2021, 2022, 2023, 2024])
+
+# State totals
+state_total = enr_2024[
+    (enr_2024['is_state'] == True) &
+    (enr_2024['subgroup'] == 'total_enrollment') &
+    (enr_2024['grade_level'] == 'TOTAL')
+]
+
+# Compare largest districts
+districts = enr_2024[
+    (enr_2024['is_district'] == True) &
+    (enr_2024['subgroup'] == 'total_enrollment') &
+    (enr_2024['grade_level'] == 'TOTAL')
+].sort_values('n_students', ascending=False).head(10)
+
+# Demographics by county
+demographics = enr_2024[
+    (enr_2024['is_district'] == True) &
+    (enr_2024['grade_level'] == 'TOTAL') &
+    (enr_2024['subgroup'].isin(['white', 'black', 'hispanic', 'asian']))
+][['district_name', 'subgroup', 'n_students', 'pct']]
 ```
 
 ## Data availability
