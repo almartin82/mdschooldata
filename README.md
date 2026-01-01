@@ -254,13 +254,11 @@ Data is sourced from the Maryland State Department of Education (MSDE):
 - **Baltimore City** (03) is separate from **Baltimore County** (04)
 - **Enrollment date:** September 30 official counts
 
-## Part of the 50 State Schooldata Family
+## Part of the State Schooldata Project
 
-This package is part of a family of R packages providing school enrollment data for all 50 US states. Each package fetches data directly from the state's Department of Education.
+A simple, consistent interface for accessing state-published school data in Python and R.
 
-**See also:** [njschooldata](https://github.com/almartin82/njschooldata) - The original state schooldata package for New Jersey.
-
-**All packages:** [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
+**All 50 state packages:** [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
 
 ## Author
 
