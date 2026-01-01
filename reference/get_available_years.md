@@ -1,7 +1,7 @@
 # Get available years for Maryland enrollment data
 
-Returns the range of school years for which enrollment data is
-available.
+Returns the range of school years for which enrollment data is available
+from the Maryland State Department of Education.
 
 ## Usage
 

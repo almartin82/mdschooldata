@@ -1,7 +1,9 @@
 # Fetch Maryland enrollment data
 
 Downloads and processes enrollment data from the Maryland State
-Department of Education via the Maryland Report Card system.
+Department of Education (MSDE). Data includes enrollment by
+race/ethnicity and gender at state, district (Local School System), and
+school levels.
 
 ## Usage
 
@@ -14,8 +16,8 @@ fetch_enr(end_year, tidy = TRUE, use_cache = TRUE)
 - end_year:
 
   A school year. Year is the end of the academic year - eg 2023-24
-  school year is year '2024'. Valid values are 2018-present (Maryland
-  Report Card API provides data from 2018 onwards).
+  school year is year '2024'. Valid values are 2019-present (MSDE Report
+  Card and publications provide data from 2019 onwards).
 
 - tidy:
 
@@ -25,7 +27,7 @@ fetch_enr(end_year, tidy = TRUE, use_cache = TRUE)
 - use_cache:
 
   If TRUE (default), uses locally cached data when available. Set to
-  FALSE to force re-download from MSDE.
+  FALSE to force re-download.
 
 ## Value
 

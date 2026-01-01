@@ -1,11 +1,11 @@
-# Fetch demographics data from Maryland Report Card
+# Fetch demographics from Report Card (if available)
 
-Queries the Maryland Report Card system for demographic/enrollment data.
+Fetch demographics from Report Card (if available)
 
 ## Usage
 
 ``` r
-fetch_reportcard_demographics(end_year, level = "district")
+fetch_reportcard_demographics(end_year, level = "lea")
 ```
 
 ## Arguments
@@ -16,8 +16,8 @@ fetch_reportcard_demographics(end_year, level = "district")
 
 - level:
 
-  One of "state", "district", or "school"
+  Level: "state", "lea", or "school"
 
 ## Value
 
-Data frame with demographic data
+Data frame with demographics data

@@ -53,20 +53,24 @@ Maryland uses a hierarchical system of 24 Local School Systems (LSS):
 
 ## Data Sources
 
-Data is sourced from the Maryland State Department of Education:
+Data is sourced exclusively from the Maryland State Department of
+Education (MSDE):
 
 - Maryland Report Card: <https://reportcard.msde.maryland.gov/>
 
-- MSDE Data Portal:
-  <https://marylandpublicschools.org/about/Pages/DCAA/SSP/StudentStaff.aspx>
+- MSDE Staff and Student Publications:
+  <https://marylandpublicschools.org/about/Pages/DCAA/SSP/>
 
-## Format Eras
+Note: This package does NOT use federal data sources (NCES, Urban
+Institute, etc.). All data comes directly from Maryland state sources.
 
-Maryland enrollment data is available across multiple format eras:
+## Data Availability
 
-- 2018-present: Maryland Report Card API (JSON format)
+Maryland enrollment data from MSDE sources:
 
-- 2003-2017: Legacy CSV downloads from MSDE
+- 2019-present: Data available via MSDE publications and Report Card
+
+- Data is collected as of September 30 each school year
 
 ## See also
 

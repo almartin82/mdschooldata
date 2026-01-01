@@ -1,7 +1,7 @@
-# Construct LSS enrollment from published data patterns
+# Construct LSS enrollment from published totals
 
-When the API is not directly accessible, construct enrollment data from
-known data patterns and published statistics.
+Creates district-level enrollment data from MSDE published totals. This
+is a fallback when detailed data is not available.
 
 ## Usage
 

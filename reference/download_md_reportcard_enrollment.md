@@ -1,7 +1,7 @@
-# Download enrollment data from Maryland Report Card
+# Download Maryland Report Card enrollment data
 
-Downloads enrollment data from the Maryland Report Card system. The
-Report Card provides JSON data that we convert to a data frame.
+Attempts to fetch enrollment data from the Maryland Report Card website.
+This function handles the web interaction required to download data.
 
 ## Usage
 
@@ -18,3 +18,11 @@ download_md_reportcard_enrollment(end_year)
 ## Value
 
 Data frame with enrollment data
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+enr <- download_md_reportcard_enrollment(2024)
+} # }
+```

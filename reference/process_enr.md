@@ -1,6 +1,7 @@
-# Process raw MSDE enrollment data
+# Process raw enrollment data from MSDE
 
-Transforms raw enrollment data into a standardized schema.
+Transforms raw enrollment data from MSDE sources into a standardized
+schema with wide demographic columns.
 
 ## Usage
 

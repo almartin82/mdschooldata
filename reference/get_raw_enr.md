@@ -1,7 +1,8 @@
-# Download raw enrollment data from MSDE
+# Download raw enrollment data for Maryland
 
-Downloads enrollment data from the Maryland Report Card system. Uses the
-appropriate method based on the year requested.
+Downloads enrollment data from the Maryland State Department of
+Education. Data includes enrollment by race/ethnicity and gender at
+state, district (LSS), and school levels.
 
 ## Usage
 

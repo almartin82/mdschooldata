@@ -261,13 +261,14 @@ enr_2024 %>%
 
 ## Data availability
 
-| Years         | Source                     | Notes                           |
-|---------------|----------------------------|---------------------------------|
-| **2009-2024** | Urban Institute / NCES CCD | Full coverage with demographics |
+| Years         | Source                                 | Notes                           |
+|---------------|----------------------------------------|---------------------------------|
+| **2019-2024** | Maryland State Department of Education | Full coverage with demographics |
 
-Data is sourced from the Urban Institute Education Data Portal (NCES
-Common Core of Data): - <https://educationdata.urban.org/> -
-<https://nces.ed.gov/ccd/>
+Data is sourced from the Maryland State Department of Education
+(MSDE): - Maryland Report Card: <https://reportcard.msde.maryland.gov> -
+MSDE Publications:
+<https://marylandpublicschools.org/about/Pages/DCAA/SSP/>
 
 ### What’s included
 
@@ -284,19 +285,13 @@ Common Core of Data): - <https://educationdata.urban.org/> -
 - **LSS Codes:** 2-digit codes (01 = Allegany through 24 = Worcester)
 - **Baltimore City** (03) is separate from **Baltimore County** (04)
 - **Enrollment date:** September 30 official counts
-- **Data lag:** NCES CCD data typically has a 1-2 year lag
 
-## Part of the 50 State Schooldata Family
+## Part of the State Schooldata Project
 
-This package is part of a family of R packages providing school
-enrollment data for all 50 US states. Each package fetches data directly
-from the state’s Department of Education.
+A simple, consistent interface for accessing state-published school data
+in Python and R.
 
-**See also:**
-[njschooldata](https://github.com/almartin82/njschooldata) - The
-original state schooldata package for New Jersey.
-
-**All packages:**
+**All 50 state packages:**
 [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
 
 ## Author

@@ -9,14 +9,13 @@
 Source:
 [`DESCRIPTION`](https://github.com/almartin82/mdschooldata/blob/main/DESCRIPTION)
 
-Martin A (2025). *mdschooldata: Fetch and Process Maryland School
-Enrollment Data*. R package version 0.3.0,
-<https://github.com/almartin82/mdschooldata>.
+Martin A (2026). *mdschooldata: Maryland School Data*. R package version
+0.3.0, <https://almartin82.github.io/mdschooldata>.
 
     @Manual{,
-      title = {mdschooldata: Fetch and Process Maryland School Enrollment Data},
+      title = {mdschooldata: Maryland School Data},
       author = {Al Martin},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.3.0},
-      url = {https://github.com/almartin82/mdschooldata},
+      url = {https://almartin82.github.io/mdschooldata},
     }
