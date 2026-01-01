@@ -19,6 +19,9 @@ reference:
     contents:
       - fetch_enr
       - fetch_enr_multi
+      - fetch_lss_enrollment
+      - fetch_school_enrollment
+      - download_md_reportcard_enrollment
       - get_available_years
 
   - title: "Transform Data"
