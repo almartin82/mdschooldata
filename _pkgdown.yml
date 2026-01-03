@@ -21,6 +21,7 @@ reference:
       - fetch_enr_multi
       - fetch_lss_enrollment
       - fetch_school_enrollment
+      - fetch_historical_enrollment
       - download_md_reportcard_enrollment
       - get_available_years
 
