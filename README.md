@@ -34,6 +34,8 @@ enr_2024 %>%
   head(5)
 ```
 
+![Top districts](man/figures/top-districts.png)
+
 ---
 
 ### 2. Prince George's and Montgomery: A tale of two counties
@@ -48,6 +50,8 @@ enr_2024 %>%
   mutate(pct = round(pct * 100, 1)) %>%
   select(district_name, subgroup, pct)
 ```
+
+![PG vs Montgomery](man/figures/pg-vs-montgomery.png)
 
 ---
 
@@ -64,6 +68,8 @@ enr %>%
   select(end_year, n_students)
 ```
 
+![Baltimore decline](man/figures/baltimore-decline.png)
+
 ---
 
 ### 4. Maryland is a majority-minority state
@@ -79,6 +85,8 @@ enr %>%
   mutate(pct = round(pct * 100, 1)) %>%
   select(end_year, subgroup, pct)
 ```
+
+![Demographic transformation](man/figures/demographics.png)
 
 ---
 
@@ -97,6 +105,8 @@ enr %>%
   select(end_year, district_name, n_students, index)
 ```
 
+![Eastern Shore](man/figures/eastern-shore.png)
+
 ---
 
 ### 6. Kindergarten dipped during COVID
@@ -112,6 +122,8 @@ enr %>%
   select(end_year, grade_level, n_students)
 ```
 
+![COVID kindergarten](man/figures/covid-k.png)
+
 ---
 
 ### 7. Howard County: Suburban success story
@@ -126,6 +138,8 @@ enr_2024 %>%
   mutate(pct = round(pct * 100, 1)) %>%
   select(subgroup, n_students, pct)
 ```
+
+![Howard diversity](man/figures/howard-diversity.png)
 
 ---
 
@@ -145,6 +159,8 @@ enr %>%
   select(end_year, district_name, n_students)
 ```
 
+![Western decline](man/figures/western-md.png)
+
 ---
 
 ### 9. Anne Arundel holds steady
@@ -157,6 +173,8 @@ enr %>%
          subgroup == "total_enrollment", grade_level == "TOTAL") %>%
   select(end_year, n_students)
 ```
+
+![Anne Arundel](man/figures/anne-arundel.png)
 
 ---
 
@@ -173,6 +191,8 @@ enr_2024 %>%
   group_by(corridor) %>%
   summarize(total = sum(n_students, na.rm = TRUE))
 ```
+
+![I-95 corridor](man/figures/i95-corridor.png)
 
 ---
 
