@@ -4,14 +4,14 @@
 \alias{validate_year}
 \title{Validate end_year parameter}
 \usage{
-validate_year(end_year, min_year = 2003, max_year = NULL)
+validate_year(end_year, min_year = 2014, max_year = NULL)
 }
 \arguments{
 \item{end_year}{Year to validate}
 
-\item{min_year}{Minimum valid year (default 2003)}
+\item{min_year}{Minimum valid year (default 2014, when MD Planning data begins)}
 
-\item{max_year}{Maximum valid year (default current year + 1)}
+\item{max_year}{Maximum valid year (default 2024, most recent confirmed data)}
 }
 \value{
 TRUE if valid, throws error otherwise
