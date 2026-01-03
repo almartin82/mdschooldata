@@ -65,6 +65,7 @@ Maryland enrollment data from MSDE sources:
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://almartin82.github.io/mdschooldata}
   \item \url{https://github.com/almartin82/mdschooldata}
   \item Report bugs at \url{https://github.com/almartin82/mdschooldata/issues}
 }
