@@ -76,6 +76,8 @@ Maryland enrollment data from MSDE sources:
 
 Useful links:
 
+- <https://almartin82.github.io/mdschooldata>
+
 - <https://github.com/almartin82/mdschooldata>
 
 - Report bugs at <https://github.com/almartin82/mdschooldata/issues>

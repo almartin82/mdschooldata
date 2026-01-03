@@ -3,6 +3,8 @@
 **[Documentation](https://almartin82.github.io/mdschooldata/)** \|
 **[Getting
 Started](https://almartin82.github.io/mdschooldata/articles/quickstart.html)**
+\| **[Enrollment
+Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)**
 
 Fetch and analyze Maryland school enrollment data from the Maryland
 State Department of Education (MSDE) in R or Python.
@@ -10,216 +12,42 @@ State Department of Education (MSDE) in R or Python.
 ## What can you find with mdschooldata?
 
 **15+ years of enrollment data (2009-2024).** 890,000 students. 24 local
-school systems. Here are ten stories hiding in the numbers:
-
-------------------------------------------------------------------------
-
-### 1. Montgomery County is bigger than most states
-
-With over 160,000 students, Montgomery County Public Schools is the
-largest district in Maryland and among the top 20 in the nation.
-
-``` r
-library(mdschooldata)
-library(dplyr)
-
-enr_2024 <- fetch_enr(2024)
-
-enr_2024 %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  arrange(desc(n_students)) %>%
-  select(district_name, n_students) %>%
-  head(5)
-```
-
-![Top districts](reference/figures/top-districts.png)
-
-Top districts
-
-------------------------------------------------------------------------
-
-### 2. Prince George’s and Montgomery: A tale of two counties
-
-Maryland’s two largest systems serve similar numbers but have very
-different demographics.
-
-``` r
-enr_2024 %>%
-  filter(is_district, grade_level == "TOTAL",
-         district_name %in% c("Montgomery", "Prince George's"),
-         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
-  mutate(pct = round(pct * 100, 1)) %>%
-  select(district_name, subgroup, pct)
-```
-
-![PG vs Montgomery](reference/figures/pg-vs-montgomery.png)
-
-PG vs Montgomery
-
-------------------------------------------------------------------------
-
-### 3. Baltimore City’s enrollment freefall
-
-Baltimore City has lost over 15,000 students in the past decade, a
-decline of nearly 20%.
-
-``` r
-enr <- fetch_enr_multi(2015:2024)
-
-enr %>%
-  filter(is_district, district_name == "Baltimore City",
-         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, n_students)
-```
-
-![Baltimore decline](reference/figures/baltimore-decline.png)
-
-Baltimore decline
-
-------------------------------------------------------------------------
-
-### 4. Maryland is a majority-minority state
-
-White students are now under 40% of enrollment. Hispanic students are
-the fastest-growing group.
-
-``` r
-enr <- fetch_enr_multi(c(2010, 2015, 2020, 2024))
-
-enr %>%
-  filter(is_state, grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
-  mutate(pct = round(pct * 100, 1)) %>%
-  select(end_year, subgroup, pct)
-```
-
-![Demographic transformation](reference/figures/demographics.png)
-
-Demographic transformation
-
-------------------------------------------------------------------------
-
-### 5. The Eastern Shore tells a different story
-
-Rural counties like Worcester, Somerset, and Dorchester are losing
-students faster than the state average.
-
-``` r
-eastern_shore <- c("Worcester", "Somerset", "Dorchester", "Wicomico", "Caroline")
-
-enr %>%
-  filter(is_district, district_name %in% eastern_shore,
-         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  group_by(district_name) %>%
-  mutate(index = n_students / first(n_students) * 100) %>%
-  select(end_year, district_name, n_students, index)
-```
-
-![Eastern Shore](reference/figures/eastern-shore.png)
-
-Eastern Shore
-
-------------------------------------------------------------------------
-
-### 6. Kindergarten dipped during COVID
-
-Maryland lost 8% of kindergartners in 2021 and the cohort remains
-smaller.
-
-``` r
-enr <- fetch_enr_multi(2018:2024)
-
-enr %>%
-  filter(is_state, subgroup == "total_enrollment",
-         grade_level %in% c("K", "01", "06", "12")) %>%
-  select(end_year, grade_level, n_students)
-```
-
-![COVID kindergarten](reference/figures/covid-k.png)
-
-COVID kindergarten
-
-------------------------------------------------------------------------
-
-### 7. Howard County: Suburban success story
-
-Howard County maintains high enrollment and exceptional diversity - a
-model for suburban integration.
-
-``` r
-enr_2024 %>%
-  filter(is_district, district_name == "Howard",
-         grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")) %>%
-  mutate(pct = round(pct * 100, 1)) %>%
-  select(subgroup, n_students, pct)
-```
-
-![Howard diversity](reference/figures/howard-diversity.png)
-
-Howard diversity
-
-------------------------------------------------------------------------
-
-### 8. Allegany and Garrett: Western Maryland’s struggle
-
-The westernmost counties have lost over 20% of students since 2009,
-reflecting population decline.
-
-``` r
-western <- c("Allegany", "Garrett")
-
-enr <- fetch_enr_multi(2009:2024)
-
-enr %>%
-  filter(is_district, district_name %in% western,
-         subgroup == "total_enrollment", grade_level == "TOTAL",
-         end_year %in% c(2009, 2014, 2019, 2024)) %>%
-  select(end_year, district_name, n_students)
-```
-
-![Western decline](reference/figures/western-md.png)
-
-Western decline
-
-------------------------------------------------------------------------
-
-### 9. Anne Arundel holds steady
-
-Maryland’s fifth-largest district has maintained enrollment stability
-while others fluctuate.
-
-``` r
-enr %>%
-  filter(is_district, district_name == "Anne Arundel",
-         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, n_students)
-```
-
-![Anne Arundel](reference/figures/anne-arundel.png)
-
-Anne Arundel
-
-------------------------------------------------------------------------
-
-### 10. The I-95 corridor dominates
-
-Five counties along I-95 (Baltimore, Montgomery, Prince George’s,
-Howard, Anne Arundel) enroll over 70% of all Maryland students.
-
-``` r
-i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
-
-enr_2024 %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  mutate(corridor = ifelse(district_name %in% i95, "I-95 Corridor", "Rest of Maryland")) %>%
-  group_by(corridor) %>%
-  summarize(total = sum(n_students, na.rm = TRUE))
-```
-
-![I-95 corridor](reference/figures/i95-corridor.png)
-
-I-95 corridor
+school systems. Here are ten stories hiding in the numbers - see the
+full analysis with interactive visualizations in our [Enrollment
+Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)
+vignette:
+
+1.  [Montgomery County is bigger than most
+    states](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#montgomery-county-is-bigger-than-most-states) -
+    With over 160,000 students, Montgomery County Public Schools is the
+    largest district in Maryland
+2.  [Prince George’s and Montgomery: A tale of two
+    counties](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#prince-georges-and-montgomery-a-tale-of-two-counties) -
+    Similar size, very different demographics
+3.  [Baltimore City’s enrollment
+    freefall](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#baltimore-citys-enrollment-freefall) -
+    Lost over 15,000 students in a decade
+4.  [Maryland is a majority-minority
+    state](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#maryland-is-a-majority-minority-state) -
+    White students now under 40% of enrollment
+5.  [The Eastern Shore tells a different
+    story](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#the-eastern-shore-tells-a-different-story) -
+    Rural counties losing students faster than state average
+6.  [Kindergarten dipped during
+    COVID](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#kindergarten-dipped-during-covid) -
+    Maryland lost 8% of kindergartners in 2021
+7.  [Howard County: Suburban success
+    story](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#howard-county-suburban-success-story) -
+    A model of suburban diversity
+8.  [Western Maryland’s
+    struggle](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#allegany-and-garrett-western-marylands-struggle) -
+    Allegany and Garrett counties lost over 20% of students
+9.  [Anne Arundel holds
+    steady](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#anne-arundel-holds-steady) -
+    Maintaining stability while others fluctuate
+10. [The I-95 corridor
+    dominates](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#the-i-95-corridor-dominates) -
+    Five counties enroll over 70% of all students
 
 ------------------------------------------------------------------------
 

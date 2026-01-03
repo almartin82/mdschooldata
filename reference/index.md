@@ -12,6 +12,8 @@ Functions for downloading enrollment data from MSDE
   : Fetch enrollment for a specific LSS (district)
 - [`fetch_school_enrollment()`](https://almartin82.github.io/mdschooldata/reference/fetch_school_enrollment.md)
   : Fetch school-level enrollment
+- [`fetch_historical_enrollment()`](https://almartin82.github.io/mdschooldata/reference/fetch_historical_enrollment.md)
+  : Fetch historical enrollment from MD Planning
 - [`download_md_reportcard_enrollment()`](https://almartin82.github.io/mdschooldata/reference/download_md_reportcard_enrollment.md)
   : Download Maryland Report Card enrollment data
 - [`get_available_years()`](https://almartin82.github.io/mdschooldata/reference/get_available_years.md)

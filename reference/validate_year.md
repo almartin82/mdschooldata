@@ -5,7 +5,7 @@ Validate end_year parameter
 ## Usage
 
 ``` r
-validate_year(end_year, min_year = 2003, max_year = NULL)
+validate_year(end_year, min_year = 2014, max_year = NULL)
 ```
 
 ## Arguments
@@ -16,11 +16,11 @@ validate_year(end_year, min_year = 2003, max_year = NULL)
 
 - min_year:
 
-  Minimum valid year (default 2003)
+  Minimum valid year (default 2014, when MD Planning data begins)
 
 - max_year:
 
-  Maximum valid year (default current year + 1)
+  Maximum valid year (default 2024, most recent confirmed data)
 
 ## Value
 
