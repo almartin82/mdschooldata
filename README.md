@@ -13,7 +13,7 @@ Fetch and analyze Maryland school enrollment data from the Maryland State Depart
 
 ## What can you find with mdschooldata?
 
-**15+ years of enrollment data (2009-2024).** 890,000 students. 24 local school systems. Here are ten stories hiding in the numbers - see the full analysis with interactive visualizations in our [Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html) vignette:
+**12 years of enrollment data (2014-2025).** 890,000 students. 24 local school systems. Here are ten stories hiding in the numbers - see the full analysis with interactive visualizations in our [Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html) vignette:
 
 1. [Montgomery County is bigger than most states](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#montgomery-county-is-bigger-than-most-states) - With over 160,000 students, Montgomery County Public Schools is the largest district in Maryland
 2. [Prince George's and Montgomery: A tale of two counties](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#prince-georges-and-montgomery-a-tale-of-two-counties) - Similar size, very different demographics
@@ -103,7 +103,7 @@ demographics = enr_2024[
 
 | Years | Source | Notes |
 |-------|--------|-------|
-| **2019-2024** | Maryland State Department of Education | Full coverage with demographics |
+| **2014-2025** | Maryland Dept of Planning, MSDE | Enrollment 2014+, demographics 2019+ |
 
 Data is sourced from the Maryland State Department of Education (MSDE):
 - Maryland Report Card: https://reportcard.msde.maryland.gov
