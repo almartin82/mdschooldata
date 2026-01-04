@@ -11,7 +11,7 @@ State Department of Education (MSDE) in R or Python.
 
 ## What can you find with mdschooldata?
 
-**15+ years of enrollment data (2009-2024).** 890,000 students. 24 local
+**12 years of enrollment data (2014-2025).** 890,000 students. 24 local
 school systems. Here are ten stories hiding in the numbers - see the
 full analysis with interactive visualizations in our [Enrollment
 Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)
@@ -124,9 +124,9 @@ demographics = enr_2024[
 
 ## Data availability
 
-| Years         | Source                                 | Notes                           |
-|---------------|----------------------------------------|---------------------------------|
-| **2019-2024** | Maryland State Department of Education | Full coverage with demographics |
+| Years         | Source                          | Notes                                |
+|---------------|---------------------------------|--------------------------------------|
+| **2014-2025** | Maryland Dept of Planning, MSDE | Enrollment 2014+, demographics 2019+ |
 
 Data is sourced from the Maryland State Department of Education
 (MSDE): - Maryland Report Card: <https://reportcard.msde.maryland.gov> -
