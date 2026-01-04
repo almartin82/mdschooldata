@@ -1,9 +1,7 @@
 # mdschooldata
 
 **[Documentation](https://almartin82.github.io/mdschooldata/)** \|
-**[Getting
-Started](https://almartin82.github.io/mdschooldata/articles/quickstart.html)**
-\| **[Enrollment
+**[Enrollment
 Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)**
 
 Fetch and analyze Maryland school enrollment data from the Maryland
