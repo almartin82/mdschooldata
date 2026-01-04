@@ -7,7 +7,7 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-**[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Getting Started](https://almartin82.github.io/mdschooldata/articles/quickstart.html)** | **[Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)**
+**[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)**
 
 Fetch and analyze Maryland school enrollment data from the Maryland State Department of Education (MSDE) in R or Python.
 
