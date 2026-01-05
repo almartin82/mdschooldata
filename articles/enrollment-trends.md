@@ -19,7 +19,8 @@ theme_readme <- function() {
 }
 
 colors <- c("total" = "#2C3E50", "white" = "#3498DB", "black" = "#E74C3C",
-            "hispanic" = "#F39C12", "asian" = "#9B59B6", "multiracial" = "#1ABC9C")
+            "hispanic" = "#F39C12", "asian" = "#9B59B6", "multiracial" = "#1ABC9C",
+            "highlight" = "#E67E22", "secondary" = "#95A5A6")
 ```
 
 ``` r
@@ -41,7 +42,9 @@ enr_current <- fetch_enr(max_year)
 ## 1. Montgomery County is bigger than most states
 
 With over 160,000 students, Montgomery County Public Schools is the
-largest district in Maryland and among the top 20 in the nation.
+largest district in Maryland and among the top 20 in the nation. The
+district alone has more students than entire states like Wyoming or
+Vermont.
 
 ``` r
 top_districts <- enr_current %>%
@@ -60,12 +63,13 @@ ggplot(top_districts, aes(x = district_label, y = n_students)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/top-districts-1.png)
+![](enrollment-trends_files/figure-html/story-01-top-districts-1.png)
 
 ## 2. Prince George’s and Montgomery: A tale of two counties
 
-Maryland’s two largest systems serve similar numbers but have very
-different demographics.
+Maryland’s two largest systems serve similar numbers of students but
+have very different demographics. Montgomery is more diverse across
+groups while Prince George’s has a larger Black student population.
 
 ``` r
 pg_mont <- enr_current %>%
@@ -83,12 +87,13 @@ ggplot(pg_mont, aes(x = subgroup, y = pct, fill = district_name)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/pg-vs-montgomery-1.png)
+![](enrollment-trends_files/figure-html/story-02-pg-vs-montgomery-1.png)
 
 ## 3. Baltimore City’s enrollment freefall
 
 Baltimore City has lost over 15,000 students in the past decade, a
-decline of nearly 20%.
+decline of nearly 20%. This reflects population loss, charter school
+growth, and families moving to surrounding counties.
 
 ``` r
 baltimore <- enr %>%
@@ -100,17 +105,18 @@ ggplot(baltimore, aes(x = end_year, y = n_students)) +
   geom_point(size = 3, color = colors["total"]) +
   scale_y_continuous(labels = comma, limits = c(0, NA)) +
   labs(title = "Baltimore City Enrollment Decline",
-       subtitle = "Lost 15,000 students over the past decade",
+       subtitle = "Lost 15,000+ students over the past decade",
        x = "School Year", y = "Students") +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/baltimore-decline-1.png)
+![](enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png)
 
 ## 4. Maryland is a majority-minority state
 
-White students are now under 40% of enrollment. Hispanic students are
-the fastest-growing group.
+White students are now under 40% of enrollment statewide. Hispanic
+students are the fastest-growing demographic group, while the Black
+student population has remained relatively stable.
 
 ``` r
 demo <- enr %>%
@@ -128,12 +134,13 @@ ggplot(demo, aes(x = end_year, y = pct * 100, color = subgroup)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/demographics-1.png)
+![](enrollment-trends_files/figure-html/story-04-demographics-1.png)
 
 ## 5. The Eastern Shore tells a different story
 
-Rural counties like Worcester, Somerset, and Dorchester are losing
-students faster than the state average.
+Rural counties like Worcester, Somerset, and Dorchester on Maryland’s
+Eastern Shore are losing students faster than the state average,
+reflecting broader rural population decline patterns.
 
 ``` r
 eastern_shore <- c("Worcester", "Somerset", "Dorchester", "Wicomico", "Caroline")
@@ -154,12 +161,13 @@ ggplot(eastern, aes(x = end_year, y = n_students)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/eastern-shore-1.png)
+![](enrollment-trends_files/figure-html/story-05-eastern-shore-1.png)
 
 ## 6. Kindergarten dipped during COVID
 
-Maryland lost 8% of kindergartners in 2021 and the cohort remains
-smaller.
+Maryland lost 8% of kindergartners in 2021 as families delayed
+enrollment during the pandemic. The cohort remains smaller than
+pre-pandemic levels, suggesting some students never entered the system.
 
 ``` r
 k_trend <- enr %>%
@@ -183,12 +191,13 @@ ggplot(k_trend, aes(x = end_year, y = n_students, color = grade_label)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/covid-k-1.png)
+![](enrollment-trends_files/figure-html/story-06-covid-k-1.png)
 
 ## 7. Howard County: Suburban success story
 
-Howard County maintains high enrollment and exceptional diversity - a
-model for suburban integration.
+Howard County maintains high enrollment and exceptional diversity,
+making it a model for suburban integration. No single racial group
+dominates, reflecting intentional demographic balance.
 
 ``` r
 howard <- enr_current %>%
@@ -205,12 +214,13 @@ ggplot(howard, aes(x = subgroup_label, y = pct * 100)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/howard-diversity-1.png)
+![](enrollment-trends_files/figure-html/story-07-howard-diversity-1.png)
 
 ## 8. Allegany and Garrett: Western Maryland’s struggle
 
-The westernmost counties have lost over 20% of students since 2009,
-reflecting population decline.
+The westernmost counties have lost over 20% of students since 2014,
+reflecting population decline in Appalachian Maryland. These rural
+mountain communities face similar challenges to rural areas nationwide.
 
 ``` r
 western <- c("Allegany", "Garrett")
@@ -229,12 +239,13 @@ ggplot(western_trend, aes(x = end_year, y = n_students, color = district_name)) 
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/western-md-1.png)
+![](enrollment-trends_files/figure-html/story-08-western-md-1.png)
 
 ## 9. Anne Arundel holds steady
 
 Maryland’s fifth-largest district has maintained enrollment stability
-while others fluctuate.
+while others fluctuate. The Annapolis-area county benefits from military
+families at Fort Meade and Naval Academy presence.
 
 ``` r
 aa <- enr %>%
@@ -251,12 +262,13 @@ ggplot(aa, aes(x = end_year, y = n_students)) +
   theme_readme()
 ```
 
-![](enrollment-trends_files/figure-html/anne-arundel-1.png)
+![](enrollment-trends_files/figure-html/story-09-anne-arundel-1.png)
 
 ## 10. The I-95 corridor dominates
 
-Five counties along I-95 (Baltimore, Montgomery, Prince George’s,
-Howard, Anne Arundel) enroll over 70% of all Maryland students.
+Five counties along I-95 (Baltimore County, Montgomery, Prince George’s,
+Howard, and Anne Arundel) enroll over 70% of all Maryland students. This
+concentration reflects the state’s population center.
 
 ``` r
 i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
@@ -278,4 +290,123 @@ ggplot(corridor, aes(x = corridor, y = n_students, fill = corridor)) +
   theme(legend.position = "none")
 ```
 
-![](enrollment-trends_files/figure-html/i95-corridor-1.png)
+![](enrollment-trends_files/figure-html/story-10-i95-corridor-1.png)
+
+## 11. Frederick County is growing fast
+
+Frederick County, located between the DC suburbs and western Maryland,
+has seen steady enrollment growth as families seek more affordable
+housing while maintaining access to the DC job market.
+
+``` r
+frederick <- enr %>%
+  filter(is_district, district_name == "Frederick",
+         subgroup == "total_enrollment", grade_level == "TOTAL")
+
+ggplot(frederick, aes(x = end_year, y = n_students)) +
+  geom_line(linewidth = 1.5, color = colors["highlight"]) +
+  geom_point(size = 3, color = colors["highlight"]) +
+  scale_y_continuous(labels = comma, limits = c(0, NA)) +
+  labs(title = "Frederick County Enrollment Growth",
+       subtitle = "DC exurbs attracting new families",
+       x = "School Year", y = "Students") +
+  theme_readme()
+```
+
+![](enrollment-trends_files/figure-html/story-11-frederick-growth-1.png)
+
+## 12. Hispanic enrollment is surging statewide
+
+Hispanic students have grown from approximately 12% to over 18% of
+Maryland enrollment in the past decade. This demographic shift is
+reshaping schools across the state, particularly in the DC suburbs.
+
+``` r
+hispanic_trend <- enr %>%
+  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic")
+
+ggplot(hispanic_trend, aes(x = end_year, y = n_students)) +
+  geom_line(linewidth = 1.5, color = colors["hispanic"]) +
+  geom_point(size = 3, color = colors["hispanic"]) +
+  geom_area(alpha = 0.2, fill = colors["hispanic"]) +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Hispanic Student Enrollment Growth",
+       subtitle = "Fastest-growing demographic in Maryland schools",
+       x = "School Year", y = "Hispanic Students") +
+  theme_readme()
+```
+
+![](enrollment-trends_files/figure-html/story-12-hispanic-growth-1.png)
+
+## 13. Baltimore County vs Baltimore City: Divergent paths
+
+While Baltimore City enrollment plummets, Baltimore County has remained
+relatively stable. The county surrounds but is entirely separate from
+the city, and the gap continues to widen.
+
+``` r
+baltimore_both <- enr %>%
+  filter(is_district, district_name %in% c("Baltimore City", "Baltimore County"),
+         subgroup == "total_enrollment", grade_level == "TOTAL")
+
+ggplot(baltimore_both, aes(x = end_year, y = n_students, color = district_name)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  scale_y_continuous(labels = comma) +
+  scale_color_manual(values = c("Baltimore City" = "#E74C3C", "Baltimore County" = "#3498DB")) +
+  labs(title = "Baltimore City vs Baltimore County",
+       subtitle = "Two systems, divergent enrollment trajectories",
+       x = "School Year", y = "Students", color = "") +
+  theme_readme()
+```
+
+![](enrollment-trends_files/figure-html/story-13-baltimore-comparison-1.png)
+
+## 14. Charles County: Southern Maryland’s anchor
+
+Charles County is the largest district in Southern Maryland and has
+maintained steady enrollment. The county serves as a bedroom community
+for DC-area workers seeking affordable housing.
+
+``` r
+charles <- enr %>%
+  filter(is_district, district_name == "Charles",
+         subgroup == "total_enrollment", grade_level == "TOTAL")
+
+ggplot(charles, aes(x = end_year, y = n_students)) +
+  geom_line(linewidth = 1.5, color = colors["total"]) +
+  geom_point(size = 3, color = colors["total"]) +
+  scale_y_continuous(labels = comma, limits = c(0, NA)) +
+  labs(title = "Charles County Enrollment",
+       subtitle = "Southern Maryland's largest school system holds steady",
+       x = "School Year", y = "Students") +
+  theme_readme()
+```
+
+![](enrollment-trends_files/figure-html/story-14-charles-county-1.png)
+
+## 15. Small counties face existential challenges
+
+Kent County, Maryland’s smallest district with just over 2,000 students,
+exemplifies the challenges facing rural Eastern Shore counties. Small
+enrollment makes it difficult to offer diverse programs and maintain
+facilities.
+
+``` r
+small_counties <- c("Kent", "Somerset", "Garrett")
+
+small_trend <- enr %>%
+  filter(is_district, district_name %in% small_counties,
+         subgroup == "total_enrollment", grade_level == "TOTAL")
+
+ggplot(small_trend, aes(x = end_year, y = n_students, color = district_name)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Maryland's Smallest School Systems",
+       subtitle = "Kent, Somerset, and Garrett face enrollment pressure",
+       x = "School Year", y = "Students", color = "") +
+  theme_readme()
+```
+
+![](enrollment-trends_files/figure-html/story-15-small-counties-1.png)

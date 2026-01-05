@@ -61,35 +61,221 @@
 <div class="section level2">
 <h2 id="what-can-you-find-with-mdschooldata">What can you find with mdschooldata?<a class="anchor" aria-label="anchor" href="#what-can-you-find-with-mdschooldata"></a>
 </h2>
-<p><strong>12 years of enrollment data (2014-2025).</strong> 890,000 students. 24 local school systems. Here are ten stories hiding in the numbers - see the full analysis with interactive visualizations in our <a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html">Enrollment Trends</a> vignette:</p>
-<ol style="list-style-type: decimal">
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#montgomery-county-is-bigger-than-most-states">Montgomery County is bigger than most states</a> - With over 160,000 students, Montgomery County Public Schools is the largest district in Maryland</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#prince-georges-and-montgomery-a-tale-of-two-counties">Prince George’s and Montgomery: A tale of two counties</a> - Similar size, very different demographics</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#baltimore-citys-enrollment-freefall">Baltimore City’s enrollment freefall</a> - Lost over 15,000 students in a decade</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#maryland-is-a-majority-minority-state">Maryland is a majority-minority state</a> - White students now under 40% of enrollment</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#the-eastern-shore-tells-a-different-story">The Eastern Shore tells a different story</a> - Rural counties losing students faster than state average</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#kindergarten-dipped-during-covid">Kindergarten dipped during COVID</a> - Maryland lost 8% of kindergartners in 2021</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#howard-county-suburban-success-story">Howard County: Suburban success story</a> - A model of suburban diversity</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#allegany-and-garrett-western-marylands-struggle">Western Maryland’s struggle</a> - Allegany and Garrett counties lost over 20% of students</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#anne-arundel-holds-steady">Anne Arundel holds steady</a> - Maintaining stability while others fluctuate</li>
-<li>
-<a href="https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#the-i-95-corridor-dominates">The I-95 corridor dominates</a> - Five counties enroll over 70% of all students</li>
-</ol>
+<p><strong>12 years of enrollment data (2014-2025).</strong> 890,000 students. 24 local school systems. Here are fifteen stories hiding in the numbers:</p>
 <hr>
+<div class="section level3">
+<h3 id="id_1-montgomery-county-is-bigger-than-most-states">1. Montgomery County is bigger than most states<a class="anchor" aria-label="anchor" href="#id_1-montgomery-county-is-bigger-than-most-states"></a>
+</h3>
+<p>With over 160,000 students, Montgomery County Public Schools is the largest district in Maryland and among the top 20 in the nation. The district alone has more students than entire states like Wyoming or Vermont.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/mdschooldata">mdschooldata</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/top-districts-1.png" alt="Maryland’s Largest School Systems"><div class="figcaption">Maryland’s Largest School Systems</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_2-prince-georges-and-montgomery-a-tale-of-two-counties">2. Prince George’s and Montgomery: A tale of two counties<a class="anchor" aria-label="anchor" href="#id_2-prince-georges-and-montgomery-a-tale-of-two-counties"></a>
+</h3>
+<p>Maryland’s two largest systems serve similar numbers of students but have very different demographics. Montgomery is more diverse across groups while Prince George’s has a larger Black student population.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Montgomery"</span>, <span class="st">"Prince George's"</span><span class="op">)</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/pg-vs-montgomery-1.png" alt="Demographics: Montgomery vs Prince George’s"><div class="figcaption">Demographics: Montgomery vs Prince George’s</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_3-baltimore-citys-enrollment-freefall">3. Baltimore City’s enrollment freefall<a class="anchor" aria-label="anchor" href="#id_3-baltimore-citys-enrollment-freefall"></a>
+</h3>
+<p>Baltimore City has lost over 15,000 students in the past decade, a decline of nearly 20%. This reflects population loss, charter school growth, and families moving to surrounding counties.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Baltimore City"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/baltimore-decline-1.png" alt="Baltimore City Enrollment Decline"><div class="figcaption">Baltimore City Enrollment Decline</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_4-maryland-is-a-majority-minority-state">4. Maryland is a majority-minority state<a class="anchor" aria-label="anchor" href="#id_4-maryland-is-a-majority-minority-state"></a>
+</h3>
+<p>White students are now under 40% of enrollment statewide. Hispanic students are the fastest-growing demographic group, while the Black student population has remained relatively stable.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/demographics-1.png" alt="Maryland Demographics Shift"><div class="figcaption">Maryland Demographics Shift</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_5-the-eastern-shore-tells-a-different-story">5. The Eastern Shore tells a different story<a class="anchor" aria-label="anchor" href="#id_5-the-eastern-shore-tells-a-different-story"></a>
+</h3>
+<p>Rural counties like Worcester, Somerset, and Dorchester on Maryland’s Eastern Shore are losing students faster than the state average, reflecting broader rural population decline patterns.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">eastern_shore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Worcester"</span>, <span class="st">"Somerset"</span>, <span class="st">"Dorchester"</span>, <span class="st">"Wicomico"</span>, <span class="st">"Caroline"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">eastern_shore</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n_students <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/eastern-shore-1.png" alt="Eastern Shore Combined Enrollment"><div class="figcaption">Eastern Shore Combined Enrollment</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_6-kindergarten-dipped-during-covid">6. Kindergarten dipped during COVID<a class="anchor" aria-label="anchor" href="#id_6-kindergarten-dipped-during-covid"></a>
+</h3>
+<p>Maryland lost 8% of kindergartners in 2021 as families delayed enrollment during the pandemic. The cohort remains smaller than pre-pandemic levels, suggesting some students never entered the system.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>,</span>
+<span>         <span class="va">grade_level</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="st">"01"</span>, <span class="st">"06"</span>, <span class="st">"12"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/covid-k-1.png" alt="COVID Impact on Grade-Level Enrollment"><div class="figcaption">COVID Impact on Grade-Level Enrollment</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_7-howard-county-suburban-success-story">7. Howard County: Suburban success story<a class="anchor" aria-label="anchor" href="#id_7-howard-county-suburban-success-story"></a>
+</h3>
+<p>Howard County maintains high enrollment and exceptional diversity, making it a model for suburban integration. No single racial group dominates, reflecting intentional demographic balance.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Howard"</span>,</span>
+<span>         <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span>, <span class="st">"multiracial"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/howard-diversity-1.png" alt="Howard County Demographics"><div class="figcaption">Howard County Demographics</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_8-western-marylands-struggle">8. Western Maryland’s struggle<a class="anchor" aria-label="anchor" href="#id_8-western-marylands-struggle"></a>
+</h3>
+<p>The westernmost counties (Allegany and Garrett) have lost over 20% of students since 2014, reflecting population decline in Appalachian Maryland.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Allegany"</span>, <span class="st">"Garrett"</span><span class="op">)</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/western-md-1.png" alt="Western Maryland Enrollment"><div class="figcaption">Western Maryland Enrollment</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_9-anne-arundel-holds-steady">9. Anne Arundel holds steady<a class="anchor" aria-label="anchor" href="#id_9-anne-arundel-holds-steady"></a>
+</h3>
+<p>Maryland’s fifth-largest district has maintained enrollment stability while others fluctuate. The Annapolis-area county benefits from military families at Fort Meade and Naval Academy presence.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Anne Arundel"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/anne-arundel-1.png" alt="Anne Arundel County Enrollment"><div class="figcaption">Anne Arundel County Enrollment</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_10-the-i-95-corridor-dominates">10. The I-95 corridor dominates<a class="anchor" aria-label="anchor" href="#id_10-the-i-95-corridor-dominates"></a>
+</h3>
+<p>Five counties along I-95 (Baltimore County, Montgomery, Prince George’s, Howard, and Anne Arundel) enroll over 70% of all Maryland students. This concentration reflects the state’s population center.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">i95</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore County"</span>, <span class="st">"Montgomery"</span>, <span class="st">"Prince George's"</span>, <span class="st">"Howard"</span>, <span class="st">"Anne Arundel"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>corridor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">i95</span>, <span class="st">"I-95 Corridor"</span>, <span class="st">"Rest of Maryland"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">corridor</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n_students <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/i95-corridor-1.png" alt="The I-95 Corridor Dominates Maryland"><div class="figcaption">The I-95 Corridor Dominates Maryland</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_11-frederick-county-is-growing-fast">11. Frederick County is growing fast<a class="anchor" aria-label="anchor" href="#id_11-frederick-county-is-growing-fast"></a>
+</h3>
+<p>Frederick County, located between the DC suburbs and western Maryland, has seen steady enrollment growth as families seek more affordable housing while maintaining access to the DC job market.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Frederick"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/frederick-growth-1.png" alt="Frederick County Enrollment Growth"><div class="figcaption">Frederick County Enrollment Growth</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_12-hispanic-enrollment-is-surging-statewide">12. Hispanic enrollment is surging statewide<a class="anchor" aria-label="anchor" href="#id_12-hispanic-enrollment-is-surging-statewide"></a>
+</h3>
+<p>Hispanic students have grown from approximately 12% to over 18% of Maryland enrollment in the past decade. This demographic shift is reshaping schools across the state, particularly in the DC suburbs.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"hispanic"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/hispanic-growth-1.png" alt="Hispanic Student Enrollment Growth"><div class="figcaption">Hispanic Student Enrollment Growth</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_13-baltimore-county-vs-baltimore-city-divergent-paths">13. Baltimore County vs Baltimore City: Divergent paths<a class="anchor" aria-label="anchor" href="#id_13-baltimore-county-vs-baltimore-city-divergent-paths"></a>
+</h3>
+<p>While Baltimore City enrollment plummets, Baltimore County has remained relatively stable. The county surrounds but is entirely separate from the city, and the gap continues to widen.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore City"</span>, <span class="st">"Baltimore County"</span><span class="op">)</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/baltimore-comparison-1.png" alt="Baltimore City vs Baltimore County"><div class="figcaption">Baltimore City vs Baltimore County</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_14-charles-county-southern-marylands-anchor">14. Charles County: Southern Maryland’s anchor<a class="anchor" aria-label="anchor" href="#id_14-charles-county-southern-marylands-anchor"></a>
+</h3>
+<p>Charles County is the largest district in Southern Maryland and has maintained steady enrollment. The county serves as a bedroom community for DC-area workers seeking affordable housing.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Charles"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/charles-county-1.png" alt="Charles County Enrollment"><div class="figcaption">Charles County Enrollment</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_15-small-counties-face-existential-challenges">15. Small counties face existential challenges<a class="anchor" aria-label="anchor" href="#id_15-small-counties-face-existential-challenges"></a>
+</h3>
+<p>Kent County, Maryland’s smallest district with just over 2,000 students, exemplifies the challenges facing rural Eastern Shore counties. Small enrollment makes it difficult to offer diverse programs and maintain facilities.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Kent"</span>, <span class="st">"Somerset"</span>, <span class="st">"Garrett"</span><span class="op">)</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/small-counties-1.png" alt="Maryland’s Smallest School Systems"><div class="figcaption">Maryland’s Smallest School Systems</div>
+</div>
+<hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"almartin82/mdschooldata"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -99,7 +285,7 @@
 <div class="section level3">
 <h3 id="r">R<a class="anchor" aria-label="anchor" href="#r"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/mdschooldata">mdschooldata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -128,34 +314,34 @@
 <div class="section level3">
 <h3 id="python">Python<a class="anchor" aria-label="anchor" href="#python"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="im">import</span> pymdschooldata <span class="im">as</span> md</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># Fetch one year</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>enr_2024 <span class="op">=</span> md.fetch_enr(<span class="dv">2024</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># Fetch multiple years</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>enr_multi <span class="op">=</span> md.fetch_enr_multi([<span class="dv">2020</span>, <span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>])</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co"># State totals</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>state_total <span class="op">=</span> enr_2024[</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    (enr_2024[<span class="st">'is_state'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>] <span class="op">==</span> <span class="st">'total_enrollment'</span>) <span class="op">&amp;</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>)</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>]</span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co"># Compare largest districts</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>districts <span class="op">=</span> enr_2024[</span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    (enr_2024[<span class="st">'is_district'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>] <span class="op">==</span> <span class="st">'total_enrollment'</span>) <span class="op">&amp;</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>)</span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>].sort_values(<span class="st">'n_students'</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># Demographics by county</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>demographics <span class="op">=</span> enr_2024[</span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>    (enr_2024[<span class="st">'is_district'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>) <span class="op">&amp;</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>].isin([<span class="st">'white'</span>, <span class="st">'black'</span>, <span class="st">'hispanic'</span>, <span class="st">'asian'</span>]))</span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>][[<span class="st">'district_name'</span>, <span class="st">'subgroup'</span>, <span class="st">'n_students'</span>, <span class="st">'pct'</span>]]</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="im">import</span> pymdschooldata <span class="im">as</span> md</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co"># Fetch one year</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>enr_2024 <span class="op">=</span> md.fetch_enr(<span class="dv">2024</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co"># Fetch multiple years</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>enr_multi <span class="op">=</span> md.fetch_enr_multi([<span class="dv">2020</span>, <span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>])</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co"># State totals</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>state_total <span class="op">=</span> enr_2024[</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>    (enr_2024[<span class="st">'is_state'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>] <span class="op">==</span> <span class="st">'total_enrollment'</span>) <span class="op">&amp;</span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>]</span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co"># Compare largest districts</span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>districts <span class="op">=</span> enr_2024[</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>    (enr_2024[<span class="st">'is_district'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>] <span class="op">==</span> <span class="st">'total_enrollment'</span>) <span class="op">&amp;</span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>)</span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a>].sort_values(<span class="st">'n_students'</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a><span class="co"># Demographics by county</span></span>
+<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a>demographics <span class="op">=</span> enr_2024[</span>
+<span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a>    (enr_2024[<span class="st">'is_district'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
+<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>) <span class="op">&amp;</span></span>
+<span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>].isin([<span class="st">'white'</span>, <span class="st">'black'</span>, <span class="st">'hispanic'</span>, <span class="st">'asian'</span>]))</span>
+<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a>][[<span class="st">'district_name'</span>, <span class="st">'subgroup'</span>, <span class="st">'n_students'</span>, <span class="st">'pct'</span>]]</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

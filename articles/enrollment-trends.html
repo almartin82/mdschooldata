@@ -81,7 +81,8 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"total"</span> <span class="op">=</span> <span class="st">"#2C3E50"</span>, <span class="st">"white"</span> <span class="op">=</span> <span class="st">"#3498DB"</span>, <span class="st">"black"</span> <span class="op">=</span> <span class="st">"#E74C3C"</span>,</span>
-<span>            <span class="st">"hispanic"</span> <span class="op">=</span> <span class="st">"#F39C12"</span>, <span class="st">"asian"</span> <span class="op">=</span> <span class="st">"#9B59B6"</span>, <span class="st">"multiracial"</span> <span class="op">=</span> <span class="st">"#1ABC9C"</span><span class="op">)</span></span></code></pre></div>
+<span>            <span class="st">"hispanic"</span> <span class="op">=</span> <span class="st">"#F39C12"</span>, <span class="st">"asian"</span> <span class="op">=</span> <span class="st">"#9B59B6"</span>, <span class="st">"multiracial"</span> <span class="op">=</span> <span class="st">"#1ABC9C"</span>,</span>
+<span>            <span class="st">"highlight"</span> <span class="op">=</span> <span class="st">"#E67E22"</span>, <span class="st">"secondary"</span> <span class="op">=</span> <span class="st">"#95A5A6"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get available years</span></span>
 <span><span class="va">years</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_available_years.html">get_available_years</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -100,7 +101,9 @@
 <h2 id="montgomery-county-is-bigger-than-most-states">1. Montgomery County is bigger than most states<a class="anchor" aria-label="anchor" href="#montgomery-county-is-bigger-than-most-states"></a>
 </h2>
 <p>With over 160,000 students, Montgomery County Public Schools is the
-largest district in Maryland and among the top 20 in the nation.</p>
+largest district in Maryland and among the top 20 in the nation. The
+district alone has more students than entire states like Wyoming or
+Vermont.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_districts</span> <span class="op">&lt;-</span> <span class="va">enr_current</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -116,13 +119,14 @@ largest district in Maryland and among the top 20 in the nation.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"Montgomery County leads with 160,000+ students"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">""</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/top-districts-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-01-top-districts-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="prince-georges-and-montgomery-a-tale-of-two-counties">2. Prince George’s and Montgomery: A tale of two counties<a class="anchor" aria-label="anchor" href="#prince-georges-and-montgomery-a-tale-of-two-counties"></a>
 </h2>
-<p>Maryland’s two largest systems serve similar numbers but have very
-different demographics.</p>
+<p>Maryland’s two largest systems serve similar numbers of students but
+have very different demographics. Montgomery is more diverse across
+groups while Prince George’s has a larger Black student population.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pg_mont</span> <span class="op">&lt;-</span> <span class="va">enr_current</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
@@ -137,13 +141,14 @@ different demographics.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"Two counties, very different student populations"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">""</span>, y <span class="op">=</span> <span class="st">"Percent of Students"</span>, fill <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/pg-vs-montgomery-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-02-pg-vs-montgomery-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="baltimore-citys-enrollment-freefall">3. Baltimore City’s enrollment freefall<a class="anchor" aria-label="anchor" href="#baltimore-citys-enrollment-freefall"></a>
 </h2>
 <p>Baltimore City has lost over 15,000 students in the past decade, a
-decline of nearly 20%.</p>
+decline of nearly 20%. This reflects population loss, charter school
+growth, and families moving to surrounding counties.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">baltimore</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Baltimore City"</span>,</span>
@@ -154,16 +159,17 @@ decline of nearly 20%.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"total"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="va">comma</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baltimore City Enrollment Decline"</span>,</span>
-<span>       subtitle <span class="op">=</span> <span class="st">"Lost 15,000 students over the past decade"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Lost 15,000+ students over the past decade"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/baltimore-decline-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="maryland-is-a-majority-minority-state">4. Maryland is a majority-minority state<a class="anchor" aria-label="anchor" href="#maryland-is-a-majority-minority-state"></a>
 </h2>
-<p>White students are now under 40% of enrollment. Hispanic students are
-the fastest-growing group.</p>
+<p>White students are now under 40% of enrollment statewide. Hispanic
+students are the fastest-growing demographic group, while the Black
+student population has remained relatively stable.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
@@ -178,13 +184,14 @@ the fastest-growing group.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"White students now under 40% of enrollment"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Percent of Students"</span>, color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/demographics-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-04-demographics-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="the-eastern-shore-tells-a-different-story">5. The Eastern Shore tells a different story<a class="anchor" aria-label="anchor" href="#the-eastern-shore-tells-a-different-story"></a>
 </h2>
-<p>Rural counties like Worcester, Somerset, and Dorchester are losing
-students faster than the state average.</p>
+<p>Rural counties like Worcester, Somerset, and Dorchester on Maryland’s
+Eastern Shore are losing students faster than the state average,
+reflecting broader rural population decline patterns.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eastern_shore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Worcester"</span>, <span class="st">"Somerset"</span>, <span class="st">"Dorchester"</span>, <span class="st">"Wicomico"</span>, <span class="st">"Caroline"</span><span class="op">)</span></span>
 <span></span>
@@ -202,13 +209,15 @@ students faster than the state average.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"Rural counties losing students faster than state average"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/eastern-shore-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-05-eastern-shore-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="kindergarten-dipped-during-covid">6. Kindergarten dipped during COVID<a class="anchor" aria-label="anchor" href="#kindergarten-dipped-during-covid"></a>
 </h2>
-<p>Maryland lost 8% of kindergartners in 2021 and the cohort remains
-smaller.</p>
+<p>Maryland lost 8% of kindergartners in 2021 as families delayed
+enrollment during the pandemic. The cohort remains smaller than
+pre-pandemic levels, suggesting some students never entered the
+system.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">k_trend</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>,</span>
@@ -229,13 +238,14 @@ smaller.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"Maryland lost 8% of kindergartners in 2021"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span>, color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/covid-k-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-06-covid-k-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="howard-county-suburban-success-story">7. Howard County: Suburban success story<a class="anchor" aria-label="anchor" href="#howard-county-suburban-success-story"></a>
 </h2>
-<p>Howard County maintains high enrollment and exceptional diversity - a
-model for suburban integration.</p>
+<p>Howard County maintains high enrollment and exceptional diversity,
+making it a model for suburban integration. No single racial group
+dominates, reflecting intentional demographic balance.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">howard</span> <span class="op">&lt;-</span> <span class="va">enr_current</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Howard"</span>,</span>
@@ -249,13 +259,15 @@ model for suburban integration.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"A model of suburban diversity"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">""</span>, y <span class="op">=</span> <span class="st">"Percent of Students"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/howard-diversity-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-07-howard-diversity-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="allegany-and-garrett-western-marylands-struggle">8. Allegany and Garrett: Western Maryland’s struggle<a class="anchor" aria-label="anchor" href="#allegany-and-garrett-western-marylands-struggle"></a>
 </h2>
-<p>The westernmost counties have lost over 20% of students since 2009,
-reflecting population decline.</p>
+<p>The westernmost counties have lost over 20% of students since 2014,
+reflecting population decline in Appalachian Maryland. These rural
+mountain communities face similar challenges to rural areas
+nationwide.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">western</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Allegany"</span>, <span class="st">"Garrett"</span><span class="op">)</span></span>
 <span></span>
@@ -271,13 +283,14 @@ reflecting population decline.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"Allegany and Garrett counties losing over 20% of students"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span>, color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/western-md-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-08-western-md-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="anne-arundel-holds-steady">9. Anne Arundel holds steady<a class="anchor" aria-label="anchor" href="#anne-arundel-holds-steady"></a>
 </h2>
 <p>Maryland’s fifth-largest district has maintained enrollment stability
-while others fluctuate.</p>
+while others fluctuate. The Annapolis-area county benefits from military
+families at Fort Meade and Naval Academy presence.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aa</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Anne Arundel"</span>,</span>
@@ -291,13 +304,14 @@ while others fluctuate.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"Maintaining stability while others fluctuate"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/anne-arundel-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-09-anne-arundel-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="the-i-95-corridor-dominates">10. The I-95 corridor dominates<a class="anchor" aria-label="anchor" href="#the-i-95-corridor-dominates"></a>
 </h2>
-<p>Five counties along I-95 (Baltimore, Montgomery, Prince George’s,
-Howard, Anne Arundel) enroll over 70% of all Maryland students.</p>
+<p>Five counties along I-95 (Baltimore County, Montgomery, Prince
+George’s, Howard, and Anne Arundel) enroll over 70% of all Maryland
+students. This concentration reflects the state’s population center.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i95</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore County"</span>, <span class="st">"Montgomery"</span>, <span class="st">"Prince George's"</span>, <span class="st">"Howard"</span>, <span class="st">"Anne Arundel"</span><span class="op">)</span></span>
 <span></span>
@@ -316,7 +330,116 @@ Howard, Anne Arundel) enroll over 70% of all Maryland students.</p>
 <span>       x <span class="op">=</span> <span class="st">""</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="enrollment-trends_files/figure-html/i95-corridor-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="enrollment-trends_files/figure-html/story-10-i95-corridor-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="frederick-county-is-growing-fast">11. Frederick County is growing fast<a class="anchor" aria-label="anchor" href="#frederick-county-is-growing-fast"></a>
+</h2>
+<p>Frederick County, located between the DC suburbs and western
+Maryland, has seen steady enrollment growth as families seek more
+affordable housing while maintaining access to the DC job market.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">frederick</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Frederick"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">frederick</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.5</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"highlight"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"highlight"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="va">comma</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Frederick County Enrollment Growth"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"DC exurbs attracting new families"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment-trends_files/figure-html/story-11-frederick-growth-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="hispanic-enrollment-surging">12. Hispanic enrollment is surging statewide<a class="anchor" aria-label="anchor" href="#hispanic-enrollment-surging"></a>
+</h2>
+<p>Hispanic students have grown from approximately 12% to over 18% of
+Maryland enrollment in the past decade. This demographic shift is
+reshaping schools across the state, particularly in the DC suburbs.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hispanic_trend</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"hispanic"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">hispanic_trend</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.5</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"hispanic"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"hispanic"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_area</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.2</span>, fill <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"hispanic"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="va">comma</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Hispanic Student Enrollment Growth"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Fastest-growing demographic in Maryland schools"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Hispanic Students"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment-trends_files/figure-html/story-12-hispanic-growth-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="baltimore-county-vs-city">13. Baltimore County vs Baltimore City: Divergent paths<a class="anchor" aria-label="anchor" href="#baltimore-county-vs-city"></a>
+</h2>
+<p>While Baltimore City enrollment plummets, Baltimore County has
+remained relatively stable. The county surrounds but is entirely
+separate from the city, and the gap continues to widen.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">baltimore_both</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore City"</span>, <span class="st">"Baltimore County"</span><span class="op">)</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">baltimore_both</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">n_students</span>, color <span class="op">=</span> <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="va">comma</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore City"</span> <span class="op">=</span> <span class="st">"#E74C3C"</span>, <span class="st">"Baltimore County"</span> <span class="op">=</span> <span class="st">"#3498DB"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Baltimore City vs Baltimore County"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Two systems, divergent enrollment trajectories"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span>, color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment-trends_files/figure-html/story-13-baltimore-comparison-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="charles-county-southern-maryland">14. Charles County: Southern Maryland’s anchor<a class="anchor" aria-label="anchor" href="#charles-county-southern-maryland"></a>
+</h2>
+<p>Charles County is the largest district in Southern Maryland and has
+maintained steady enrollment. The county serves as a bedroom community
+for DC-area workers seeking affordable housing.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">charles</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Charles"</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">charles</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.5</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"total"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="va">colors</span><span class="op">[</span><span class="st">"total"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="va">comma</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Charles County Enrollment"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Southern Maryland's largest school system holds steady"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment-trends_files/figure-html/story-14-charles-county-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="small-counties-challenges">15. Small counties face existential challenges<a class="anchor" aria-label="anchor" href="#small-counties-challenges"></a>
+</h2>
+<p>Kent County, Maryland’s smallest district with just over 2,000
+students, exemplifies the challenges facing rural Eastern Shore
+counties. Small enrollment makes it difficult to offer diverse programs
+and maintain facilities.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">small_counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Kent"</span>, <span class="st">"Somerset"</span>, <span class="st">"Garrett"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">small_trend</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">small_counties</span>,</span>
+<span>         <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">small_trend</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">end_year</span>, y <span class="op">=</span> <span class="va">n_students</span>, color <span class="op">=</span> <span class="va">district_name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="va">comma</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Maryland's Smallest School Systems"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Kent, Somerset, and Garrett face enrollment pressure"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"School Year"</span>, y <span class="op">=</span> <span class="st">"Students"</span>, color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_readme</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="enrollment-trends_files/figure-html/story-15-small-counties-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
