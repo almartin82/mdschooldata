@@ -19,6 +19,7 @@ reference:
     contents:
       - fetch_enr
       - fetch_enr_multi
+      - fetch_directory
       - fetch_lss_enrollment
       - fetch_school_enrollment
       - fetch_historical_enrollment
