@@ -31,7 +31,7 @@ fetch_enr(2024) %>%
   head(5)
 ```
 
-![Maryland's Largest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-01-top-districts-1.png)
+![Maryland's Largest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/top-districts-1.png)
 
 ---
 
@@ -46,7 +46,7 @@ fetch_enr(2024) %>%
          subgroup %in% c("white", "black", "hispanic", "asian"))
 ```
 
-![Demographics: Montgomery vs Prince George's](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-02-pg-vs-montgomery-1.png)
+![Demographics: Montgomery vs Prince George's](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/pg-vs-montgomery-1.png)
 
 ---
 
@@ -60,7 +60,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Baltimore City Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png)
+![Baltimore City Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/baltimore-decline-1.png)
 
 ---
 
@@ -74,7 +74,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup %in% c("white", "black", "hispanic", "asian"))
 ```
 
-![Maryland Demographics Shift](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-04-demographics-1.png)
+![Maryland Demographics Shift](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/demographics-1.png)
 
 ---
 
@@ -92,7 +92,7 @@ fetch_enr_multi(2015:2024) %>%
   summarize(n_students = sum(n_students, na.rm = TRUE))
 ```
 
-![Eastern Shore Combined Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-05-eastern-shore-1.png)
+![Eastern Shore Combined Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/eastern-shore-1.png)
 
 ---
 
@@ -106,7 +106,7 @@ fetch_enr_multi(2015:2024) %>%
          grade_level %in% c("K", "01", "06", "12"))
 ```
 
-![COVID Impact on Grade-Level Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-06-covid-k-1.png)
+![COVID Impact on Grade-Level Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/covid-k-1.png)
 
 ---
 
@@ -121,7 +121,7 @@ fetch_enr(2024) %>%
          subgroup %in% c("white", "black", "hispanic", "asian", "multiracial"))
 ```
 
-![Howard County Demographics](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-07-howard-diversity-1.png)
+![Howard County Demographics](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/howard-diversity-1.png)
 
 ---
 
@@ -135,7 +135,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Western Maryland Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-08-western-md-1.png)
+![Western Maryland Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/western-md-1.png)
 
 ---
 
@@ -149,7 +149,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Anne Arundel County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-09-anne-arundel-1.png)
+![Anne Arundel County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/anne-arundel-1.png)
 
 ---
 
@@ -167,7 +167,7 @@ fetch_enr(2024) %>%
   summarize(n_students = sum(n_students, na.rm = TRUE))
 ```
 
-![The I-95 Corridor Dominates Maryland](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-10-i95-corridor-1.png)
+![The I-95 Corridor Dominates Maryland](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/i95-corridor-1.png)
 
 ---
 
@@ -181,7 +181,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Frederick County Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-11-frederick-growth-1.png)
+![Frederick County Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/frederick-growth-1.png)
 
 ---
 
@@ -194,7 +194,7 @@ fetch_enr_multi(2015:2024) %>%
   filter(is_state, grade_level == "TOTAL", subgroup == "hispanic")
 ```
 
-![Hispanic Student Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-12-hispanic-growth-1.png)
+![Hispanic Student Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/hispanic-growth-1.png)
 
 ---
 
@@ -208,7 +208,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Baltimore City vs Baltimore County](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-13-baltimore-comparison-1.png)
+![Baltimore City vs Baltimore County](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/baltimore-comparison-1.png)
 
 ---
 
@@ -222,7 +222,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Charles County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-14-charles-county-1.png)
+![Charles County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/charles-county-1.png)
 
 ---
 
@@ -236,7 +236,7 @@ fetch_enr_multi(2015:2024) %>%
          subgroup == "total_enrollment", grade_level == "TOTAL")
 ```
 
-![Maryland's Smallest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-15-small-counties-1.png)
+![Maryland's Smallest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/small-counties-1.png)
 
 ---
 
