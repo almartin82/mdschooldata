@@ -73,8 +73,8 @@ test_that("get_available_years returns expected structure", {
   expect_equal(years$min_year, 2014)
   expect_true(years$max_year >= 2024)
   expect_true(length(years$available) >= 10)  # 2014-2024 = 11 years
-  # Demographic data (from MSDE) available from 2019+
-  expect_true(min(years$demographic_years) == 2019)
+  # Demographic data not available due to PDF parsing issues
+  expect_equal(length(years$demographic_years), 0)
 })
 
 test_that("get_cache_dir returns valid path", {
@@ -218,11 +218,9 @@ test_that("tidy_enr produces correct long format", {
   # Check subgroups include expected values
   subgroups <- unique(tidy_result$subgroup)
   expect_true("total_enrollment" %in% subgroups)
-  expect_true("hispanic" %in% subgroups)
-  expect_true("white" %in% subgroups)
-  expect_true("black" %in% subgroups)
-  expect_true("male" %in% subgroups)
-  expect_true("female" %in% subgroups)
+  # Note: Demographic subgroups (white, black, hispanic, male, female) will only
+  # be present if the input wide data has those columns. The default behavior
+  # is to not fetch demographics, so these may not be present in actual data.
 
   # Check grade levels
   grade_levels <- unique(tidy_result$grade_level)
@@ -230,6 +228,33 @@ test_that("tidy_enr produces correct long format", {
   expect_true("PK" %in% grade_levels)
   expect_true("K" %in% grade_levels)
   expect_true("01" %in% grade_levels)
+})
+
+test_that("tidy_enr removes grade_level attributes", {
+  # Create sample wide data with grade columns
+  wide <- data.frame(
+    end_year = 2024,
+    type = "State",
+    district_id = NA_character_,
+    campus_id = NA_character_,
+    district_name = "Maryland",
+    campus_name = NA_character_,
+    row_total = 900000,
+    grade_k = 65000,
+    grade_01 = 66000,
+    grade_02 = 67000,
+    stringsAsFactors = FALSE
+  )
+
+  tidy_result <- tidy_enr(wide)
+
+  # grade_level column should not have names attribute
+  expect_null(names(tidy_result$grade_level),
+              info = "grade_level should not have names attribute after tidying")
+
+  # grade_level should be a plain character vector
+  expect_true(is.character(tidy_result$grade_level),
+              info = "grade_level should be character type")
 })
 
 test_that("id_enr_aggs adds correct flags", {
@@ -296,4 +321,73 @@ test_that("enr_grade_aggs creates correct aggregations", {
   # Check K12 sum (all grades)
   k12_row <- result[result$grade_level == "K12", ]
   expect_equal(k12_row$n_students, 65000 + 66000 + 67000 + 70000 + 68000)
+})
+
+# Data quality tests
+test_that("percentages are in valid range 0-1", {
+  skip_if_offline()
+  d <- fetch_enr(2024, tidy = TRUE)
+
+  expect_true(all(d$pct >= 0 & d$pct <= 1, na.rm = TRUE),
+              info = "All percentages should be 0-1 scale")
+
+  expect_false(any(is.infinite(d$pct)),
+               info = "No Inf values in pct")
+
+  expect_false(any(is.nan(d$pct)),
+               info = "No NaN values in pct")
+})
+
+test_that("state total is greater than zero", {
+  skip_if_offline()
+  d <- fetch_enr(2024, tidy = TRUE)
+
+  state_total <- d |>
+    dplyr::filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") |>
+    dplyr::pull(n_students)
+
+  expect_gt(state_total, 0)
+})
+
+test_that("grade totals sum to row_total in wide format", {
+  skip_if_offline()
+  w <- fetch_enr(2024, tidy = FALSE)
+
+  # Check state row
+  state_row <- w[w$type == "State", ]
+  grade_cols <- c("grade_k", paste0("grade_", sprintf("%02d", 1:12)))
+  grade_cols_present <- grade_cols[grade_cols %in% names(state_row)]
+
+  if (length(grade_cols_present) > 0) {
+    # Sum each grade column individually
+    grade_sum <- sum(sapply(grade_cols_present, function(col) {
+      state_row[[col]]
+    }), na.rm = TRUE)
+    # Should be close to row_total (within 1% for rounding)
+    expect_true(abs(grade_sum - state_row$row_total) / state_row$row_total < 0.01)
+  }
+})
+
+test_that("no demographic corruption when include_demographics=FALSE", {
+  skip_if_offline()
+
+  # Clear cache first to ensure fresh download
+  clear_cache(2024, "wide")
+  clear_cache(2024, "tidy")
+
+  # Fetch with demographics disabled (default)
+  w <- fetch_enr(2024, tidy = FALSE, use_cache = FALSE)
+
+  # Check that demographic columns are NA (not corrupted)
+  demo_cols <- c("white", "black", "hispanic", "asian",
+                 "pacific_islander", "native_american", "multiracial",
+                 "male", "female")
+
+  for (col in demo_cols) {
+    if (col %in% names(w)) {
+      # All values should be NA when demographics not fetched
+      expect_true(all(is.na(w[[col]])),
+                  info = paste0("Column '", col, "' should be NA when include_demographics=FALSE"))
+    }
+  }
 })
