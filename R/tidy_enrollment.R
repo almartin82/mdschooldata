@@ -121,8 +121,13 @@ tidy_enr <- function(df) {
   }
 
   # Combine all tidy data
-  dplyr::bind_rows(tidy_total, tidy_subgroups, tidy_grades) |>
+  result <- dplyr::bind_rows(tidy_total, tidy_subgroups, tidy_grades) |>
     dplyr::filter(!is.na(n_students))
+
+  # Clean up grade_level column attributes
+  attributes(result$grade_level) <- NULL
+
+  result
 }
 
 
@@ -149,7 +154,14 @@ id_enr_aggs <- function(df) {
       is_district = type == "District",
 
       # Campus level: Type == "Campus"
-      is_campus = type == "Campus"
+      is_campus = type == "Campus",
+
+      # Aggregation flag based on ID presence
+      aggregation_flag = dplyr::case_when(
+        !is.na(district_id) & !is.na(campus_id) & district_id != "" & campus_id != "" ~ "campus",
+        !is.na(district_id) & district_id != "" ~ "district",
+        TRUE ~ "state"
+      )
     )
 }
 

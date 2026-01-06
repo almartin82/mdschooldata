@@ -1,6 +1,8 @@
 Package: mdschooldata
 Title: Maryland School Data
 Version: 0.3.0
+Author: Al Martin [aut, cre]
+Maintainer: Al Martin <almartin@example.com>
 Authors@R:
     person("Al", "Martin", , "almartin@example.com", role = c("aut", "cre"))
 Description: A simple, consistent interface for accessing Maryland
@@ -17,7 +19,8 @@ Imports:
     purrr,
     rappdirs,
     readr,
-    readxl
+    readxl,
+    tibble
 Suggests:
     testthat (>= 3.0.0),
     knitr,
