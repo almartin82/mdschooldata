@@ -8,7 +8,7 @@ grade-level enrollment, and MSDE publications for demographic breakdowns
 ## Usage
 
 ``` r
-get_raw_enr(end_year, include_demographics = TRUE)
+get_raw_enr(end_year, include_demographics = FALSE)
 ```
 
 ## Arguments
@@ -20,7 +20,8 @@ get_raw_enr(end_year, include_demographics = TRUE)
 - include_demographics:
 
   Logical, whether to try to fetch demographic data from MSDE
-  (race/ethnicity, gender). Default TRUE for years 2019+.
+  (race/ethnicity, gender). Default FALSE due to PDF parsing issues. Set
+  to TRUE to attempt fetching (may return incorrect data).
 
 ## Value
 
