@@ -59,17 +59,21 @@ get_available_years <- function() {
     max_year = max_year,
     available = 2014:max_year,
     # Track which years have demographic data available
-    demographic_years = 2019:max_year,
+    # NOTE: Demographic data from MSDE PDFs is unreliable due to parsing issues
+    # Set include_demographics=FALSE in get_raw_enr() to avoid corrupted data
+    demographic_years = integer(0),  # No reliable demographic data available
     description = paste(
-      "Maryland enrollment data from MD Department of Planning and MSDE.",
+      "Maryland enrollment data from MD Department of Planning.",
       "Available years: 2014-present.",
-      "Demographic breakdowns (race/ethnicity, gender) available from 2019+."
+      "Provides enrollment by grade (K-12) for state and 24 jurisdictions.",
+      "NOTE: Demographic breakdowns (race/ethnicity, gender) are not available",
+      "due to PDF parsing issues. Use Maryland Report Card for demographics."
     ),
     notes = paste(
-      "Data from Maryland Department of Planning (2014-present) and",
-      "Maryland State Department of Education (MSDE).",
+      "Data from Maryland Department of Planning (2014-present).",
       "MD Planning provides enrollment by grade for state and 24 jurisdictions.",
-      "MSDE provides demographic breakdowns (race/ethnicity, gender) from 2019+.",
+      "For demographic breakdowns (race/ethnicity, gender), use Maryland Report Card:",
+      "https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment",
       "Enrollment collected as of September 30 each year."
     )
   )
@@ -84,10 +88,11 @@ get_available_years <- function() {
 #'
 #' @param end_year School year end (2023-24 = 2024)
 #' @param include_demographics Logical, whether to try to fetch demographic
-#'   data from MSDE (race/ethnicity, gender). Default TRUE for years 2019+.
+#'   data from MSDE (race/ethnicity, gender). Default FALSE due to PDF
+#'   parsing issues. Set to TRUE to attempt fetching (may return incorrect data).
 #' @return Data frame with raw enrollment data
 #' @keywords internal
-get_raw_enr <- function(end_year, include_demographics = TRUE) {
+get_raw_enr <- function(end_year, include_demographics = FALSE) {
 
   available <- get_available_years()
   validate_year(end_year, min_year = available$min_year, max_year = available$max_year)

@@ -4,13 +4,14 @@
 \alias{get_raw_enr}
 \title{Download raw enrollment data for Maryland}
 \usage{
-get_raw_enr(end_year, include_demographics = TRUE)
+get_raw_enr(end_year, include_demographics = FALSE)
 }
 \arguments{
 \item{end_year}{School year end (2023-24 = 2024)}
 
 \item{include_demographics}{Logical, whether to try to fetch demographic
-data from MSDE (race/ethnicity, gender). Default TRUE for years 2019+.}
+data from MSDE (race/ethnicity, gender). Default FALSE due to PDF
+parsing issues. Set to TRUE to attempt fetching (may return incorrect data).}
 }
 \value{
 Data frame with raw enrollment data
