@@ -37,16 +37,16 @@ fetch_enr(2024) %>%
 
 ### 2. Prince George's and Montgomery: A tale of two counties
 
-Maryland's two largest systems serve similar numbers of students but have very different demographics. Montgomery is more diverse across groups while Prince George's has a larger Black student population.
+Maryland's two largest systems serve similar numbers of students but have different enrollment trends. Prince George's County has seen steady enrollment while Montgomery County has experienced modest growth.
 
 ```r
-fetch_enr(2024) %>%
+fetch_enr_multi(2015:2024) %>%
   filter(is_district, grade_level == "TOTAL",
          district_name %in% c("Montgomery", "Prince George's"),
-         subgroup %in% c("white", "black", "hispanic", "asian"))
+         subgroup == "total_enrollment")
 ```
 
-![Demographics: Montgomery vs Prince George's](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/pg-vs-montgomery-1.png)
+![Montgomery vs Prince George's](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/pg-vs-montgomery-1.png)
 
 ---
 
@@ -64,17 +64,18 @@ fetch_enr_multi(2015:2024) %>%
 
 ---
 
-### 4. Maryland is a majority-minority state
+### 4. Maryland's enrollment is gradually declining
 
-White students are now under 40% of enrollment statewide. Hispanic students are the fastest-growing demographic group, while the Black student population has remained relatively stable.
+Statewide enrollment has declined from approximately 895,000 students in 2015 to 858,000 students in 2023, a loss of about 4%. This reflects broader demographic trends and population shifts in the region.
 
 ```r
 fetch_enr_multi(2015:2024) %>%
-  filter(is_state, grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian"))
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(end_year) %>%
+  select(end_year, n_students)
 ```
 
-![Maryland Demographics Shift](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/demographics-1.png)
+![Maryland Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/state-total-decline-1.png)
 
 ---
 
@@ -110,18 +111,19 @@ fetch_enr_multi(2015:2024) %>%
 
 ---
 
-### 7. Howard County: Suburban success story
+### 7. Howard County: A stable suburban district
 
-Howard County maintains high enrollment and exceptional diversity, making it a model for suburban integration. No single racial group dominates, reflecting intentional demographic balance.
+Howard County maintains steady enrollment with over 57,000 students, making it one of Maryland's larger districts. The district serves as a key suburban area between Baltimore and Washington, D.C.
 
 ```r
-fetch_enr(2024) %>%
+fetch_enr_multi(2015:2024) %>%
   filter(is_district, district_name == "Howard",
-         grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian", "multiracial"))
+         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(end_year) %>%
+  select(end_year, n_students)
 ```
 
-![Howard County Demographics](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/howard-diversity-1.png)
+![Howard County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/howard-stable-1.png)
 
 ---
 
@@ -185,16 +187,18 @@ fetch_enr_multi(2015:2024) %>%
 
 ---
 
-### 12. Hispanic enrollment is surging statewide
+### 12. Total enrollment by county
 
-Hispanic students have grown from approximately 12% to over 18% of Maryland enrollment in the past decade. This demographic shift is reshaping schools across the state, particularly in the DC suburbs.
+Maryland's 24 local school systems vary dramatically in size, from Montgomery County's 160,000 students to Kent County's 2,000 students. The distribution reflects the state's population centers and rural areas.
 
 ```r
-fetch_enr_multi(2015:2024) %>%
-  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic")
+fetch_enr(2024) %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(desc(n_students)) %>%
+  select(district_name, n_students)
 ```
 
-![Hispanic Student Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/hispanic-growth-1.png)
+![Maryland County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/county-enrollment-1.png)
 
 ---
 

@@ -81,21 +81,22 @@ ggplot(top_districts, aes(x = district_label, y = n_students)) +
 
 ## 2. Prince George's and Montgomery: A tale of two counties {#prince-georges-and-montgomery-a-tale-of-two-counties}
 
-Maryland's two largest systems serve similar numbers of students but have very different demographics. Montgomery is more diverse across groups while Prince George's has a larger Black student population.
+Maryland's two largest systems serve similar numbers of students but have different enrollment trends. Prince George's County has seen steady enrollment while Montgomery County has experienced modest growth.
 
 ```{r story-02-pg-vs-montgomery}
-pg_mont <- enr_current %>%
+pg_mont <- enr %>%
   filter(is_district, grade_level == "TOTAL",
          district_name %in% c("Montgomery", "Prince George's"),
-         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
-  mutate(pct = pct * 100)
+         subgroup == "total_enrollment")
 
-ggplot(pg_mont, aes(x = subgroup, y = pct, fill = district_name)) +
-  geom_col(position = "dodge") +
-  scale_fill_manual(values = c("Montgomery" = "#3498DB", "Prince George's" = "#E74C3C")) +
-  labs(title = "Demographics: Montgomery vs Prince George's",
-       subtitle = "Two counties, very different student populations",
-       x = "", y = "Percent of Students", fill = "") +
+ggplot(pg_mont, aes(x = end_year, y = n_students, color = district_name)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = c("Montgomery" = "#3498DB", "Prince George's" = "#E74C3C")) +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Montgomery vs Prince George's",
+       subtitle = "Two counties, different enrollment trends",
+       x = "School Year", y = "Students", color = "") +
   theme_readme()
 ```
 
@@ -118,23 +119,22 @@ ggplot(baltimore, aes(x = end_year, y = n_students)) +
   theme_readme()
 ```
 
-## 4. Maryland is a majority-minority state {#maryland-is-a-majority-minority-state}
+## 4. Maryland's enrollment is gradually declining {#marylands-enrollment-is-gradually-declining}
 
-White students are now under 40% of enrollment statewide. Hispanic students are the fastest-growing demographic group, while the Black student population has remained relatively stable.
+Statewide enrollment has declined from approximately 895,000 students in 2015 to 858,000 students in 2023, a loss of about 4%. This reflects broader demographic trends and population shifts in the region.
 
-```{r story-04-demographics}
-demo <- enr %>%
-  filter(is_state, grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian"))
+```{r story-04-state-total-decline}
+state_total <- enr %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(end_year)
 
-ggplot(demo, aes(x = end_year, y = pct * 100, color = subgroup)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 2.5) +
-  scale_color_manual(values = colors,
-                     labels = c("Asian", "Black", "Hispanic", "White")) +
-  labs(title = "Maryland Demographics Shift",
-       subtitle = "White students now under 40% of enrollment",
-       x = "School Year", y = "Percent of Students", color = "") +
+ggplot(state_total, aes(x = end_year, y = n_students)) +
+  geom_line(linewidth = 1.5, color = colors["total"]) +
+  geom_point(size = 3, color = colors["total"]) +
+  scale_y_continuous(labels = comma, limits = c(0, NA)) +
+  labs(title = "Maryland Statewide Enrollment",
+       subtitle = "Gradual decline from 895K to 858K students (2015-2023)",
+       x = "School Year", y = "Students") +
   theme_readme()
 ```
 
@@ -187,22 +187,22 @@ ggplot(k_trend, aes(x = end_year, y = n_students, color = grade_label)) +
   theme_readme()
 ```
 
-## 7. Howard County: Suburban success story {#howard-county-suburban-success-story}
+## 7. Howard County: A stable suburban district {#howard-county-a-stable-suburban-district}
 
-Howard County maintains high enrollment and exceptional diversity, making it a model for suburban integration. No single racial group dominates, reflecting intentional demographic balance.
+Howard County maintains steady enrollment with over 57,000 students, making it one of Maryland's larger districts. The district serves as a key suburban area between Baltimore and Washington, D.C.
 
-```{r story-07-howard-diversity}
-howard <- enr_current %>%
+```{r story-07-howard-stable}
+howard <- enr %>%
   filter(is_district, district_name == "Howard",
-         grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")) %>%
-  mutate(subgroup_label = reorder(subgroup, -pct))
+         subgroup == "total_enrollment", grade_level == "TOTAL")
 
-ggplot(howard, aes(x = subgroup_label, y = pct * 100)) +
-  geom_col(fill = colors["total"]) +
-  labs(title = "Howard County Demographics",
-       subtitle = "A model of suburban diversity",
-       x = "", y = "Percent of Students") +
+ggplot(howard, aes(x = end_year, y = n_students)) +
+  geom_line(linewidth = 1.5, color = colors["total"]) +
+  geom_point(size = 3, color = colors["total"]) +
+  scale_y_continuous(labels = comma, limits = c(0, NA)) +
+  labs(title = "Howard County Enrollment",
+       subtitle = "Stable suburban district with 57K+ students",
+       x = "School Year", y = "Students") +
   theme_readme()
 ```
 
@@ -289,22 +289,23 @@ ggplot(frederick, aes(x = end_year, y = n_students)) +
   theme_readme()
 ```
 
-## 12. Hispanic enrollment is surging statewide {#hispanic-enrollment-surging}
+## 12. Total enrollment by county {#total-enrollment-by-county}
 
-Hispanic students have grown from approximately 12% to over 18% of Maryland enrollment in the past decade. This demographic shift is reshaping schools across the state, particularly in the DC suburbs.
+Maryland's 24 local school systems vary dramatically in size, from Montgomery County's 160,000 students to Kent County's 2,000 students. The distribution reflects the state's population centers and rural areas.
 
-```{r story-12-hispanic-growth}
-hispanic_trend <- enr %>%
-  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic")
+```{r story-12-county-enrollment}
+county_rank <- enr_current %>%
+  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+  arrange(desc(n_students)) %>%
+  mutate(district_label = reorder(district_name, n_students))
 
-ggplot(hispanic_trend, aes(x = end_year, y = n_students)) +
-  geom_line(linewidth = 1.5, color = colors["hispanic"]) +
-  geom_point(size = 3, color = colors["hispanic"]) +
-  geom_area(alpha = 0.2, fill = colors["hispanic"]) +
+ggplot(county_rank, aes(x = district_label, y = n_students)) +
+  geom_col(fill = colors["total"]) +
+  coord_flip() +
   scale_y_continuous(labels = comma) +
-  labs(title = "Hispanic Student Enrollment Growth",
-       subtitle = "Fastest-growing demographic in Maryland schools",
-       x = "School Year", y = "Hispanic Students") +
+  labs(title = "Maryland County Enrollment (2024)",
+       subtitle = "24 Local School Systems, from 160K to 2K students",
+       x = "", y = "Students") +
   theme_readme()
 ```
 
