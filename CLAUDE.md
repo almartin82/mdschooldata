@@ -1,20 +1,45 @@
-### CONCURRENT TASK LIMIT
-- **Maximum 5 background tasks running simultaneously**
-- When launching multiple agents (e.g., for mass audits), batch them in groups of 5
-- Wait for the current batch to complete before launching the next batch
+# mdschooldata
+
+## Package Documentation
+
+### Data Availability
+
+**Available Years:** 2014-2025
+
+| Years | Grade Data | Ethnicity Data | Notes |
+|-------|------------|----------------|-------|
+| 2014-2025 | Yes | Yes (2019+) | Enrollment 2014+, demographics 2019+ |
+
+**Data Source:** Maryland State Department of Education (MSDE)
+- Maryland Report Card: https://reportcard.msde.maryland.gov
+- MSDE Publications: https://marylandpublicschools.org/about/Pages/DCAA/SSP/
+
+### Maryland-Specific Notes
+
+- Maryland has exactly **24 Local School Systems** (LSS) - one per county plus Baltimore City
+- **LSS Codes:** 2-digit codes (01 = Allegany through 24 = Worcester)
+- **Baltimore City** (03) is separate from **Baltimore County** (04)
+- **Enrollment date:** September 30 official counts
+- **Levels:** State, District (24 LSS), School (~1,400)
+- **Demographics:** White, Black, Hispanic, Asian, Native American, Pacific Islander, Multiracial
+- **Gender:** Male, Female
+
+### Known Data Issues
+
+None documented.
 
 ---
+
+# state-schooldata
 
 ## CRITICAL DATA SOURCE RULES
 
-**NEVER use Urban Institute API, NCES CCD, or ANY federal data source** — the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source — do not fall back to federal data.
+**NEVER use Urban Institute API, NCES CCD, or ANY federal data source** - the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source - do not fall back to federal data.
 
 ---
 
+## GIT COMMIT POLICY
 
-# Claude Code Instructions
-
-### GIT COMMIT POLICY
 - Commits are allowed
 - NO Claude Code attribution, NO Co-Authored-By trailers, NO emojis
 - Write normal commit messages as if a human wrote them
@@ -75,55 +100,6 @@ This package includes `tests/testthat/test-pipeline-live.R` with LIVE network te
 devtools::test(filter = "pipeline-live")
 ```
 
-See `state-schooldata/CLAUDE.md` for complete testing framework documentation.
-
-
----
-
-## Git Workflow (REQUIRED)
-
-### Feature Branch + PR + Auto-Merge Policy
-
-**NEVER push directly to main.** All changes must go through PRs with auto-merge:
-
-```bash
-# 1. Create feature branch
-git checkout -b fix/description-of-change
-
-# 2. Make changes, commit
-git add -A
-git commit -m "Fix: description of change"
-
-# 3. Push and create PR with auto-merge
-git push -u origin fix/description-of-change
-gh pr create --title "Fix: description" --body "Description of changes"
-gh pr merge --auto --squash
-
-# 4. Clean up stale branches after PR merges
-git checkout main && git pull && git fetch --prune origin
-```
-
-### Branch Cleanup (REQUIRED)
-
-**Clean up stale branches every time you touch this package:**
-
-```bash
-# Delete local branches merged to main
-git branch --merged main | grep -v main | xargs -r git branch -d
-
-# Prune remote tracking branches
-git fetch --prune origin
-```
-
-### Auto-Merge Requirements
-
-PRs auto-merge when ALL CI checks pass:
-- R-CMD-check (0 errors, 0 warnings)
-- Python tests (if py{st}schooldata exists)
-- pkgdown build (vignettes must render)
-
-If CI fails, fix the issue and push - auto-merge triggers when checks pass.
-
 ---
 
 ## README Images from Vignettes (REQUIRED)
@@ -148,7 +124,7 @@ README images MUST come from pkgdown-generated vignette output so they auto-upda
 
 The Idaho fix revealed critical bugs when README code didn't match vignettes:
 - Wrong district names (lowercase vs ALL CAPS)
-- Text claims that contradicted actual data  
+- Text claims that contradicted actual data
 - Missing data output in examples
 
 ### README Story Structure (REQUIRED)
@@ -171,11 +147,11 @@ The `state-deploy` skill verifies this before deployment:
 
 ### What This Prevents
 
-- ❌ Wrong district/entity names (case sensitivity, typos)
-- ❌ Text claims that contradict data
-- ❌ Broken code that fails silently
-- ❌ Missing data output
-- ✅ Verified, accurate, reproducible examples
+- Wrong district/entity names (case sensitivity, typos)
+- Text claims that contradict data
+- Broken code that fails silently
+- Missing data output
+- Verified, accurate, reproducible examples
 
 ### Example
 
@@ -201,69 +177,3 @@ enr %>%
 
 ![Chart](https://almartin82.github.io/arschooldata/articles/...)
 ```
-
-
----
-
-## README and Vignette Code Matching (REQUIRED)
-
-**CRITICAL RULE (as of 2026-01-08):** ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).
-
-### Why This Matters
-
-The Idaho fix revealed critical bugs when README code didn't match vignettes:
-- Wrong district names (lowercase vs ALL CAPS)
-- Text claims that contradicted actual data  
-- Missing data output in examples
-
-### README Story Structure (REQUIRED)
-
-Every story/section in the README MUST follow this structure:
-
-1. **Claim**: A factual statement about the data
-2. **Explication**: Brief explanation of why this matters
-3. **Code**: R code that fetches and analyzes the data (MUST exist in a vignette)
-4. **Code Output**: Data table/print statement showing actual values (REQUIRED)
-5. **Visualization**: Chart from vignette (auto-generated from pkgdown)
-
-### Enforcement
-
-The `state-deploy` skill verifies this before deployment:
-- Extracts all README code blocks
-- Searches vignettes for EXACT matches
-- Fails deployment if code not found in vignettes
-- Randomly audits packages for claim accuracy
-
-### What This Prevents
-
-- ❌ Wrong district/entity names (case sensitivity, typos)
-- ❌ Text claims that contradict data
-- ❌ Broken code that fails silently
-- ❌ Missing data output
-- ✅ Verified, accurate, reproducible examples
-
-### Example
-
-```markdown
-### 1. State enrollment grew 28% since 2002
-
-State added 68,000 students from 2002 to 2026, bucking national trends.
-
-```r
-library(idschooldata)
-library(dplyr)
-
-enr <- fetch_enr_multi(2002:2026)
-
-enr %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, n_students) %>%
-  filter(end_year %in% c(2002, 2026)) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-# Prints: 2002=XXX, 2026=YYY, change=ZZZ, pct=PP.P%
-```
-
-![Chart](https://almartin82.github.io/idschooldata/articles/...)
-```
-
