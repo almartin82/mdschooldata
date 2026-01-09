@@ -54,8 +54,8 @@ if (is.list(years)) {
 }
 
 # Fetch data
-enr <- fetch_enr_multi((max_year - 9):max_year)
-enr_current <- fetch_enr(max_year)
+enr <- fetch_enr_multi((max_year - 9, use_cache = TRUE):max_year)
+enr_current <- fetch_enr(max_year, use_cache = TRUE)
 ```
 
 ## 1. Montgomery County is bigger than most states {#montgomery-county-is-bigger-than-most-states}
