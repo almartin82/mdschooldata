@@ -27,6 +27,15 @@ reference:
       - download_md_reportcard_enrollment
       - get_available_years
 
+  - title: "Fetch Assessment Data"
+    desc: "Functions for downloading assessment data from MSDE"
+    contents:
+      - fetch_assessment
+      - fetch_assessment_multi
+      - get_available_assessment_years
+      - get_raw_assessment
+      - import_local_assessment
+
   - title: "Transform Data"
     desc: "Functions for reshaping and annotating data"
     contents:
