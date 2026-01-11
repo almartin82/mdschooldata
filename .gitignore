@@ -30,7 +30,6 @@ vignettes/*.pdf
 .httr-oauth
 
 # knitr and R markdown default cache directories
-*_cache/
 /cache/
 
 # Temporary files created by R markdown
@@ -48,3 +47,5 @@ po/*~
 
 # MacOS files
 .DS_Store
+/doc/
+/Meta/
