@@ -1,5 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://almartin82.github.io/mdschooldata/404.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/ASSESSMENT-IMPLEMENTATION-SUMMARY.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/ASSESSMENT-RESEARCH.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/CLAUDE.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/EXPANSION.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/LICENSE-text.html</loc></url>
@@ -7,6 +9,7 @@
 <url><loc>https://almartin82.github.io/mdschooldata/articles/index.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/authors.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/index.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/add_helper_columns.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/cache_exists.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/cache_status.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/clear_cache.html</loc></url>
@@ -14,6 +17,7 @@
 <url><loc>https://almartin82.github.io/mdschooldata/reference/create_empty_processed_df.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/create_enrollment_template.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/create_state_aggregate.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/download_assessment_data.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/download_md_reportcard_enrollment.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/download_mdp_enrollment.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/download_mdp_enrollment_file.html</loc></url>
@@ -24,6 +28,8 @@
 <url><loc>https://almartin82.github.io/mdschooldata/reference/ensure_standard_columns.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/extract_enrollment_from_page.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/extract_jurisdiction_grades.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/fetch_assessment.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/fetch_assessment_multi.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/fetch_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/fetch_directory_multi.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/fetch_enr.html</loc></url>
@@ -34,16 +40,19 @@
 <url><loc>https://almartin82.github.io/mdschooldata/reference/fetch_school_enrollment.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/find_mdp_release_year.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/format_school_year.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/get_available_assessment_years.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_available_years.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_cache_dir.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_cache_path.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_directory_url.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_grade_codes.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_lss_codes.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/get_raw_assessment.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_raw_directory.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/get_raw_enr.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/grade_to_column.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/id_enr_aggs.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/import_local_assessment.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/index.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/mdschooldata-package.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/merge_enrollment_demographics.html</loc></url>
@@ -57,6 +66,7 @@
 <url><loc>https://almartin82.github.io/mdschooldata/reference/process_generic_enrollment.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/process_school_data.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/process_typed_data.html</loc></url>
+<url><loc>https://almartin82.github.io/mdschooldata/reference/read_assessment_csv.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/read_cache.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/safe_numeric.html</loc></url>
 <url><loc>https://almartin82.github.io/mdschooldata/reference/standardize_column_names.html</loc></url>

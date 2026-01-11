@@ -23,6 +23,21 @@ Functions for downloading enrollment data from MSDE
 - [`get_available_years()`](https://almartin82.github.io/mdschooldata/reference/get_available_years.md)
   : Get available years for Maryland enrollment data
 
+## Fetch Assessment Data
+
+Functions for downloading assessment data from MSDE
+
+- [`fetch_assessment()`](https://almartin82.github.io/mdschooldata/reference/fetch_assessment.md)
+  : Fetch Maryland assessment data
+- [`fetch_assessment_multi()`](https://almartin82.github.io/mdschooldata/reference/fetch_assessment_multi.md)
+  : Fetch assessment data for multiple years
+- [`get_available_assessment_years()`](https://almartin82.github.io/mdschooldata/reference/get_available_assessment_years.md)
+  : Get available assessment years
+- [`get_raw_assessment()`](https://almartin82.github.io/mdschooldata/reference/get_raw_assessment.md)
+  : Download raw Maryland assessment data
+- [`import_local_assessment()`](https://almartin82.github.io/mdschooldata/reference/import_local_assessment.md)
+  : Import locally downloaded assessment file
+
 ## Transform Data
 
 Functions for reshaping and annotating data

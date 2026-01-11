@@ -1,10 +1,13 @@
-# Standardize column names from various sources
+# Standardize assessment data column names
 
-Standardize column names from various sources
+Converts various Maryland Report Card column name formats to standard
+names.
 
 ## Usage
 
 ``` r
+standardize_column_names(df)
+
 standardize_column_names(df)
 ```
 
@@ -15,5 +18,7 @@ standardize_column_names(df)
   Data frame with potentially varied column names
 
 ## Value
+
+Data frame with standardized column names
 
 Data frame with standardized column names
