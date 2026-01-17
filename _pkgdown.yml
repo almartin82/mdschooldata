@@ -43,6 +43,15 @@ reference:
       - id_enr_aggs
       - enr_grade_aggs
 
+  - title: "Fetch Assessment Data"
+    desc: "Functions for downloading assessment data from MSDE"
+    contents:
+      - fetch_assessment
+      - fetch_assessment_multi
+      - get_available_assessment_years
+      - get_raw_assessment
+      - import_local_assessment
+
   - title: "Cache Management"
     desc: "Functions for managing locally cached data"
     contents:
