@@ -55,8 +55,8 @@ if (is.list(years)) {
 }
 
 # Fetch data
-enr <- fetch_enr_multi((max_year - 9):max_year)
-enr_current <- fetch_enr(max_year)
+enr <- fetch_enr_multi((max_year - 9):max_year, use_cache = TRUE)
+enr_current <- fetch_enr(max_year, use_cache = TRUE)
 ```
 
 ## 1. Montgomery County is bigger than most states {#montgomery-county-is-bigger-than-most-states}
@@ -367,4 +367,8 @@ ggplot(small_trend, aes(x = end_year, y = n_students, color = district_name)) +
        subtitle = "Kent, Somerset, and Garrett face enrollment pressure",
        x = "School Year", y = "Students", color = "") +
   theme_readme()
+```
+
+```{r session-info}
+sessionInfo()
 ```
