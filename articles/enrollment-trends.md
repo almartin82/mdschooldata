@@ -35,8 +35,8 @@ if (is.list(years)) {
 }
 
 # Fetch data
-enr <- fetch_enr_multi((max_year - 9):max_year)
-enr_current <- fetch_enr(max_year)
+enr <- fetch_enr_multi((max_year - 9):max_year, use_cache = TRUE)
+enr_current <- fetch_enr(max_year, use_cache = TRUE)
 ```
 
 ## 1. Montgomery County is bigger than most states
@@ -410,3 +410,44 @@ ggplot(small_trend, aes(x = end_year, y = n_students, color = district_name)) +
 ```
 
 ![](enrollment-trends_files/figure-html/story-15-small-counties-1.png)
+
+``` r
+sessionInfo()
+#> R version 4.5.2 (2025-10-31)
+#> Platform: x86_64-pc-linux-gnu
+#> Running under: Ubuntu 24.04.3 LTS
+#> 
+#> Matrix products: default
+#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+#>  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+#>  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+#> [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+#> 
+#> time zone: UTC
+#> tzcode source: system (glibc)
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] scales_1.4.0       dplyr_1.1.4        ggplot2_4.0.1      mdschooldata_0.3.0
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] gtable_0.3.6       jsonlite_2.0.0     qpdf_1.4.1         compiler_4.5.2    
+#>  [5] pdftools_3.6.0     Rcpp_1.1.1         tidyselect_1.2.1   jquerylib_0.1.4   
+#>  [9] systemfonts_1.3.1  textshaping_1.0.4  readxl_1.4.5       yaml_2.3.12       
+#> [13] fastmap_1.2.0      R6_2.6.1           labeling_0.4.3     generics_0.1.4    
+#> [17] curl_7.0.0         knitr_1.51         tibble_3.3.1       desc_1.4.3        
+#> [21] bslib_0.9.0        pillar_1.11.1      RColorBrewer_1.1-3 rlang_1.1.7       
+#> [25] cachem_1.1.0       xfun_0.55          fs_1.6.6           sass_0.4.10       
+#> [29] S7_0.2.1           cli_3.6.5          pkgdown_2.2.0      withr_3.0.2       
+#> [33] magrittr_2.0.4     digest_0.6.39      grid_4.5.2         askpass_1.2.1     
+#> [37] rappdirs_0.3.3     lifecycle_1.0.5    vctrs_0.7.0        evaluate_1.0.5    
+#> [41] glue_1.8.0         cellranger_1.1.0   farver_2.1.2       codetools_0.2-20  
+#> [45] ragg_1.5.0         httr_1.4.7         rmarkdown_2.30     purrr_1.2.1       
+#> [49] tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9
+```
