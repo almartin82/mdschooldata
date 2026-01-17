@@ -12,3 +12,4 @@
 ^CLAUDE\.md$
 ^PRD\.md$
 ^py.*schooldata$
+^vignettes/.*_cache$
