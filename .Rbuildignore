@@ -11,5 +11,8 @@
 ^Meta$
 ^CLAUDE\.md$
 ^PRD\.md$
+^EXPANSION\.md$
+^ASSESSMENT-IMPLEMENTATION-SUMMARY\.md$
+^ASSESSMENT-RESEARCH\.md$
 ^py.*schooldata$
 ^vignettes/.*_cache$
