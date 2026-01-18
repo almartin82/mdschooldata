@@ -37,6 +37,28 @@ if (is.list(years)) {
 # Fetch data
 enr <- fetch_enr_multi((max_year - 9):max_year, use_cache = TRUE)
 enr_current <- fetch_enr(max_year, use_cache = TRUE)
+
+# Helper function to get unique district totals
+get_district_totals <- function(df) {
+  df %>%
+    filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+    select(end_year, district_name, n_students) %>%
+    distinct() %>%
+    group_by(end_year, district_name) %>%
+    slice_max(n_students, n = 1, with_ties = FALSE) %>%
+    ungroup()
+}
+
+# Helper function to get unique state totals
+get_state_totals <- function(df) {
+  df %>%
+    filter(is_state, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+    select(end_year, n_students) %>%
+    distinct() %>%
+    group_by(end_year) %>%
+    slice_max(n_students, n = 1, with_ties = FALSE) %>%
+    ungroup()
+}
 ```
 
 ## 1. Montgomery County is bigger than most states
@@ -47,11 +69,21 @@ district alone has more students than entire states like Wyoming or
 Vermont.
 
 ``` r
-top_districts <- enr_current %>%
-  filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+top_districts <- get_district_totals(enr_current) %>%
   arrange(desc(n_students)) %>%
   head(5) %>%
   mutate(district_label = reorder(district_name, n_students))
+
+top_districts %>%
+  select(district_name, n_students)
+#> # A tibble: 5 × 2
+#>   district_name   n_students
+#>   <chr>                <dbl>
+#> 1 Montgomery          159181
+#> 2 Prince George's     132151
+#> 3 Anne Arundel         85029
+#> 4 Baltimore City       84730
+#> 5 Howard               57565
 
 ggplot(top_districts, aes(x = district_label, y = n_students)) +
   geom_col(fill = colors["total"]) +
@@ -76,7 +108,27 @@ pg_mont <- enr_current %>%
   filter(is_district, grade_level == "TOTAL",
          district_name %in% c("Montgomery", "Prince George's"),
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(district_name, subgroup, n_students, pct) %>%
+  distinct() %>%
+  group_by(district_name, subgroup) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
   mutate(pct = pct * 100)
+
+pg_mont %>%
+  select(district_name, subgroup, n_students, pct) %>%
+  arrange(district_name, desc(n_students))
+#> # A tibble: 8 × 4
+#>   district_name   subgroup n_students   pct
+#>   <chr>           <chr>         <dbl> <dbl>
+#> 1 Montgomery      white        165267  109.
+#> 2 Montgomery      hispanic     161546  107.
+#> 3 Montgomery      black        159010  105.
+#> 4 Montgomery      asian        156380  103.
+#> 5 Prince George's white        135962  109.
+#> 6 Prince George's hispanic     132322  106.
+#> 7 Prince George's black        130814  105.
+#> 8 Prince George's asian        128936  103.
 
 ggplot(pg_mont, aes(x = subgroup, y = pct, fill = district_name)) +
   geom_col(position = "dodge") +
@@ -96,9 +148,18 @@ decline of nearly 20%. This reflects population loss, charter school
 growth, and families moving to surrounding counties.
 
 ``` r
-baltimore <- enr %>%
-  filter(is_district, district_name == "Baltimore City",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+baltimore <- get_district_totals(enr) %>%
+  filter(district_name == "Baltimore City")
+
+baltimore %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 × 5
+#>   end_year district_name  n_students change pct_change
+#>      <int> <chr>               <dbl>  <dbl>      <dbl>
+#> 1     2016 Baltimore City      77866     NA       NA  
+#> 2     2025 Baltimore City      84730   6864        8.8
 
 ggplot(baltimore, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -121,7 +182,25 @@ student population has remained relatively stable.
 ``` r
 demo <- enr %>%
   filter(is_state, grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian"))
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(end_year, subgroup, n_students, pct) %>%
+  distinct() %>%
+  group_by(end_year, subgroup) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+demo %>%
+  filter(end_year == max(end_year)) %>%
+  select(subgroup, n_students, pct) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  arrange(desc(n_students))
+#> # A tibble: 4 × 3
+#>   subgroup n_students   pct
+#>   <chr>         <dbl> <dbl>
+#> 1 white        909414  105 
+#> 2 hispanic     893689  103.
+#> 3 black        886221  102.
+#> 4 asian        879601  102.
 
 ggplot(demo, aes(x = end_year, y = pct * 100, color = subgroup)) +
   geom_line(linewidth = 1.2) +
@@ -145,11 +224,20 @@ reflecting broader rural population decline patterns.
 ``` r
 eastern_shore <- c("Worcester", "Somerset", "Dorchester", "Wicomico", "Caroline")
 
-eastern <- enr %>%
-  filter(is_district, district_name %in% eastern_shore,
-         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+eastern <- get_district_totals(enr) %>%
+  filter(district_name %in% eastern_shore) %>%
   group_by(end_year) %>%
   summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop")
+
+eastern %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 × 4
+#>   end_year n_students change pct_change
+#>      <int>      <dbl>  <dbl>      <dbl>
+#> 1     2016      33326     NA       NA  
+#> 2     2025      35943   2617        7.9
 
 ggplot(eastern, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -173,12 +261,29 @@ pre-pandemic levels, suggesting some students never entered the system.
 k_trend <- enr %>%
   filter(is_state, subgroup == "total_enrollment",
          grade_level %in% c("K", "01", "06", "12")) %>%
+  select(end_year, grade_level, n_students) %>%
+  distinct() %>%
+  group_by(end_year, grade_level) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
   mutate(grade_label = case_when(
     grade_level == "K" ~ "Kindergarten",
     grade_level == "01" ~ "Grade 1",
     grade_level == "06" ~ "Grade 6",
     grade_level == "12" ~ "Grade 12"
   ))
+
+k_trend %>%
+  filter(grade_level == "K", end_year %in% c(2020, 2021, max(end_year))) %>%
+  select(end_year, n_students) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 3 × 4
+#>   end_year n_students change pct_change
+#>      <int>      <dbl>  <dbl>      <dbl>
+#> 1     2020      58391     NA       NA  
+#> 2     2021      61671   3280        5.6
+#> 3     2024      59562  -2109       -3.4
 
 ggplot(k_trend, aes(x = end_year, y = n_students, color = grade_label)) +
   geom_line(linewidth = 1.2) +
@@ -204,7 +309,25 @@ howard <- enr_current %>%
   filter(is_district, district_name == "Howard",
          grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")) %>%
+  select(subgroup, n_students, pct) %>%
+  distinct() %>%
+  group_by(subgroup) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
   mutate(subgroup_label = reorder(subgroup, -pct))
+
+howard %>%
+  select(subgroup, n_students, pct) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  arrange(desc(n_students))
+#> # A tibble: 5 × 3
+#>   subgroup    n_students   pct
+#>   <chr>            <dbl> <dbl>
+#> 1 white            58868  112.
+#> 2 multiracial      57293  108.
+#> 3 hispanic         56784  108.
+#> 4 black            55626  105.
+#> 5 asian            54870  104.
 
 ggplot(howard, aes(x = subgroup_label, y = pct * 100)) +
   geom_col(fill = colors["total"]) +
@@ -225,9 +348,22 @@ mountain communities face similar challenges to rural areas nationwide.
 ``` r
 western <- c("Allegany", "Garrett")
 
-western_trend <- enr %>%
-  filter(is_district, district_name %in% western,
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+western_trend <- get_district_totals(enr) %>%
+  filter(district_name %in% western)
+
+western_trend %>%
+  group_by(district_name) %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
+  filter(!is.na(change)) %>%
+  select(district_name, end_year, n_students, change, pct_change)
+#> # A tibble: 2 × 5
+#> # Groups:   district_name [2]
+#>   district_name end_year n_students change pct_change
+#>   <chr>            <int>      <dbl>  <dbl>      <dbl>
+#> 1 Allegany          2025       8872    660        8  
+#> 2 Garrett           2025       3886    248        6.8
 
 ggplot(western_trend, aes(x = end_year, y = n_students, color = district_name)) +
   geom_line(linewidth = 1.2) +
@@ -248,9 +384,18 @@ while others fluctuate. The Annapolis-area county benefits from military
 families at Fort Meade and Naval Academy presence.
 
 ``` r
-aa <- enr %>%
-  filter(is_district, district_name == "Anne Arundel",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+aa <- get_district_totals(enr) %>%
+  filter(district_name == "Anne Arundel")
+
+aa %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 × 5
+#>   end_year district_name n_students change pct_change
+#>      <int> <chr>              <dbl>  <dbl>      <dbl>
+#> 1     2016 Anne Arundel       79126     NA       NA  
+#> 2     2025 Anne Arundel       85029   5903        7.5
 
 ggplot(aa, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -273,11 +418,18 @@ concentration reflects the state’s population center.
 ``` r
 i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
 
-corridor <- enr_current %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+corridor <- get_district_totals(enr_current) %>%
   mutate(corridor = ifelse(district_name %in% i95, "I-95 Corridor", "Rest of Maryland")) %>%
   group_by(corridor) %>%
   summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop")
+
+corridor %>%
+  mutate(pct = round(n_students / sum(n_students) * 100, 1))
+#> # A tibble: 2 × 3
+#>   corridor         n_students   pct
+#>   <chr>                 <dbl> <dbl>
+#> 1 I-95 Corridor        433926  55.9
+#> 2 Rest of Maryland     343007  44.1
 
 ggplot(corridor, aes(x = corridor, y = n_students, fill = corridor)) +
   geom_col() +
@@ -299,9 +451,18 @@ has seen steady enrollment growth as families seek more affordable
 housing while maintaining access to the DC job market.
 
 ``` r
-frederick <- enr %>%
-  filter(is_district, district_name == "Frederick",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+frederick <- get_district_totals(enr) %>%
+  filter(district_name == "Frederick")
+
+frederick %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 × 5
+#>   end_year district_name n_students change pct_change
+#>      <int> <chr>              <dbl>  <dbl>      <dbl>
+#> 1     2016 Frederick          40111     NA       NA  
+#> 2     2025 Frederick          48054   7943       19.8
 
 ggplot(frederick, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["highlight"]) +
@@ -323,7 +484,22 @@ reshaping schools across the state, particularly in the DC suburbs.
 
 ``` r
 hispanic_trend <- enr %>%
-  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic")
+  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic") %>%
+  select(end_year, n_students, pct) %>%
+  distinct() %>%
+  group_by(end_year) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+hispanic_trend %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(pct = round(pct * 100, 1),
+         change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 1 × 5
+#>   end_year n_students   pct change pct_change
+#>      <int>      <dbl> <dbl>  <dbl>      <dbl>
+#> 1     2025     893689  103.     NA         NA
 
 ggplot(hispanic_trend, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["hispanic"]) +
@@ -345,9 +521,22 @@ relatively stable. The county surrounds but is entirely separate from
 the city, and the gap continues to widen.
 
 ``` r
-baltimore_both <- enr %>%
-  filter(is_district, district_name %in% c("Baltimore City", "Baltimore County"),
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+baltimore_both <- get_district_totals(enr) %>%
+  filter(district_name %in% c("Baltimore City", "Baltimore County"))
+
+baltimore_both %>%
+  group_by(district_name) %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
+  filter(!is.na(change)) %>%
+  select(district_name, end_year, n_students, change, pct_change)
+#> # A tibble: 2 × 5
+#> # Groups:   district_name [2]
+#>   district_name    end_year n_students change pct_change
+#>   <chr>               <int>      <dbl>  <dbl>      <dbl>
+#> 1 Baltimore County     2024     105944  -2372       -2.2
+#> 2 Baltimore City       2025      84730   6864        8.8
 
 ggplot(baltimore_both, aes(x = end_year, y = n_students, color = district_name)) +
   geom_line(linewidth = 1.2) +
@@ -369,9 +558,18 @@ maintained steady enrollment. The county serves as a bedroom community
 for DC-area workers seeking affordable housing.
 
 ``` r
-charles <- enr %>%
-  filter(is_district, district_name == "Charles",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+charles <- get_district_totals(enr) %>%
+  filter(district_name == "Charles")
+
+charles %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 × 5
+#>   end_year district_name n_students change pct_change
+#>      <int> <chr>              <dbl>  <dbl>      <dbl>
+#> 1     2016 Charles            25522     NA       NA  
+#> 2     2025 Charles            28162   2640       10.3
 
 ggplot(charles, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -395,9 +593,19 @@ facilities.
 ``` r
 small_counties <- c("Kent", "Somerset", "Garrett")
 
-small_trend <- enr %>%
-  filter(is_district, district_name %in% small_counties,
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+small_trend <- get_district_totals(enr) %>%
+  filter(district_name %in% small_counties)
+
+small_trend %>%
+  filter(end_year == max(end_year)) %>%
+  select(district_name, n_students) %>%
+  arrange(n_students)
+#> # A tibble: 3 × 2
+#>   district_name n_students
+#>   <chr>              <dbl>
+#> 1 Kent                2117
+#> 2 Somerset            2945
+#> 3 Garrett             3886
 
 ggplot(small_trend, aes(x = end_year, y = n_students, color = district_name)) +
   geom_line(linewidth = 1.2) +
@@ -443,11 +651,11 @@ sessionInfo()
 #> [13] fastmap_1.2.0      R6_2.6.1           labeling_0.4.3     generics_0.1.4    
 #> [17] curl_7.0.0         knitr_1.51         tibble_3.3.1       desc_1.4.3        
 #> [21] bslib_0.9.0        pillar_1.11.1      RColorBrewer_1.1-3 rlang_1.1.7       
-#> [25] cachem_1.1.0       xfun_0.55          fs_1.6.6           sass_0.4.10       
-#> [29] S7_0.2.1           cli_3.6.5          pkgdown_2.2.0      withr_3.0.2       
-#> [33] magrittr_2.0.4     digest_0.6.39      grid_4.5.2         askpass_1.2.1     
-#> [37] rappdirs_0.3.3     lifecycle_1.0.5    vctrs_0.7.0        evaluate_1.0.5    
-#> [41] glue_1.8.0         cellranger_1.1.0   farver_2.1.2       codetools_0.2-20  
-#> [45] ragg_1.5.0         httr_1.4.7         rmarkdown_2.30     purrr_1.2.1       
-#> [49] tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9
+#> [25] utf8_1.2.6         cachem_1.1.0       xfun_0.55          fs_1.6.6          
+#> [29] sass_0.4.10        S7_0.2.1           cli_3.6.5          pkgdown_2.2.0     
+#> [33] withr_3.0.2        magrittr_2.0.4     digest_0.6.39      grid_4.5.2        
+#> [37] askpass_1.2.1      rappdirs_0.3.3     lifecycle_1.0.5    vctrs_0.7.0       
+#> [41] evaluate_1.0.5     glue_1.8.0         cellranger_1.1.0   farver_2.1.2      
+#> [45] codetools_0.2-20   ragg_1.5.0         httr_1.4.7         rmarkdown_2.30    
+#> [49] purrr_1.2.1        tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9
 ```
