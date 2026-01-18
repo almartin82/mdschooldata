@@ -57,6 +57,28 @@ if (is.list(years)) {
 # Fetch data
 enr <- fetch_enr_multi((max_year - 9):max_year, use_cache = TRUE)
 enr_current <- fetch_enr(max_year, use_cache = TRUE)
+
+# Helper function to get unique district totals
+get_district_totals <- function(df) {
+  df %>%
+    filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+    select(end_year, district_name, n_students) %>%
+    distinct() %>%
+    group_by(end_year, district_name) %>%
+    slice_max(n_students, n = 1, with_ties = FALSE) %>%
+    ungroup()
+}
+
+# Helper function to get unique state totals
+get_state_totals <- function(df) {
+  df %>%
+    filter(is_state, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+    select(end_year, n_students) %>%
+    distinct() %>%
+    group_by(end_year) %>%
+    slice_max(n_students, n = 1, with_ties = FALSE) %>%
+    ungroup()
+}
 ```
 
 ## 1. Montgomery County is bigger than most states {#montgomery-county-is-bigger-than-most-states}
@@ -64,11 +86,13 @@ enr_current <- fetch_enr(max_year, use_cache = TRUE)
 With over 160,000 students, Montgomery County Public Schools is the largest district in Maryland and among the top 20 in the nation. The district alone has more students than entire states like Wyoming or Vermont.
 
 ```{r story-01-top-districts}
-top_districts <- enr_current %>%
-  filter(is_district, grade_level == "TOTAL", subgroup == "total_enrollment") %>%
+top_districts <- get_district_totals(enr_current) %>%
   arrange(desc(n_students)) %>%
   head(5) %>%
   mutate(district_label = reorder(district_name, n_students))
+
+top_districts %>%
+  select(district_name, n_students)
 
 ggplot(top_districts, aes(x = district_label, y = n_students)) +
   geom_col(fill = colors["total"]) +
@@ -89,7 +113,16 @@ pg_mont <- enr_current %>%
   filter(is_district, grade_level == "TOTAL",
          district_name %in% c("Montgomery", "Prince George's"),
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(district_name, subgroup, n_students, pct) %>%
+  distinct() %>%
+  group_by(district_name, subgroup) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
   mutate(pct = pct * 100)
+
+pg_mont %>%
+  select(district_name, subgroup, n_students, pct) %>%
+  arrange(district_name, desc(n_students))
 
 ggplot(pg_mont, aes(x = subgroup, y = pct, fill = district_name)) +
   geom_col(position = "dodge") +
@@ -105,9 +138,13 @@ ggplot(pg_mont, aes(x = subgroup, y = pct, fill = district_name)) +
 Baltimore City has lost over 15,000 students in the past decade, a decline of nearly 20%. This reflects population loss, charter school growth, and families moving to surrounding counties.
 
 ```{r story-03-baltimore-decline}
-baltimore <- enr %>%
-  filter(is_district, district_name == "Baltimore City",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+baltimore <- get_district_totals(enr) %>%
+  filter(district_name == "Baltimore City")
+
+baltimore %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(baltimore, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -126,7 +163,18 @@ White students are now under 40% of enrollment statewide. Hispanic students are 
 ```{r story-04-demographics}
 demo <- enr %>%
   filter(is_state, grade_level == "TOTAL",
-         subgroup %in% c("white", "black", "hispanic", "asian"))
+         subgroup %in% c("white", "black", "hispanic", "asian")) %>%
+  select(end_year, subgroup, n_students, pct) %>%
+  distinct() %>%
+  group_by(end_year, subgroup) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+demo %>%
+  filter(end_year == max(end_year)) %>%
+  select(subgroup, n_students, pct) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  arrange(desc(n_students))
 
 ggplot(demo, aes(x = end_year, y = pct * 100, color = subgroup)) +
   geom_line(linewidth = 1.2) +
@@ -146,11 +194,15 @@ Rural counties like Worcester, Somerset, and Dorchester on Maryland's Eastern Sh
 ```{r story-05-eastern-shore}
 eastern_shore <- c("Worcester", "Somerset", "Dorchester", "Wicomico", "Caroline")
 
-eastern <- enr %>%
-  filter(is_district, district_name %in% eastern_shore,
-         subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+eastern <- get_district_totals(enr) %>%
+  filter(district_name %in% eastern_shore) %>%
   group_by(end_year) %>%
   summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop")
+
+eastern %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(eastern, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -170,12 +222,23 @@ Maryland lost 8% of kindergartners in 2021 as families delayed enrollment during
 k_trend <- enr %>%
   filter(is_state, subgroup == "total_enrollment",
          grade_level %in% c("K", "01", "06", "12")) %>%
+  select(end_year, grade_level, n_students) %>%
+  distinct() %>%
+  group_by(end_year, grade_level) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
   mutate(grade_label = case_when(
     grade_level == "K" ~ "Kindergarten",
     grade_level == "01" ~ "Grade 1",
     grade_level == "06" ~ "Grade 6",
     grade_level == "12" ~ "Grade 12"
   ))
+
+k_trend %>%
+  filter(grade_level == "K", end_year %in% c(2020, 2021, max(end_year))) %>%
+  select(end_year, n_students) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(k_trend, aes(x = end_year, y = n_students, color = grade_label)) +
   geom_line(linewidth = 1.2) +
@@ -197,7 +260,17 @@ howard <- enr_current %>%
   filter(is_district, district_name == "Howard",
          grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")) %>%
+  select(subgroup, n_students, pct) %>%
+  distinct() %>%
+  group_by(subgroup) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
   mutate(subgroup_label = reorder(subgroup, -pct))
+
+howard %>%
+  select(subgroup, n_students, pct) %>%
+  mutate(pct = round(pct * 100, 1)) %>%
+  arrange(desc(n_students))
 
 ggplot(howard, aes(x = subgroup_label, y = pct * 100)) +
   geom_col(fill = colors["total"]) +
@@ -214,9 +287,16 @@ The westernmost counties have lost over 20% of students since 2014, reflecting p
 ```{r story-08-western-md}
 western <- c("Allegany", "Garrett")
 
-western_trend <- enr %>%
-  filter(is_district, district_name %in% western,
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+western_trend <- get_district_totals(enr) %>%
+  filter(district_name %in% western)
+
+western_trend %>%
+  group_by(district_name) %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
+  filter(!is.na(change)) %>%
+  select(district_name, end_year, n_students, change, pct_change)
 
 ggplot(western_trend, aes(x = end_year, y = n_students, color = district_name)) +
   geom_line(linewidth = 1.2) +
@@ -233,9 +313,13 @@ ggplot(western_trend, aes(x = end_year, y = n_students, color = district_name)) 
 Maryland's fifth-largest district has maintained enrollment stability while others fluctuate. The Annapolis-area county benefits from military families at Fort Meade and Naval Academy presence.
 
 ```{r story-09-anne-arundel}
-aa <- enr %>%
-  filter(is_district, district_name == "Anne Arundel",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+aa <- get_district_totals(enr) %>%
+  filter(district_name == "Anne Arundel")
+
+aa %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(aa, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -254,11 +338,13 @@ Five counties along I-95 (Baltimore County, Montgomery, Prince George's, Howard,
 ```{r story-10-i95-corridor}
 i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
 
-corridor <- enr_current %>%
-  filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
+corridor <- get_district_totals(enr_current) %>%
   mutate(corridor = ifelse(district_name %in% i95, "I-95 Corridor", "Rest of Maryland")) %>%
   group_by(corridor) %>%
   summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop")
+
+corridor %>%
+  mutate(pct = round(n_students / sum(n_students) * 100, 1))
 
 ggplot(corridor, aes(x = corridor, y = n_students, fill = corridor)) +
   geom_col() +
@@ -276,9 +362,13 @@ ggplot(corridor, aes(x = corridor, y = n_students, fill = corridor)) +
 Frederick County, located between the DC suburbs and western Maryland, has seen steady enrollment growth as families seek more affordable housing while maintaining access to the DC job market.
 
 ```{r story-11-frederick-growth}
-frederick <- enr %>%
-  filter(is_district, district_name == "Frederick",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+frederick <- get_district_totals(enr) %>%
+  filter(district_name == "Frederick")
+
+frederick %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(frederick, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["highlight"]) +
@@ -296,7 +386,18 @@ Hispanic students have grown from approximately 12% to over 18% of Maryland enro
 
 ```{r story-12-hispanic-growth}
 hispanic_trend <- enr %>%
-  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic")
+  filter(is_state, grade_level == "TOTAL", subgroup == "hispanic") %>%
+  select(end_year, n_students, pct) %>%
+  distinct() %>%
+  group_by(end_year) %>%
+  slice_max(n_students, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+hispanic_trend %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(pct = round(pct * 100, 1),
+         change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(hispanic_trend, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["hispanic"]) +
@@ -314,9 +415,16 @@ ggplot(hispanic_trend, aes(x = end_year, y = n_students)) +
 While Baltimore City enrollment plummets, Baltimore County has remained relatively stable. The county surrounds but is entirely separate from the city, and the gap continues to widen.
 
 ```{r story-13-baltimore-comparison}
-baltimore_both <- enr %>%
-  filter(is_district, district_name %in% c("Baltimore City", "Baltimore County"),
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+baltimore_both <- get_district_totals(enr) %>%
+  filter(district_name %in% c("Baltimore City", "Baltimore County"))
+
+baltimore_both %>%
+  group_by(district_name) %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
+  filter(!is.na(change)) %>%
+  select(district_name, end_year, n_students, change, pct_change)
 
 ggplot(baltimore_both, aes(x = end_year, y = n_students, color = district_name)) +
   geom_line(linewidth = 1.2) +
@@ -334,9 +442,13 @@ ggplot(baltimore_both, aes(x = end_year, y = n_students, color = district_name))
 Charles County is the largest district in Southern Maryland and has maintained steady enrollment. The county serves as a bedroom community for DC-area workers seeking affordable housing.
 
 ```{r story-14-charles-county}
-charles <- enr %>%
-  filter(is_district, district_name == "Charles",
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+charles <- get_district_totals(enr) %>%
+  filter(district_name == "Charles")
+
+charles %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
 
 ggplot(charles, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.5, color = colors["total"]) +
@@ -355,9 +467,13 @@ Kent County, Maryland's smallest district with just over 2,000 students, exempli
 ```{r story-15-small-counties}
 small_counties <- c("Kent", "Somerset", "Garrett")
 
-small_trend <- enr %>%
-  filter(is_district, district_name %in% small_counties,
-         subgroup == "total_enrollment", grade_level == "TOTAL")
+small_trend <- get_district_totals(enr) %>%
+  filter(district_name %in% small_counties)
+
+small_trend %>%
+  filter(end_year == max(end_year)) %>%
+  select(district_name, n_students) %>%
+  arrange(n_students)
 
 ggplot(small_trend, aes(x = end_year, y = n_students, color = district_name)) +
   geom_line(linewidth = 1.2) +
