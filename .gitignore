@@ -49,3 +49,6 @@ po/*~
 .DS_Store
 /doc/
 /Meta/
+
+# Generated figures
+figure/
