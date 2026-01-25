@@ -9,10 +9,11 @@ get_available_assessment_years()
 \value{
 List with elements:
 \itemize{
-\item \code{min_year}: First year with assessment data
-\item \code{max_year}: Most recent year with assessment data
+\item \code{min_year}: First year with MCAP data
+\item \code{max_year}: Most recent year with MCAP data
 \item \code{available_years}: Vector of all available years
 \item \code{assessments}: Named list of assessment types by year range
+\item \code{data_types}: Available data types and their access methods
 }
 }
 \description{
@@ -22,19 +23,5 @@ Returns the range of years for which assessment data is available.
 \dontrun{
 # Check available years
 get_available_assessment_years()
-
-# Output:
-# $min_year
-# [1] 2021
-#
-# $max_year
-# [1] 2025
-#
-# $available_years
-# [1] 2021 2022 2023 2024 2025
-#
-# $assessments
-# $assessments$MCAP
-# [1] "2021-2025: ELA, Math, Science, Social Studies"
 }
 }

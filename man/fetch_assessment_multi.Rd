@@ -6,19 +6,14 @@
 \usage{
 fetch_assessment_multi(
   years,
-  subject = c("all", "ELA", "Math", "Science", "SocialStudies"),
-  student_group = c("all", "groups"),
+  data_type = c("participation", "proficiency"),
   use_cache = TRUE
 )
 }
 \arguments{
-\item{years}{Vector of school year ends (e.g., c(2021, 2022, 2023, 2024))}
+\item{years}{Vector of school year ends (e.g., c(2022, 2023, 2024))}
 
-\item{subject}{Assessment subject: "all" (default), "ELA", "Math", "Science",
-or "SocialStudies"}
-
-\item{student_group}{"all" (default) for all students, or "groups" for
-student group breakdowns}
+\item{data_type}{Type of data: "participation" (default) or "proficiency"}
 
 \item{use_cache}{If TRUE (default), uses locally cached data when available.}
 }
@@ -35,25 +30,22 @@ Each row includes the \code{end_year} column for filtering and analysis.
 This is useful for:
 \itemize{
 \item Trend analysis across years
-\item Pre/post-COVID comparisons
-\item Year-over-year growth calculations
+\item Post-COVID recovery tracking
+\item Year-over-year comparisons
 }
 }
 \examples{
 \dontrun{
 # Get MCAP data for all available years
-assess_all <- fetch_assessment_multi(2021:2024)
+assess_all <- fetch_assessment_multi(2022:2024)
 
-# Get ELA data for multiple years
-assess_ela <- fetch_assessment_multi(2021:2024, subject = "ELA")
-
-# Calculate 3-year trend
+# Calculate participation trends by district
 library(dplyr)
 
-assess_all \%>\%
-  filter(is_state, subject == "ELA", grade == "03") \%>\%
-  group_by(end_year) \%>\%
-  summarize(avg_proficient = mean(pct_proficient, na.rm = TRUE))
+assess_all |>
+  filter(is_district, student_group == "All Students", subject == "English/Language Arts") |>
+  select(end_year, district_name, participation_pct) |>
+  pivot_wider(names_from = end_year, values_from = participation_pct)
 }
 }
 \seealso{
