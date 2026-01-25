@@ -74,5 +74,4 @@ articles:
     contents:
       - starts_with("CLAUDE")
       - starts_with("EXPANSION")
-      - starts_with("ASSESSMENT")
       - starts_with("PRD")
