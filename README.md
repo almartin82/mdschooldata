@@ -7,15 +7,15 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-**[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)**
+**[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)** | **[Assessment Data](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html)**
 
-Fetch and analyze Maryland school enrollment data from the Maryland State Department of Education (MSDE) in R or Python.
+Fetch and analyze Maryland school enrollment and assessment data from the Maryland State Department of Education (MSDE) in R or Python.
 
 Part of the **[State Schooldata Project](https://github.com/almartin82/njschooldata)** - providing simple, consistent interfaces for accessing state-published school data. Originally inspired by [njschooldata](https://github.com/almartin82/njschooldata).
 
 ## What can you find with mdschooldata?
 
-**10 years of enrollment data (2016-2025).** 890,000 students. 24 local school systems. Here are fifteen stories hiding in the numbers:
+**10 years of enrollment data (2016-2025).** 890,000 students. 24 local school systems. **MCAP assessment data (2022-2024).** Here are stories hiding in the numbers:
 
 ---
 
@@ -445,6 +445,221 @@ small_trend %>%
 
 ---
 
+## Assessment Data: Maryland Comprehensive Assessment Program (MCAP)
+
+The MCAP is Maryland's statewide assessment program, aligned to the Maryland College and Career Ready Standards. Students are tested in English Language Arts (grades 3-8 and 10), Mathematics (grades 3-8 plus Algebra I, Algebra II, and Geometry), and Science (grades 5, 8, and high school).
+
+---
+
+### 16. Less than half of Maryland students are proficient in ELA
+
+In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments - meaning more than half struggle to meet grade-level standards in reading and writing.
+
+```r
+library(mdschooldata)
+library(dplyr)
+
+prof <- get_statewide_proficiency(2024)
+
+ela_prof <- prof %>%
+  filter(subject == "ELA All")
+
+ela_prof %>%
+  select(subject, pct_proficient)
+#> # A tibble: 1 x 2
+#>   subject  pct_proficient
+#>   <chr>             <dbl>
+#> 1 ELA All            48.4
+```
+
+![ELA Proficiency by Grade, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-01-ela-proficiency-1.png)
+
+---
+
+### 17. Math proficiency is half of ELA at just 24%
+
+Maryland's mathematics proficiency is alarmingly low at 24.1% statewide, less than half the ELA rate. Math 8 is the lowest at just 7% proficient.
+
+```r
+math_prof <- prof %>%
+  filter(subject == "Math All")
+
+math_prof %>%
+  select(subject, pct_proficient)
+#> # A tibble: 1 x 2
+#>   subject   pct_proficient
+#>   <chr>              <dbl>
+#> 1 Math All            24.1
+```
+
+![Math Proficiency by Course, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-02-math-proficiency-1.png)
+
+---
+
+### 18. Math proficiency plummets from 40% in grade 3 to 7% by grade 8
+
+The math proficiency cliff is dramatic: 40% of 3rd graders are on grade level, but only 7% of 8th graders are. Students fall further behind each year.
+
+```r
+math_grades <- prof %>%
+  filter(grepl("Math [0-9]", subject)) %>%
+  mutate(grade = as.numeric(gsub("Math ", "", subject)))
+
+math_grades %>%
+  select(grade, subject, pct_proficient) %>%
+  arrange(grade)
+#> # A tibble: 6 x 3
+#>   grade subject pct_proficient
+#>   <dbl> <chr>            <dbl>
+#> 1     3 Math 3            40.1
+#> 2     4 Math 4            31.9
+#> 3     5 Math 5            22.4
+#> 4     6 Math 6            18.4
+#> 5     7 Math 7            12.7
+#> 6     8 Math 8             6.9
+```
+
+![Math Proficiency Cliff: Grade 3 to Grade 8](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-04-math-decline-1.png)
+
+---
+
+### 19. ELA proficiency improved 3 points since 2022
+
+Maryland's ELA proficiency has recovered from pandemic lows: 45.3% in 2022 to 48.4% in 2024, a gain of 3.1 percentage points.
+
+```r
+prof_2022 <- get_statewide_proficiency(2022)
+prof_2023 <- get_statewide_proficiency(2023)
+prof_2024 <- get_statewide_proficiency(2024)
+
+ela_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "ELA All") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "ELA All") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "ELA All") %>% mutate(year = 2024)
+)
+
+ela_trends %>%
+  select(year, pct_proficient) %>%
+  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
+#> # A tibble: 3 x 3
+#>    year pct_proficient change_from_2022
+#>   <dbl>          <dbl>            <dbl>
+#> 1  2022           45.3              0
+#> 2  2023           47.3              2
+#> 3  2024           48.4              3.1
+```
+
+![ELA Recovery Since 2022](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-06-ela-recovery-1.png)
+
+---
+
+### 20. Math proficiency is improving, but slowly
+
+Math proficiency increased from 21.0% in 2022 to 24.1% in 2024, a gain of 3.1 percentage points. Progress is real but pace is slow.
+
+```r
+math_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "Math All") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "Math All") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "Math All") %>% mutate(year = 2024)
+)
+
+math_trends %>%
+  select(year, pct_proficient) %>%
+  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
+#> # A tibble: 3 x 3
+#>    year pct_proficient change_from_2022
+#>   <dbl>          <dbl>            <dbl>
+#> 1  2022           21.0              0
+#> 2  2023           22.4              1.4
+#> 3  2024           24.1              3.1
+```
+
+![Math Recovery Since 2022](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-07-math-recovery-1.png)
+
+---
+
+### 21. ELA vs Math: The proficiency gap by grade
+
+At every grade level, ELA proficiency is roughly double math proficiency. The gap is widest in grades 7-8.
+
+```r
+library(tidyr)
+
+comparison <- prof %>%
+  filter(grepl("^(ELA|Math) [0-9]$", subject)) %>%
+  mutate(
+    grade = gsub("(ELA|Math) ", "", subject),
+    subject_type = ifelse(grepl("ELA", subject), "ELA", "Math")
+  ) %>%
+  select(grade, subject_type, pct_proficient) %>%
+  pivot_wider(names_from = subject_type, values_from = pct_proficient) %>%
+  mutate(gap = ELA - Math)
+
+comparison
+#> # A tibble: 7 x 4
+#>   grade   ELA  Math   gap
+#>   <chr> <dbl> <dbl> <dbl>
+#> 1 3      46.5  40.1   6.4
+#> 2 4      49.2  31.9  17.3
+#> 3 5      44.2  22.4  21.8
+#> 4 6      47.9  18.4  29.5
+#> 5 7      47.9  12.7  35.2
+#> 6 8      49.3   6.9  42.4
+#> 7 10     55.3    NA    NA
+```
+
+![ELA vs Math Proficiency by Grade, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-11-ela-math-gap-1.png)
+
+---
+
+### 22. Grade 3 ELA is a bellwether for future reading success
+
+Research shows 3rd grade reading is crucial for academic success. Maryland's Grade 3 ELA at 46.5% means over half of students enter 4th grade behind in reading.
+
+```r
+ela3_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "ELA 3") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "ELA 3") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "ELA 3") %>% mutate(year = 2024)
+)
+
+ela3_trends %>%
+  select(year, pct_proficient)
+#> # A tibble: 3 x 2
+#>    year pct_proficient
+#>   <dbl>          <dbl>
+#> 1  2022           42.0
+#> 2  2023           44.6
+#> 3  2024           46.5
+```
+
+![3rd Grade Reading: The Most Important Benchmark](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-09-grade3-reading-1.png)
+
+---
+
+### 23. The path forward: Key challenges for Maryland
+
+Maryland faces significant assessment challenges: over half of students not proficient in ELA, three-quarters not proficient in Math, and dramatic proficiency decline from grade 3 to 8 in math.
+
+```r
+summary_stats <- data.frame(
+  metric = c("ELA Proficiency", "Math Proficiency", "Science 5", "Science 8",
+             "Math 3-to-8 Decline"),
+  value = c("48.4%", "24.1%", "30.6%", "26.4%", "-33 points")
+)
+
+summary_stats
+#>                metric      value
+#> 1     ELA Proficiency      48.4%
+#> 2    Math Proficiency      24.1%
+#> 3           Science 5      30.6%
+#> 4           Science 8      26.4%
+#> 5 Math 3-to-8 Decline -33 points
+```
+
+---
+
 ## Installation
 
 ```r
@@ -481,6 +696,12 @@ enr_2024 %>%
   filter(is_district, grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
   select(district_name, subgroup, n_students, pct)
+
+# Assessment data - statewide proficiency
+prof_2024 <- get_statewide_proficiency(2024)
+
+# School-level assessment data
+assess_2024 <- fetch_assessment(2024)
 ```
 
 ### Python
@@ -514,6 +735,12 @@ demographics = enr_2024[
     (enr_2024['grade_level'] == 'TOTAL') &
     (enr_2024['subgroup'].isin(['white', 'black', 'hispanic', 'asian']))
 ][['district_name', 'subgroup', 'n_students', 'pct']]
+
+# Assessment data - statewide proficiency
+prof_2024 = md.get_statewide_proficiency(2024)
+
+# School-level assessment data
+assess_2024 = md.fetch_assessment(2024)
 ```
 
 ## Data Notes
@@ -526,7 +753,9 @@ Data is sourced from the Maryland State Department of Education (MSDE):
 
 ### Available Years
 
-**2014-2025** - Data coverage varies by year and data type.
+**Enrollment:** 2014-2025 - Data coverage varies by year and data type.
+
+**Assessment (MCAP):** 2022-2024 - Statewide proficiency summaries and school-level participation data.
 
 ### Census Day
 
@@ -538,10 +767,16 @@ MSDE may suppress data for privacy protection when counts are small. Specific su
 
 ### What's Included
 
+**Enrollment:**
 - **Levels:** State, District (24 Local School Systems), School (~1,400)
 - **Demographics:** White, Black, Hispanic, Asian, Native American, Pacific Islander, Multiracial
 - **Gender:** Male, Female
 - **Grade levels:** PK through 12
+
+**Assessment:**
+- **Subjects:** ELA (grades 3-8, 10), Math (grades 3-8, Algebra I/II, Geometry), Science (grades 5, 8)
+- **Levels:** State, District, School
+- **Student Groups:** All Students, by demographics, special populations
 
 ### Maryland-specific notes
 
