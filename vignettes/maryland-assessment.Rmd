@@ -1,0 +1,427 @@
+---
+title: "Maryland Assessment Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Maryland Assessment Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 6,
+  out.width = "100%",
+  message = FALSE,
+  warning = FALSE,
+  cache = TRUE
+)
+```
+
+```{r load-packages}
+library(mdschooldata)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+```
+
+```{r theme}
+theme_readme <- function() {
+  theme_minimal(base_size = 14) +
+    theme(
+      plot.title = element_text(face = "bold", size = 16),
+      plot.subtitle = element_text(color = "gray40"),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+}
+
+colors <- c("ela" = "#3498DB", "math" = "#E74C3C", "science" = "#9B59B6",
+            "total" = "#2C3E50", "highlight" = "#E67E22", "secondary" = "#95A5A6")
+```
+
+## Maryland Comprehensive Assessment Program (MCAP)
+
+The MCAP is Maryland's statewide assessment program, aligned to the Maryland College and Career Ready Standards. Students are tested in English Language Arts (grades 3-8 and 10), Mathematics (grades 3-8 plus Algebra I, Algebra II, and Geometry), and Science (grades 5, 8, and high school).
+
+## 1. Less than half of Maryland students are proficient in ELA {#ela-proficiency}
+
+In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments - meaning more than half struggle to meet grade-level standards in reading and writing.
+
+```{r story-01-ela-proficiency}
+prof <- get_statewide_proficiency(2024)
+
+ela_prof <- prof %>%
+  filter(subject == "ELA All")
+
+ela_prof %>%
+  select(subject, pct_proficient)
+
+ggplot(prof %>% filter(grepl("ELA", subject), !grepl("All", subject)),
+       aes(x = subject, y = pct_proficient)) +
+  geom_col(fill = colors["ela"]) +
+  geom_hline(yintercept = 50, linetype = "dashed", color = "red", alpha = 0.7) +
+  geom_text(aes(label = paste0(pct_proficient, "%")), vjust = -0.5) +
+  scale_y_continuous(limits = c(0, 70)) +
+  labs(title = "ELA Proficiency by Grade, 2024",
+       subtitle = "Dashed line = 50% proficiency benchmark",
+       x = NULL, y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 2. Math proficiency is half of ELA at just 24% {#math-crisis}
+
+Maryland's mathematics proficiency is alarmingly low at 24.1% statewide, less than half the ELA rate. Math 8 is the lowest at just 7% proficient.
+
+```{r story-02-math-proficiency}
+math_prof <- prof %>%
+  filter(subject == "Math All")
+
+math_prof %>%
+  select(subject, pct_proficient)
+
+ggplot(prof %>% filter(grepl("Math|Algebra|Geometry", subject), !grepl("All", subject)),
+       aes(x = reorder(subject, pct_proficient), y = pct_proficient)) +
+  geom_col(fill = colors["math"]) +
+  geom_text(aes(label = paste0(pct_proficient, "%")), hjust = -0.2) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 50)) +
+  labs(title = "Math Proficiency by Course, 2024",
+       subtitle = "Math 8 has just 7% proficiency",
+       x = NULL, y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 3. High schoolers on grade-level ELA far outperform middle schoolers {#hs-vs-ms}
+
+ELA 10 has the highest proficiency at 55.3%, while grades 5-8 cluster around 44-49%. High school students show stronger reading and writing skills than their younger peers.
+
+```{r story-03-ela-by-grade}
+ela_grades <- prof %>%
+  filter(grepl("ELA [0-9]", subject)) %>%
+  mutate(grade = as.numeric(gsub("ELA ", "", subject)))
+
+ela_grades %>%
+  select(subject, pct_proficient) %>%
+  arrange(desc(pct_proficient))
+
+ggplot(ela_grades, aes(x = factor(grade), y = pct_proficient)) +
+  geom_line(aes(group = 1), color = colors["ela"], linewidth = 1) +
+  geom_point(size = 3, color = colors["ela"]) +
+  geom_text(aes(label = paste0(pct_proficient, "%")), vjust = -1) +
+  scale_y_continuous(limits = c(40, 60)) +
+  labs(title = "ELA Proficiency by Grade Level, 2024",
+       subtitle = "Grade 10 leads at 55.3%, Grade 5 is lowest at 44.2%",
+       x = "Grade", y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 4. Math proficiency plummets from 40% in grade 3 to 7% by grade 8 {#math-decline}
+
+The math proficiency cliff is dramatic: 40% of 3rd graders are on grade level, but only 7% of 8th graders are. Students fall further behind each year.
+
+```{r story-04-math-decline}
+math_grades <- prof %>%
+  filter(grepl("Math [0-9]", subject)) %>%
+  mutate(grade = as.numeric(gsub("Math ", "", subject)))
+
+math_grades %>%
+  select(grade, subject, pct_proficient) %>%
+  arrange(grade)
+
+ggplot(math_grades, aes(x = factor(grade), y = pct_proficient)) +
+  geom_line(aes(group = 1), color = colors["math"], linewidth = 1.5) +
+  geom_point(size = 4, color = colors["math"]) +
+  geom_text(aes(label = paste0(pct_proficient, "%")), vjust = -1) +
+  scale_y_continuous(limits = c(0, 50)) +
+  labs(title = "Math Proficiency Cliff: Grade 3 to Grade 8",
+       subtitle = "Students lose 33 percentage points in 5 years",
+       x = "Grade", y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 5. Science proficiency dropped sharply from 2023 to 2024 {#science-decline}
+
+Science grade 5 proficiency fell from 34.5% to 30.6%, and science 8 dropped from 35.4% to 26.4% - both moving in the wrong direction.
+
+```{r story-05-science-trends}
+prof_2023 <- get_statewide_proficiency(2023)
+prof_2024 <- get_statewide_proficiency(2024)
+
+science_trends <- bind_rows(
+  prof_2023 %>% filter(grepl("Science", subject)) %>% mutate(year = 2023),
+  prof_2024 %>% filter(grepl("Science", subject)) %>% mutate(year = 2024)
+)
+
+science_trends %>%
+  select(year, subject, pct_proficient) %>%
+  pivot_wider(names_from = year, values_from = pct_proficient) %>%
+  mutate(change = `2024` - `2023`)
+
+ggplot(science_trends, aes(x = factor(year), y = pct_proficient, fill = subject)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Science 5" = "#9B59B6", "Science 8" = "#8E44AD")) +
+  labs(title = "Science Proficiency Declined, 2023 vs 2024",
+       subtitle = "Science 8 dropped nearly 10 percentage points",
+       x = NULL, y = "Percent Proficient", fill = NULL) +
+  theme_readme()
+```
+
+## 6. ELA proficiency improved 3 points since 2022 {#ela-recovery}
+
+Maryland's ELA proficiency has recovered from pandemic lows: 45.3% in 2022 to 48.4% in 2024, a gain of 3.1 percentage points.
+
+```{r story-06-ela-recovery}
+prof_2022 <- get_statewide_proficiency(2022)
+
+ela_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "ELA All") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "ELA All") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "ELA All") %>% mutate(year = 2024)
+)
+
+ela_trends %>%
+  select(year, pct_proficient) %>%
+  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
+
+ggplot(ela_trends, aes(x = factor(year), y = pct_proficient)) +
+  geom_col(fill = colors["ela"]) +
+  geom_text(aes(label = paste0(pct_proficient, "%")), vjust = -0.5) +
+  scale_y_continuous(limits = c(0, 60)) +
+  labs(title = "ELA Recovery Since 2022",
+       subtitle = "Statewide proficiency increased from 45.3% to 48.4%",
+       x = NULL, y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 7. Math proficiency is improving, but slowly {#math-recovery}
+
+Math proficiency increased from 21.0% in 2022 to 24.1% in 2024, a gain of 3.1 percentage points. Progress is real but pace is slow.
+
+```{r story-07-math-recovery}
+math_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "Math All") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "Math All") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "Math All") %>% mutate(year = 2024)
+)
+
+math_trends %>%
+  select(year, pct_proficient) %>%
+  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
+
+ggplot(math_trends, aes(x = factor(year), y = pct_proficient)) +
+  geom_col(fill = colors["math"]) +
+  geom_text(aes(label = paste0(pct_proficient, "%")), vjust = -0.5) +
+  scale_y_continuous(limits = c(0, 35)) +
+  labs(title = "Math Recovery Since 2022",
+       subtitle = "Statewide proficiency increased from 21.0% to 24.1%",
+       x = NULL, y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 8. Algebra I proficiency jumped 6 points since 2022 {#algebra-improvement}
+
+Algebra I saw the largest improvement: from 14.4% in 2022 to 20.0% in 2024, a gain of 5.6 percentage points.
+
+```{r story-08-algebra-improvement}
+algebra_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "Algebra I") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "Algebra I") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "Algebra I") %>% mutate(year = 2024)
+)
+
+algebra_trends %>%
+  select(year, pct_proficient) %>%
+  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
+```
+
+## 9. Grade 3 ELA is a bellwether for future reading success {#third-grade-reading}
+
+Research shows 3rd grade reading is crucial for academic success. Maryland's Grade 3 ELA at 46.5% means over half of students enter 4th grade behind in reading.
+
+```{r story-09-grade3-reading}
+ela3_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "ELA 3") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "ELA 3") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "ELA 3") %>% mutate(year = 2024)
+)
+
+ela3_trends %>%
+  select(year, pct_proficient)
+
+ggplot(ela3_trends, aes(x = factor(year), y = pct_proficient)) +
+  geom_col(fill = colors["ela"]) +
+  geom_hline(yintercept = 50, linetype = "dashed", color = "red") +
+  geom_text(aes(label = paste0(pct_proficient, "%")), vjust = -0.5) +
+  scale_y_continuous(limits = c(0, 60)) +
+  labs(title = "3rd Grade Reading: The Most Important Benchmark",
+       subtitle = "Less than half of students are reading on grade level",
+       x = NULL, y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 10. High participation rates across all districts {#participation-rates}
+
+Maryland maintains high assessment participation rates, with most districts above 95% participation in ELA, Math, and Science.
+
+```{r story-10-participation, cache = TRUE}
+# Download participation data
+assess_2024 <- fetch_assessment(2024, use_cache = TRUE)
+```
+
+```{r story-10-participation-viz}
+if (nrow(assess_2024) > 0) {
+  district_part <- assess_2024 %>%
+    filter(!is.na(district_name), student_group == "All Students", is_school) %>%
+    group_by(district_name, subject) %>%
+    summarize(mean_participation = mean(participation_pct, na.rm = TRUE), .groups = "drop")
+
+  district_part %>%
+    group_by(district_name) %>%
+    summarize(avg_participation = mean(mean_participation, na.rm = TRUE)) %>%
+    arrange(desc(avg_participation)) %>%
+    head(10)
+}
+```
+
+## 11. ELA vs Math: The proficiency gap by grade {#ela-math-gap}
+
+At every grade level, ELA proficiency is roughly double math proficiency. The gap is widest in grades 7-8.
+
+```{r story-11-ela-math-gap}
+comparison <- prof %>%
+  filter(grepl("^(ELA|Math) [0-9]$", subject)) %>%
+  mutate(
+    grade = gsub("(ELA|Math) ", "", subject),
+    subject_type = ifelse(grepl("ELA", subject), "ELA", "Math")
+  ) %>%
+  select(grade, subject_type, pct_proficient) %>%
+  pivot_wider(names_from = subject_type, values_from = pct_proficient) %>%
+  mutate(gap = ELA - Math)
+
+comparison
+
+ggplot(comparison, aes(x = grade)) +
+  geom_col(aes(y = ELA), fill = colors["ela"], alpha = 0.8, width = 0.4, position = position_nudge(-0.2)) +
+  geom_col(aes(y = Math), fill = colors["math"], alpha = 0.8, width = 0.4, position = position_nudge(0.2)) +
+  labs(title = "ELA vs Math Proficiency by Grade, 2024",
+       subtitle = "Blue = ELA, Red = Math",
+       x = "Grade", y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 12. Geometry saw the biggest decline since 2022 {#geometry-decline}
+
+Geometry proficiency dropped from 25.3% in 2022 to 21.9% in 2024, the largest decline among math courses.
+
+```{r story-12-geometry}
+hs_math <- bind_rows(
+  prof_2022 %>% filter(subject %in% c("Algebra I", "Algebra II", "Geometry")) %>% mutate(year = 2022),
+  prof_2024 %>% filter(subject %in% c("Algebra I", "Algebra II", "Geometry")) %>% mutate(year = 2024)
+)
+
+hs_math %>%
+  select(year, subject, pct_proficient) %>%
+  pivot_wider(names_from = year, values_from = pct_proficient) %>%
+  mutate(change = `2024` - `2022`)
+```
+
+## 13. Maryland targets 56% ELA proficiency by 2026 {#state-targets}
+
+MSDE has set ambitious targets: 56% ELA proficiency and 37% math proficiency by 2026. Current trajectory may fall short.
+
+```{r story-13-targets}
+targets <- data.frame(
+  subject = c("ELA", "Math"),
+  current = c(48.4, 24.1),
+  target_2026 = c(56, 37),
+  gap = c(56 - 48.4, 37 - 24.1)
+)
+
+targets
+
+ggplot(targets, aes(x = subject)) +
+  geom_col(aes(y = current), fill = colors["secondary"], width = 0.4, position = position_nudge(-0.2)) +
+  geom_col(aes(y = target_2026), fill = colors["highlight"], alpha = 0.5, width = 0.4, position = position_nudge(0.2)) +
+  geom_text(aes(y = current, label = paste0(current, "%")), vjust = -0.5, position = position_nudge(-0.2)) +
+  geom_text(aes(y = target_2026, label = paste0(target_2026, "%")), vjust = -0.5, position = position_nudge(0.2), color = "orange") +
+  scale_y_continuous(limits = c(0, 70)) +
+  labs(title = "Current Performance vs 2026 Targets",
+       subtitle = "Gray = Current (2024), Orange = Target (2026)",
+       x = NULL, y = "Percent Proficient") +
+  theme_readme()
+```
+
+## 14. ELA and Math show similar recovery rates {#recovery-comparison}
+
+Both subjects improved by about 3 percentage points from 2022 to 2024, suggesting systemic recovery rather than subject-specific gains.
+
+```{r story-14-recovery-comparison}
+recovery <- bind_rows(
+  ela_trends %>% mutate(subject = "ELA"),
+  math_trends %>% mutate(subject = "Math")
+)
+
+recovery %>%
+  select(year, subject, pct_proficient) %>%
+  pivot_wider(names_from = subject, values_from = pct_proficient)
+
+ggplot(recovery, aes(x = factor(year), y = pct_proficient, color = subject, group = subject)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 3) +
+  scale_color_manual(values = c("ELA" = colors["ela"], "Math" = colors["math"])) +
+  labs(title = "ELA and Math Recovery, 2022-2024",
+       subtitle = "Both subjects show steady improvement",
+       x = NULL, y = "Percent Proficient", color = NULL) +
+  theme_readme()
+```
+
+## 15. The path forward: Key challenges for Maryland {#challenges}
+
+Maryland faces significant assessment challenges:
+- Over half of students not proficient in ELA
+- Three-quarters not proficient in Math
+- Dramatic proficiency decline from grade 3 to 8 in math
+- Science proficiency moving backward
+
+```{r story-15-summary}
+summary_stats <- data.frame(
+  metric = c("ELA Proficiency", "Math Proficiency", "Science 5", "Science 8",
+             "Math 3-to-8 Decline"),
+  value = c("48.4%", "24.1%", "30.6%", "26.4%", "-33 points")
+)
+
+summary_stats
+```
+
+## Data Notes
+
+### Data Sources
+
+- **Statewide Proficiency Data**: Curated from MSDE State Board presentations at [marylandpublicschools.org](https://www.marylandpublicschools.org/stateboard/)
+- **Participation Rate Data**: Maryland Report Card at [reportcard.msde.maryland.gov](https://reportcard.msde.maryland.gov/)
+
+### Available Years
+
+- MCAP proficiency data: 2022-2024 (statewide summaries)
+- Participation rate data: 2022-2024 (school/district level)
+
+### Known Limitations
+
+- School/district-level proficiency data requires manual download from the Maryland Report Card interactive interface
+- The Report Card uses JavaScript-based downloads that cannot be automated via direct URL
+
+### Assessment Transitions
+
+- MCAP: 2022-present
+- PARCC: 2015-2019 (not yet implemented in this package)
+- MSA: 2003-2014 (not yet implemented in this package)
+
+## Session Info
+
+```{r session-info}
+sessionInfo()
+```

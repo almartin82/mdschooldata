@@ -4,66 +4,61 @@
 \alias{get_raw_assessment}
 \title{Download raw Maryland assessment data}
 \usage{
-get_raw_assessment(
-  end_year,
-  subject = c("all", "ELA", "Math", "Science", "SocialStudies"),
-  student_group = c("all", "groups")
-)
+get_raw_assessment(end_year, data_type = c("participation", "proficiency"))
 }
 \arguments{
 \item{end_year}{School year end (e.g., 2024 for 2023-24 school year).
-Valid range: 2021-2024 for MCAP data.}
+Valid range: 2022-2025 for MCAP participation data.}
 
-\item{subject}{Assessment subject: "all" (default), "ELA", "Math", "Science",
-or "SocialStudies"}
-
-\item{student_group}{"all" (default) for all students, or "groups" for
-student group breakdowns}
+\item{data_type}{Type of data: "participation" (default, available via URL) or
+"proficiency" (requires manual download)}
 }
 \value{
-Data frame with assessment results including school/district/state
-aggregations, proficiency rates, and student group breakdowns
+Data frame with assessment data including:
+\itemize{
+\item School and district identifiers
+\item Assessment type (ELA, Math, Science)
+\item Student group breakdowns
+\item Participation rates (for participation data)
+}
 }
 \description{
-Downloads assessment data from the Maryland Report Card system. Includes
-MCAP (2021-present) for grades 3-8 and high school in ELA, Mathematics,
-and Science.
+Downloads assessment data from the Maryland Report Card system. Currently
+provides MCAP participation rate data for 2022-present. Proficiency data
+requires manual download from the Report Card interface.
 }
 \details{
 \subsection{Available Years:}{
 
 \itemize{
-\item 2021-2024: MCAP data (Maryland Comprehensive Assessment Program)
+\item 2022-2024: MCAP participation rate data
+\item 2025: Expected when released (typically August/September)
 }
 }
 
 \subsection{Data Source:}{
 
 Maryland Report Card (MSDE):
-https://reportcard.msde.maryland.gov/Graphs/
-
-The Maryland Report Card uses dynamic JavaScript to generate download links,
-making automated downloads challenging. This function provides:
-\enumerate{
-\item Documentation for manual download workflow
-\item Automated download if URL pattern can be discovered
-\item Fallback to import_local_assessment() for manual loading
+https://reportcard.msde.maryland.gov/
 }
+
+\subsection{Limitation:}{
+
+The Maryland Report Card uses JavaScript to generate download links for
+proficiency data, making automated downloads challenging. Use the interactive
+Report Card interface or contact MSDE for bulk proficiency data.
 }
 }
 \examples{
 \dontrun{
-# Download 2024 MCAP data (all subjects)
+# Download 2024 MCAP participation data
 assess_2024 <- get_raw_assessment(2024)
 
-# Download only ELA results
-assess_2024_ela <- get_raw_assessment(2024, subject = "ELA")
-
-# Download with student group breakdowns
-assess_2024_groups <- get_raw_assessment(2024, student_group = "groups")
+# View available student groups
+unique(assess_2024$student_group)
 }
 }
 \seealso{
-\code{\link{fetch_assessment}} for the complete fetch pipeline
+\code{\link{fetch_assessment}} for the main user-facing function
 \code{\link{import_local_assessment}} for loading manually downloaded files
 }

@@ -27,7 +27,8 @@ Suggests:
     rmarkdown,
     ggplot2,
     scales,
-    pdftools
+    pdftools,
+    tidyr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://almartin82.github.io/mdschooldata, https://github.com/almartin82/mdschooldata

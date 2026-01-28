@@ -4,12 +4,18 @@
 \alias{import_local_assessment}
 \title{Import locally downloaded assessment file}
 \usage{
-import_local_assessment(file_path, end_year)
+import_local_assessment(
+  file_path,
+  end_year,
+  data_type = c("proficiency", "participation")
+)
 }
 \arguments{
-\item{file_path}{Path to the CSV file downloaded from Maryland Report Card}
+\item{file_path}{Path to the Excel or CSV file}
 
-\item{end_year}{School year end (e.g., 2024 for 2023-24 school year)}
+\item{end_year}{School year end (e.g., 2024 for 2023-24)}
+
+\item{data_type}{Type of data: "participation" or "proficiency"}
 }
 \value{
 Data frame with assessment results
@@ -18,15 +24,20 @@ Data frame with assessment results
 Imports an assessment data file that was manually downloaded from the
 Maryland Report Card website.
 }
+\details{
+Use this function when you have manually downloaded assessment data from
+the Maryland Report Card at https://reportcard.msde.maryland.gov.
+
+For proficiency data, navigate to:
+Graphs > Data Downloads > Academic Achievement or Assessment Results
+}
 \examples{
 \dontrun{
-# Import a manually downloaded assessment file
+# Import a manually downloaded file
 assess_data <- import_local_assessment(
-  file_path = "~/Downloads/MD_Assessment_2024.csv",
-  end_year = 2024
+  file_path = "~/Downloads/MCAP_ELA_2024.xlsx",
+  end_year = 2024,
+  data_type = "proficiency"
 )
-
-# View the data
-head(assess_data)
 }
 }
