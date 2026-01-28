@@ -31,10 +31,16 @@ Functions for downloading assessment data from MSDE
   : Fetch Maryland assessment data
 - [`fetch_assessment_multi()`](https://almartin82.github.io/mdschooldata/reference/fetch_assessment_multi.md)
   : Fetch assessment data for multiple years
+- [`fetch_district_assessment()`](https://almartin82.github.io/mdschooldata/reference/fetch_district_assessment.md)
+  : Fetch assessment data for a specific district
+- [`fetch_school_assessment()`](https://almartin82.github.io/mdschooldata/reference/fetch_school_assessment.md)
+  : Fetch assessment data for a specific school
 - [`get_available_assessment_years()`](https://almartin82.github.io/mdschooldata/reference/get_available_assessment_years.md)
   : Get available assessment years
 - [`get_raw_assessment()`](https://almartin82.github.io/mdschooldata/reference/get_raw_assessment.md)
   : Download raw Maryland assessment data
+- [`get_statewide_proficiency()`](https://almartin82.github.io/mdschooldata/reference/get_statewide_proficiency.md)
+  : Get statewide proficiency summary (from MSDE press releases)
 - [`import_local_assessment()`](https://almartin82.github.io/mdschooldata/reference/import_local_assessment.md)
   : Import locally downloaded assessment file
 

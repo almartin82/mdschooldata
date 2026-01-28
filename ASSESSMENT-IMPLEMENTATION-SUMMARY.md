@@ -30,12 +30,10 @@ school (excluding SAT/ACT as requested).
   Downloads raw MCAP data from Maryland Report Card
 - [`import_local_assessment()`](https://almartin82.github.io/mdschooldata/reference/import_local_assessment.md):
   Imports manually downloaded CSV files
-- [`read_assessment_csv()`](https://almartin82.github.io/mdschooldata/reference/read_assessment_csv.md):
-  Parses Maryland Report Card CSV exports
+- `read_assessment_csv()`: Parses Maryland Report Card CSV exports
 - [`standardize_column_names()`](https://almartin82.github.io/mdschooldata/reference/standardize_column_names.md):
   Standardizes column naming conventions
-- [`add_helper_columns()`](https://almartin82.github.io/mdschooldata/reference/add_helper_columns.md):
-  Adds is_state, is_district, is_school flags
+- `add_helper_columns()`: Adds is_state, is_district, is_school flags
 
 #### fetch_assessment.R
 

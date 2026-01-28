@@ -44,10 +44,11 @@
 
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List with elements:</p><ul><li><p><code>min_year</code>: First year with assessment data</p></li>
-<li><p><code>max_year</code>: Most recent year with assessment data</p></li>
+    <p>List with elements:</p><ul><li><p><code>min_year</code>: First year with MCAP data</p></li>
+<li><p><code>max_year</code>: Most recent year with MCAP data</p></li>
 <li><p><code>available_years</code>: Vector of all available years</p></li>
 <li><p><code>assessments</code>: Named list of assessment types by year range</p></li>
+<li><p><code>data_types</code>: Available data types and their access methods</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -55,20 +56,6 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Check available years</span></span></span>
 <span class="r-in"><span><span class="fu">get_available_assessment_years</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Output:</span></span></span>
-<span class="r-in"><span><span class="co"># $min_year</span></span></span>
-<span class="r-in"><span><span class="co"># [1] 2021</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># $max_year</span></span></span>
-<span class="r-in"><span><span class="co"># [1] 2025</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># $available_years</span></span></span>
-<span class="r-in"><span><span class="co"># [1] 2021 2022 2023 2024 2025</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># $assessments</span></span></span>
-<span class="r-in"><span><span class="co"># $assessments$MCAP</span></span></span>
-<span class="r-in"><span><span class="co"># [1] "2021-2025: ELA, Math, Science, Social Studies"</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

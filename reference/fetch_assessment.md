@@ -1,16 +1,16 @@
 # Fetch Maryland assessment data
 
 Downloads and returns assessment data from the Maryland State Department
-of Education Maryland Report Card. Includes MCAP (2021-present) for
-grades 3-8 and high school in ELA, Mathematics, and Science.
+of Education Maryland Report Card. Includes MCAP participation data
+(2022-present) for grades 3-8 and high school in ELA, Mathematics, and
+Science.
 
 ## Usage
 
 ``` r
 fetch_assessment(
   end_year,
-  subject = c("all", "ELA", "Math", "Science", "SocialStudies"),
-  student_group = c("all", "groups"),
+  data_type = c("participation", "proficiency"),
   use_cache = TRUE
 )
 ```
@@ -20,17 +20,12 @@ fetch_assessment(
 - end_year:
 
   School year end (e.g., 2024 for 2023-24 school year). Valid range:
-  2021-2024.
+  2022-2024 for participation data.
 
-- subject:
+- data_type:
 
-  Assessment subject: "all" (default), "ELA", "Math", "Science", or
-  "SocialStudies"
-
-- student_group:
-
-  "all" (default) for all students, or "groups" for student group
-  breakdowns
+  Type of data: "participation" (default, available via direct download)
+  or "proficiency" (requires manual download).
 
 - use_cache:
 
@@ -42,11 +37,11 @@ Data frame with assessment data including:
 
 - School, district, and state identifiers
 
-- Grade level and subject
+- Subject (ELA, Mathematics, Science)
 
-- Proficiency rates and counts
+- Student group breakdowns
 
-- Student group breakdowns (if student_group = "groups")
+- Participation rates (for participation data)
 
 - Helper columns: is_state, is_district, is_school
 
@@ -54,31 +49,36 @@ Data frame with assessment data including:
 
 ### Available Years:
 
-- 2021-2024: MCAP data (Maryland Comprehensive Assessment Program)
+- 2022-2024: MCAP participation rate data (direct download)
 
-- 2025: MCAP data (when available)
+- 2025: Available when released (typically August/September)
 
-### Assessment Types by Year:
+### Assessment Types:
 
-- 2021-2023: MCAP ELA and Math (grades 3-8, HS), Science (grades 5, 8,
-  HS)
+- ELA: Grades 3-8 and 10
 
-- 2024+: MCAP ELA, Math, Science, and Social Studies (grades 3-8, HS)
+- Mathematics: Grades 3-8, Algebra I, Algebra II, Geometry
+
+- Science: Grades 5, 8, and High School
 
 ### Data Source:
 
-Maryland Report Card (MSDE):
-https://reportcard.msde.maryland.gov/Graphs/
+Maryland Report Card (MSDE): https://reportcard.msde.maryland.gov/
 
-The Maryland Report Card uses dynamic JavaScript to generate download
-links. If automated download fails, the function provides clear
-instructions for manual download and loading via
-[`import_local_assessment`](https://almartin82.github.io/mdschooldata/reference/import_local_assessment.md).
+### Proficiency Data Note:
+
+The Maryland Report Card uses JavaScript to generate download links for
+proficiency data. For proficiency rates, use the interactive Report Card
+interface or
+[`get_statewide_proficiency`](https://almartin82.github.io/mdschooldata/reference/get_statewide_proficiency.md)
+for state-level data.
 
 ## See also
 
 [`fetch_assessment_multi`](https://almartin82.github.io/mdschooldata/reference/fetch_assessment_multi.md)
 for multiple years
+[`get_statewide_proficiency`](https://almartin82.github.io/mdschooldata/reference/get_statewide_proficiency.md)
+for statewide proficiency rates
 [`import_local_assessment`](https://almartin82.github.io/mdschooldata/reference/import_local_assessment.md)
 for manually downloaded files
 
@@ -86,14 +86,15 @@ for manually downloaded files
 
 ``` r
 if (FALSE) { # \dontrun{
-# Get 2024 assessment data (all subjects)
+# Get 2024 participation data
 assess_2024 <- fetch_assessment(2024)
 
-# Get only ELA results
-assess_2024_ela <- fetch_assessment(2024, subject = "ELA")
+# Filter to Baltimore City schools
+baltimore <- assess_2024 |>
+  dplyr::filter(district_name == "Baltimore City", is_school)
 
-# Get with student group breakdowns
-assess_2024_groups <- fetch_assessment(2024, student_group = "groups")
+# Get statewide proficiency rates (curated data)
+state_prof <- get_statewide_proficiency(2024)
 
 # Force fresh download (ignore cache)
 assess_fresh <- fetch_assessment(2024, use_cache = FALSE)
