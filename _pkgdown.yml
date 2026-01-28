@@ -32,8 +32,11 @@ reference:
     contents:
       - fetch_assessment
       - fetch_assessment_multi
+      - fetch_district_assessment
+      - fetch_school_assessment
       - get_available_assessment_years
       - get_raw_assessment
+      - get_statewide_proficiency
       - import_local_assessment
 
   - title: "Transform Data"
@@ -66,6 +69,7 @@ articles:
   - title: "Getting Started"
     contents:
       - enrollment-trends
+      - maryland-assessment
   - title: internal
     contents:
       - starts_with("CLAUDE")
