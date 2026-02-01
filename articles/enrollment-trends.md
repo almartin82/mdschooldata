@@ -646,7 +646,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6       jsonlite_2.0.0     qpdf_1.4.1         compiler_4.5.2    
-#>  [5] pdftools_3.6.0     Rcpp_1.1.1         tidyselect_1.2.1   jquerylib_0.1.4   
+#>  [5] pdftools_3.7.0     Rcpp_1.1.1         tidyselect_1.2.1   jquerylib_0.1.4   
 #>  [9] systemfonts_1.3.1  textshaping_1.0.4  readxl_1.4.5       yaml_2.3.12       
 #> [13] fastmap_1.2.0      R6_2.6.1           labeling_0.4.3     generics_0.1.4    
 #> [17] curl_7.0.0         knitr_1.51         tibble_3.3.1       desc_1.4.3        
