@@ -642,7 +642,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] scales_1.4.0       dplyr_1.1.4        ggplot2_4.0.1      mdschooldata_0.3.0
+#> [1] scales_1.4.0       dplyr_1.2.0        ggplot2_4.0.2      mdschooldata_0.3.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6       jsonlite_2.0.0     qpdf_1.4.1         compiler_4.5.2    
