@@ -656,6 +656,6 @@ sessionInfo()
 #> [33] withr_3.0.2        magrittr_2.0.4     digest_0.6.39      grid_4.5.2        
 #> [37] askpass_1.2.1      rappdirs_0.3.4     lifecycle_1.0.5    vctrs_0.7.1       
 #> [41] evaluate_1.0.5     glue_1.8.0         cellranger_1.1.0   farver_2.1.2      
-#> [45] codetools_0.2-20   ragg_1.5.0         httr_1.4.7         rmarkdown_2.30    
+#> [45] codetools_0.2-20   ragg_1.5.0         httr_1.4.8         rmarkdown_2.30    
 #> [49] purrr_1.2.1        tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9
 ```

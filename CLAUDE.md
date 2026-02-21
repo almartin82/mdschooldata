@@ -138,6 +138,37 @@ pass.
 
 ------------------------------------------------------------------------
 
+## Valid Filter Values (tidy enrollment via `fetch_enr(tidy = TRUE)`)
+
+### subgroup
+
+`total_enrollment`, `white`, `black`, `hispanic`, `asian`,
+`native_american`, `pacific_islander`, `multiracial`, `special_ed`,
+`lep`, `econ_disadv`
+
+**NOT in tidy enrollment:** No gender subgroups (`male`, `female`) are
+present in the Maryland tidy enrollment data.
+
+### grade_level
+
+`TOTAL`, `PK`, `K`, `01`-`12`
+
+Grade columns are mapped from `grade_pk` -\> `PK`, `grade_k` -\> `K`,
+`grade_01` -\> `01`, etc. The
+[`enr_grade_aggs()`](https://almartin82.github.io/mdschooldata/reference/enr_grade_aggs.md)
+function adds computed aggregates: `K8`, `HS`, `K12`.
+
+### entity flags
+
+`is_state`, `is_district`, `is_campus`, `is_charter`
+
+The `type` column has values `State`, `District`, and `Campus`. The
+[`id_enr_aggs()`](https://almartin82.github.io/mdschooldata/reference/id_enr_aggs.md)
+function creates boolean flags. `is_charter` is detected from the
+`charter_flag` column.
+
+------------------------------------------------------------------------
+
 ## README Images from Vignettes (REQUIRED)
 
 **NEVER use `man/figures/` or `generate_readme_figs.R` for README
