@@ -45,32 +45,34 @@
 #' }
 get_available_years <- function() {
   # Maryland Department of Planning publishes enrollment data from 2014-present
-  # MSDE Staff and Student Publications have demographic data from around 2019
-  # Most recent data is typically from the prior school year
-  current_year <- as.integer(format(Sys.Date(), "%Y"))
+  # MD Planning provides grade-level enrollment for state and 24 jurisdictions
+  # Data range: 2014 to one year before the most recent MDP release
+  # MDP releases typically in August/September
+  #
+  # IMPORTANT: Demographic data (race/ethnicity, gender) from MSDE PDFs is
 
-  # Data is usually available by late fall for the prior year
-  # If we're past October, the previous year's data should be available
-  current_month <- as.integer(format(Sys.Date(), "%m"))
-  max_year <- if (current_month >= 11) current_year else current_year - 1
+  # unreliable due to PDF parsing issues. The PDF parser creates multiple rows
+  # per entity with incorrectly mapped demographic values.
+  # Use Maryland Report Card website for demographic breakdowns.
 
+  # MDP 2025 release contains data through 2024
+  # Max reliable year is 2024 (last year in MDP 2025 release)
   list(
     min_year = 2014,
-    max_year = max_year,
-    available = 2014:max_year,
-    # Track which years have demographic data available
-    # NOTE: Demographic data from MSDE PDFs is unreliable due to parsing issues
-    # Set include_demographics=FALSE in get_raw_enr() to avoid corrupted data
-    demographic_years = integer(0),  # No reliable demographic data available
+    max_year = 2024,
+    available = 2014:2024,
+    # No reliable demographic data available from automated sources
+    demographic_years = integer(0),
     description = paste(
       "Maryland enrollment data from MD Department of Planning.",
-      "Available years: 2014-present.",
+      "Available years: 2014-2024.",
       "Provides enrollment by grade (K-12) for state and 24 jurisdictions.",
       "NOTE: Demographic breakdowns (race/ethnicity, gender) are not available",
-      "due to PDF parsing issues. Use Maryland Report Card for demographics."
+      "via automated download due to MSDE PDF parsing issues.",
+      "Use Maryland Report Card for demographics."
     ),
     notes = paste(
-      "Data from Maryland Department of Planning (2014-present).",
+      "Data from Maryland Department of Planning (2014-2024).",
       "MD Planning provides enrollment by grade for state and 24 jurisdictions.",
       "For demographic breakdowns (race/ethnicity, gender), use Maryland Report Card:",
       "https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment",
@@ -99,7 +101,10 @@ get_raw_enr <- function(end_year, include_demographics = FALSE) {
 
   message(paste("Downloading Maryland enrollment data for", format_school_year(end_year), "..."))
 
-  # Try MD Department of Planning first (has more historical data)
+  # Use MD Department of Planning exclusively (reliable, grade-level data)
+  # MSDE PDF publications have unreliable parsing that creates corrupted
+
+  # demographic data (subgroup counts exceeding totals, duplicate rows)
   message("  Fetching enrollment data from MD Department of Planning...")
   result <- tryCatch({
     download_mdp_enrollment(end_year)
@@ -108,35 +113,12 @@ get_raw_enr <- function(end_year, include_demographics = FALSE) {
     NULL
   })
 
-  # If MD Planning failed and year is 2019+, try MSDE publications
-  if ((is.null(result) || nrow(result) == 0) && end_year >= 2019) {
-    message("  Trying MSDE Staff and Student Publications...")
-    result <- tryCatch({
-      download_msde_enrollment_publication(end_year)
-    }, error = function(e) {
-      message(paste("  MSDE publication download failed:", e$message))
-      NULL
-    })
-  }
-
   if (is.null(result) || nrow(result) == 0) {
     stop(paste("Could not download enrollment data for", end_year,
-               "from any available source."))
-  }
-
-  # If we have MD Planning data but want demographics, try to merge MSDE data
-  if (include_demographics && end_year >= 2019 && !"white" %in% names(result)) {
-    message("  Fetching demographic data from MSDE...")
-    demo_result <- tryCatch({
-      download_msde_enrollment_publication(end_year)
-    }, error = function(e) {
-      message(paste("  MSDE demographics not available:", e$message))
-      NULL
-    })
-
-    if (!is.null(demo_result) && nrow(demo_result) > 0) {
-      result <- merge_enrollment_demographics(result, demo_result)
-    }
+               "from MD Department of Planning.",
+               "\nMD Planning data is available for years 2014-2024.",
+               "\nFor demographic data, use Maryland Report Card:",
+               "\nhttps://reportcard.msde.maryland.gov"))
   }
 
   message(paste("  Downloaded", nrow(result), "records"))
