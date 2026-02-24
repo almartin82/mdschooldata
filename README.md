@@ -385,7 +385,7 @@ charles %>%
 
 ---
 
-### 13. Grade 9 is 30% larger than grade 12
+### 13. Grade 9 is 21% larger than grade 12
 
 Maryland has 77,465 ninth-graders but only 63,844 twelfth-graders -- a 21% drop. This pattern reflects students leaving the system before graduation.
 
