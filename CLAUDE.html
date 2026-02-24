@@ -41,7 +41,7 @@
 </ul><hr></div>
 <div class="section level2">
 <h2 id="critical-data-source-rules">CRITICAL DATA SOURCE RULES<a class="anchor" aria-label="anchor" href="#critical-data-source-rules"></a></h2>
-<p><strong>NEVER use Urban Institute API, NCES CCD, or ANY federal data source</strong> – the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source – do not fall back to federal data.</p>
+<p><strong>NEVER use Urban Institute API, NCES CCD, or ANY federal data source</strong> — the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source — do not fall back to federal data.</p>
 <hr></div>
 <div id="claude-code-instructions" class="section level1">
 
@@ -83,7 +83,7 @@
 </div>
 <div class="section level3">
 <h3 id="pre-pr-checklist">Pre-PR Checklist<a class="anchor" aria-label="anchor" href="#pre-pr-checklist"></a></h3>
-<p>Before opening a PR, verify: - [ ] <code>devtools::check()</code> – 0 errors, 0 warnings - [ ] <code>pytest tests/test_pymdschooldata.py</code> – all tests pass - [ ] <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> – builds without errors - [ ] Vignettes render (no <code>eval=FALSE</code> hacks)</p>
+<p>Before opening a PR, verify: - [ ] <code>devtools::check()</code> — 0 errors, 0 warnings - [ ] <code>pytest tests/test_pymdschooldata.py</code> — all tests pass - [ ] <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> — builds without errors - [ ] Vignettes render (no <code>eval=FALSE</code> hacks)</p>
 <hr></div>
 </div>
 <div class="section level2">
@@ -146,48 +146,19 @@
 <h2 id="valid-filter-values-tidy-enrollment-via-fetch_enrtidy--true">Valid Filter Values (tidy enrollment via <code>fetch_enr(tidy = TRUE)</code>)<a class="anchor" aria-label="anchor" href="#valid-filter-values-tidy-enrollment-via-fetch_enrtidy--true"></a></h2>
 <div class="section level3">
 <h3 id="subgroup">subgroup<a class="anchor" aria-label="anchor" href="#subgroup"></a></h3>
-<p><code>total_enrollment</code></p>
-<p><strong>NOTE:</strong> Demographic subgroups (white, black, hispanic, asian, etc.) are NOT available via automated download. The MSDE PDF parser produces corrupted demographic data where subgroup counts exceed total enrollment. Use the <a href="https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment" class="external-link">Maryland Report Card</a> for demographic breakdowns.</p>
+<p><code>total_enrollment</code>, <code>white</code>, <code>black</code>, <code>hispanic</code>, <code>asian</code>, <code>native_american</code>, <code>pacific_islander</code>, <code>multiracial</code>, <code>special_ed</code>, <code>lep</code>, <code>econ_disadv</code></p>
+<p><strong>NOT in tidy enrollment:</strong> No gender subgroups (<code>male</code>, <code>female</code>) are present in the Maryland tidy enrollment data.</p>
 </div>
 <div class="section level3">
 <h3 id="grade_level">grade_level<a class="anchor" aria-label="anchor" href="#grade_level"></a></h3>
-<p><code>TOTAL</code>, <code>K</code>, <code>01</code>-<code>12</code></p>
-<p>Grade columns are mapped from <code>grade_k</code> -&gt; <code>K</code>, <code>grade_01</code> -&gt; <code>01</code>, etc. The <code><a href="reference/enr_grade_aggs.html">enr_grade_aggs()</a></code> function adds computed aggregates: <code>K8</code>, <code>HS</code>, <code>K12</code>.</p>
-<p><strong>NOTE:</strong> <code>PK</code> (Prekindergarten) is not available in the MD Department of Planning data.</p>
+<p><code>TOTAL</code>, <code>PK</code>, <code>K</code>, <code>01</code>-<code>12</code></p>
+<p>Grade columns are mapped from <code>grade_pk</code> -&gt; <code>PK</code>, <code>grade_k</code> -&gt; <code>K</code>, <code>grade_01</code> -&gt; <code>01</code>, etc. The <code><a href="reference/enr_grade_aggs.html">enr_grade_aggs()</a></code> function adds computed aggregates: <code>K8</code>, <code>HS</code>, <code>K12</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="entity-flags">entity flags<a class="anchor" aria-label="anchor" href="#entity-flags"></a></h3>
-<p><code>is_state</code>, <code>is_district</code>, <code>is_campus</code></p>
-<p>The <code>type</code> column has values <code>State</code>, <code>District</code>, and <code>Campus</code>. The <code><a href="reference/id_enr_aggs.html">id_enr_aggs()</a></code> function creates boolean flags.</p>
+<p><code>is_state</code>, <code>is_district</code>, <code>is_campus</code>, <code>is_charter</code></p>
+<p>The <code>type</code> column has values <code>State</code>, <code>District</code>, and <code>Campus</code>. The <code><a href="reference/id_enr_aggs.html">id_enr_aggs()</a></code> function creates boolean flags. <code>is_charter</code> is detected from the <code>charter_flag</code> column.</p>
 <hr></div>
-</div>
-<div class="section level2">
-<h2 id="data-source-architecture">Data Source Architecture<a class="anchor" aria-label="anchor" href="#data-source-architecture"></a></h2>
-<div class="section level3">
-<h3 id="enrollment-data">Enrollment Data<a class="anchor" aria-label="anchor" href="#enrollment-data"></a></h3>
-<ul><li>
-<strong>Primary source:</strong> Maryland Department of Planning (MDP)
-<ul><li>URL: <a href="https://planning.maryland.gov/MSDC/Documents/school_enrollment/" class="external-link uri">https://planning.maryland.gov/MSDC/Documents/school_enrollment/</a>
-</li>
-<li>Years: 2014-2024</li>
-<li>Contains: Grade-level enrollment (K-12) for state and 24 jurisdictions</li>
-<li>Reliable, well-structured Excel files</li>
-</ul></li>
-<li>
-<strong>NOT used:</strong> MSDE PDF publications
-<ul><li>The MSDE publishes enrollment PDFs with race/ethnicity breakdowns</li>
-<li>PDF parsing is unreliable: creates multiple rows per entity with incorrect demographic values</li>
-<li>Demographic counts can exceed total enrollment (e.g., white=165K for a district with 155K total)</li>
-<li>The <code><a href="reference/get_raw_enr.html">get_raw_enr()</a></code> function no longer falls back to MSDE PDFs</li>
-</ul></li>
-</ul></div>
-<div class="section level3">
-<h3 id="assessment-data">Assessment Data<a class="anchor" aria-label="anchor" href="#assessment-data"></a></h3>
-<ul><li>
-<strong>Statewide proficiency:</strong> Hardcoded from MSDE State Board presentations (2022-2024)</li>
-<li>
-<strong>Participation data:</strong> Downloaded from Maryland Report Card (2022-2024)</li>
-</ul><hr></div>
 </div>
 <div class="section level2">
 <h2 id="readme-images-from-vignettes-required">README Images from Vignettes (REQUIRED)<a class="anchor" aria-label="anchor" href="#readme-images-from-vignettes-required"></a></h2>
@@ -198,10 +169,11 @@
 <hr></div>
 <div class="section level2">
 <h2 id="readme-and-vignette-code-matching-required">README and Vignette Code Matching (REQUIRED)<a class="anchor" aria-label="anchor" href="#readme-and-vignette-code-matching-required"></a></h2>
-<p><strong>CRITICAL RULE:</strong> ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).</p>
+<p><strong>CRITICAL RULE (as of 2026-01-08):</strong> ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).</p>
 <div class="section level3">
 <h3 id="why-this-matters">Why This Matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a></h3>
-<p>The Idaho fix revealed critical bugs when README code didn’t match vignettes: - Wrong district names (lowercase vs ALL CAPS) - Text claims that contradicted actual data - Missing data output in examples</p>
+<p>The Idaho fix revealed critical bugs when README code didn’t match vignettes: - Wrong district names (lowercase vs ALL CAPS) - Text claims that contradicted actual data<br>
+- Missing data output in examples</p>
 </div>
 <div class="section level3">
 <h3 id="readme-story-structure-required">README Story Structure (REQUIRED)<a class="anchor" aria-label="anchor" href="#readme-story-structure-required"></a></h3>
@@ -217,6 +189,103 @@
 <li>
 <strong>Visualization</strong>: Chart from vignette (auto-generated from pkgdown)</li>
 </ol></div>
+<div class="section level3">
+<h3 id="enforcement">Enforcement<a class="anchor" aria-label="anchor" href="#enforcement"></a></h3>
+<p>The <code>state-deploy</code> skill verifies this before deployment: - Extracts all README code blocks - Searches vignettes for EXACT matches - Fails deployment if code not found in vignettes - Randomly audits packages for claim accuracy</p>
+</div>
+<div class="section level3">
+<h3 id="what-this-prevents">What This Prevents<a class="anchor" aria-label="anchor" href="#what-this-prevents"></a></h3>
+<ul><li>❌ Wrong district/entity names (case sensitivity, typos)</li>
+<li>❌ Text claims that contradict data</li>
+<li>❌ Broken code that fails silently</li>
+<li>❌ Missing data output</li>
+<li>✅ Verified, accurate, reproducible examples</li>
+</ul></div>
+<div class="section level3">
+<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">### 1. State enrollment grew 28% since 2002</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>State added 68,000 students from 2002 to 2026, bucking national trends.</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">library</span>(arschooldata)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>enr <span class="ot">&lt;-</span> <span class="fu">fetch_enr_multi</span>(<span class="dv">2002</span><span class="sc">:</span><span class="dv">2026</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>enr <span class="sc">%&gt;%</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="fu">filter</span>(is_state, subgroup <span class="sc">==</span> <span class="st">"total_enrollment"</span>, grade_level <span class="sc">==</span> <span class="st">"TOTAL"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="fu">select</span>(end_year, n_students) <span class="sc">%&gt;%</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="fu">filter</span>(end_year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2002</span>, <span class="dv">2026</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> n_students <span class="sc">-</span> <span class="fu">lag</span>(n_students),</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>         <span class="at">pct_change =</span> <span class="fu">round</span>((n_students <span class="sc">/</span> <span class="fu">lag</span>(n_students) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>))</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co"># Prints: 2002=XXX, 2026=YYY, change=ZZZ, pct=PP.P%</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/arschooldata/articles/..." alt="Chart"><div class="figcaption">Chart</div>
+</div>
+<pre><code>
+
+---
+
+## README and Vignette Code Matching (REQUIRED)
+
+**CRITICAL RULE (as of 2026-01-08):** ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).
+
+### Why This Matters
+
+The Idaho fix revealed critical bugs when README code didn't match vignettes:
+- Wrong district names (lowercase vs ALL CAPS)
+- Text claims that contradicted actual data
+- Missing data output in examples
+
+### README Story Structure (REQUIRED)
+
+Every story/section in the README MUST follow this structure:
+
+1. **Claim**: A factual statement about the data
+2. **Explication**: Brief explanation of why this matters
+3. **Code**: R code that fetches and analyzes the data (MUST exist in a vignette)
+4. **Code Output**: Data table/print statement showing actual values (REQUIRED)
+5. **Visualization**: Chart from vignette (auto-generated from pkgdown)
+
+### Enforcement
+
+The `state-deploy` skill verifies this before deployment:
+- Extracts all README code blocks
+- Searches vignettes for EXACT matches
+- Fails deployment if code not found in vignettes
+- Randomly audits packages for claim accuracy
+
+### What This Prevents
+
+- ❌ Wrong district/entity names (case sensitivity, typos)
+- ❌ Text claims that contradict data
+- ❌ Broken code that fails silently
+- ❌ Missing data output
+- ✅ Verified, accurate, reproducible examples
+
+### Example
+
+```markdown
+### 1. State enrollment grew 28% since 2002
+
+State added 68,000 students from 2002 to 2026, bucking national trends.
+
+```r
+library(idschooldata)
+library(dplyr)
+
+enr &lt;- fetch_enr_multi(2002:2026)
+
+enr %&gt;%
+  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %&gt;%
+  select(end_year, n_students) %&gt;%
+  filter(end_year %in% c(2002, 2026)) %&gt;%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+# Prints: 2002=XXX, 2026=YYY, change=ZZZ, pct=PP.P%</code></pre>
+<p><img src="https://almartin82.github.io/idschooldata/articles/..." alt="Chart"> ```</p>
+</div>
 </div>
 </div>
 

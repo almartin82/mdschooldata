@@ -34,13 +34,11 @@ school).
 ## 1. Less than half of Maryland students are proficient in ELA
 
 In 2024, only 48.4% of Maryland students scored proficient or above on
-ELA assessments – meaning more than half struggle to meet grade-level
+ELA assessments - meaning more than half struggle to meet grade-level
 standards in reading and writing.
 
 ``` r
 prof <- get_statewide_proficiency(2024)
-
-stopifnot(nrow(prof) > 0)
 
 ela_prof <- prof %>%
   filter(subject == "ELA All")
@@ -98,16 +96,14 @@ ggplot(prof %>% filter(grepl("Math|Algebra|Geometry", subject), !grepl("All", su
 
 ## 3. High schoolers on grade-level ELA far outperform middle schoolers
 
-ELA 10 has the highest proficiency at 55.3%, while the middle grades
-cluster around 44-49%. High school students show stronger reading and
-writing skills than their younger peers.
+ELA 10 has the highest proficiency at 55.3%, while grades 5-8 cluster
+around 44-49%. High school students show stronger reading and writing
+skills than their younger peers.
 
 ``` r
 ela_grades <- prof %>%
   filter(grepl("ELA [0-9]", subject)) %>%
   mutate(grade = as.numeric(gsub("ELA ", "", subject)))
-
-stopifnot(nrow(ela_grades) > 0)
 
 ela_grades %>%
   select(subject, pct_proficient) %>%
@@ -147,8 +143,6 @@ math_grades <- prof %>%
   filter(grepl("Math [0-9]", subject)) %>%
   mutate(grade = as.numeric(gsub("Math ", "", subject)))
 
-stopifnot(nrow(math_grades) > 0)
-
 math_grades %>%
   select(grade, subject, pct_proficient) %>%
   arrange(grade)
@@ -178,7 +172,7 @@ ggplot(math_grades, aes(x = factor(grade), y = pct_proficient)) +
 ## 5. Science proficiency dropped sharply from 2023 to 2024
 
 Science grade 5 proficiency fell from 34.5% to 30.6%, and science 8
-dropped from 35.4% to 26.4% – both moving in the wrong direction.
+dropped from 35.4% to 26.4% - both moving in the wrong direction.
 
 ``` r
 prof_2023 <- get_statewide_proficiency(2023)
@@ -188,8 +182,6 @@ science_trends <- bind_rows(
   prof_2023 %>% filter(grepl("Science", subject)) %>% mutate(year = 2023),
   prof_2024 %>% filter(grepl("Science", subject)) %>% mutate(year = 2024)
 )
-
-stopifnot(nrow(science_trends) > 0)
 
 science_trends %>%
   select(year, subject, pct_proficient) %>%
@@ -226,8 +218,6 @@ ela_trends <- bind_rows(
   prof_2024 %>% filter(subject == "ELA All") %>% mutate(year = 2024)
 )
 
-stopifnot(nrow(ela_trends) == 3)
-
 ela_trends %>%
   select(year, pct_proficient) %>%
   mutate(change_from_2022 = pct_proficient - first(pct_proficient))
@@ -253,8 +243,7 @@ ggplot(ela_trends, aes(x = factor(year), y = pct_proficient)) +
 ## 7. Math proficiency is improving, but slowly
 
 Math proficiency increased from 21.0% in 2022 to 24.1% in 2024, a gain
-of 3.1 percentage points. Progress is real but pace is slow – at this
-rate, it would take over a decade to reach 50%.
+of 3.1 percentage points. Progress is real but pace is slow.
 
 ``` r
 math_trends <- bind_rows(
@@ -262,8 +251,6 @@ math_trends <- bind_rows(
   prof_2023 %>% filter(subject == "Math All") %>% mutate(year = 2023),
   prof_2024 %>% filter(subject == "Math All") %>% mutate(year = 2024)
 )
-
-stopifnot(nrow(math_trends) == 3)
 
 math_trends %>%
   select(year, pct_proficient) %>%
@@ -299,8 +286,6 @@ algebra_trends <- bind_rows(
   prof_2024 %>% filter(subject == "Algebra I") %>% mutate(year = 2024)
 )
 
-stopifnot(nrow(algebra_trends) == 3)
-
 algebra_trends %>%
   select(year, pct_proficient) %>%
   mutate(change_from_2022 = pct_proficient - first(pct_proficient))
@@ -324,8 +309,6 @@ ela3_trends <- bind_rows(
   prof_2023 %>% filter(subject == "ELA 3") %>% mutate(year = 2023),
   prof_2024 %>% filter(subject == "ELA 3") %>% mutate(year = 2024)
 )
-
-stopifnot(nrow(ela3_trends) == 3)
 
 ela3_trends %>%
   select(year, pct_proficient)
@@ -390,8 +373,7 @@ if (nrow(assess_2024) > 0) {
 ## 11. ELA vs Math: The proficiency gap by grade
 
 At every grade level, ELA proficiency is roughly double math
-proficiency. The gap is widest in grades 7-8, where ELA is around 47-49%
-but math is 7-15%.
+proficiency. The gap is widest in grades 7-8.
 
 ``` r
 comparison <- prof %>%
@@ -403,8 +385,6 @@ comparison <- prof %>%
   select(grade, subject_type, pct_proficient) %>%
   pivot_wider(names_from = subject_type, values_from = pct_proficient) %>%
   mutate(gap = ELA - Math)
-
-stopifnot(nrow(comparison) > 0)
 
 comparison
 #> # A tibble: 6 × 4
@@ -438,8 +418,6 @@ hs_math <- bind_rows(
   prof_2022 %>% filter(subject %in% c("Algebra I", "Algebra II", "Geometry")) %>% mutate(year = 2022),
   prof_2024 %>% filter(subject %in% c("Algebra I", "Algebra II", "Geometry")) %>% mutate(year = 2024)
 )
-
-stopifnot(nrow(hs_math) > 0)
 
 hs_math %>%
   select(year, subject, pct_proficient) %>%
@@ -595,19 +573,20 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] scales_1.4.0       tidyr_1.3.2        dplyr_1.2.0        ggplot2_4.0.2     
-#> [5] mdschooldata_0.3.0
+#> [5] mdschooldata_0.3.0 testthat_3.3.2    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.5.2     tidyselect_1.2.1  
-#>  [5] jquerylib_0.1.4    systemfonts_1.3.1  textshaping_1.0.4  readxl_1.4.5      
-#>  [9] yaml_2.3.12        fastmap_1.2.0      R6_2.6.1           labeling_0.4.3    
-#> [13] generics_0.1.4     curl_7.0.0         knitr_1.51         tibble_3.3.1      
-#> [17] desc_1.4.3         bslib_0.10.0       pillar_1.11.1      RColorBrewer_1.1-3
-#> [21] rlang_1.1.7        utf8_1.2.6         cachem_1.1.0       xfun_0.56         
-#> [25] fs_1.6.6           sass_0.4.10        S7_0.2.1           cli_3.6.5         
-#> [29] pkgdown_2.2.0      withr_3.0.2        magrittr_2.0.4     digest_0.6.39     
-#> [33] grid_4.5.2         rappdirs_0.3.4     lifecycle_1.0.5    vctrs_0.7.1       
-#> [37] evaluate_1.0.5     glue_1.8.0         cellranger_1.1.0   farver_2.1.2      
-#> [41] codetools_0.2-20   ragg_1.5.0         httr_1.4.8         rmarkdown_2.30    
-#> [45] purrr_1.2.1        tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.9
+#>  [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.5.2     brio_1.1.5        
+#>  [5] tidyselect_1.2.1   jquerylib_0.1.4    systemfonts_1.3.1  textshaping_1.0.4 
+#>  [9] readxl_1.4.5       yaml_2.3.12        fastmap_1.2.0      R6_2.6.1          
+#> [13] labeling_0.4.3     generics_0.1.4     curl_7.0.0         knitr_1.51        
+#> [17] tibble_3.3.1       desc_1.4.3         bslib_0.10.0       pillar_1.11.1     
+#> [21] RColorBrewer_1.1-3 rlang_1.1.7        utf8_1.2.6         cachem_1.1.0      
+#> [25] xfun_0.56          fs_1.6.6           sass_0.4.10        S7_0.2.1          
+#> [29] cli_3.6.5          pkgdown_2.2.0      withr_3.0.2        magrittr_2.0.4    
+#> [33] digest_0.6.39      grid_4.5.2         rappdirs_0.3.4     lifecycle_1.0.5   
+#> [37] vctrs_0.7.1        evaluate_1.0.5     glue_1.8.0         cellranger_1.1.0  
+#> [41] farver_2.1.2       codetools_0.2-20   ragg_1.5.0         httr_1.4.8        
+#> [45] purrr_1.2.1        rmarkdown_2.30     tools_4.5.2        pkgconfig_2.0.3   
+#> [49] htmltools_0.5.9
 ```
