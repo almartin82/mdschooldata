@@ -14,5 +14,6 @@
 ^EXPANSION\.md$
 ^ASSESSMENT-IMPLEMENTATION-SUMMARY\.md$
 ^ASSESSMENT-RESEARCH\.md$
+^DATA-CATEGORY-TAXONOMY\.md$
 ^py.*schooldata$
 ^vignettes/.*_cache$
