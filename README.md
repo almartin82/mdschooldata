@@ -7,25 +7,60 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-**[Documentation](https://almartin82.github.io/mdschooldata/)** | **[Enrollment Trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html)** | **[Assessment Data](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html)**
+Maryland's 859,000 students span 24 Local School Systems -- from tiny Kent County (1,591 students) to sprawling Montgomery County (155,000). Less than half are proficient in reading, and only 1 in 4 can do grade-level math. The data tells a story of stark geographic divides and post-pandemic challenges.
 
-Fetch and analyze Maryland school enrollment and assessment data from the Maryland State Department of Education (MSDE) in R or Python.
+Part of the [njschooldata](https://github.com/almartin82/njschooldata) family.
 
-Part of the **[State Schooldata Project](https://github.com/almartin82/njschooldata)** - providing simple, consistent interfaces for accessing state-published school data. Originally inspired by [njschooldata](https://github.com/almartin82/njschooldata).
+**[Full documentation](https://almartin82.github.io/mdschooldata/)** -- all 30 stories with interactive charts, getting-started guide, and complete function reference.
 
-## What can you find with mdschooldata?
-
-**9 years of enrollment data (2016-2024).** 859,000 students. 24 local school systems. **MCAP assessment data (2022-2024).** Here are stories hiding in the numbers:
-
----
-
-### 1. Montgomery County is Maryland's largest district with 155,000 students
-
-Montgomery County Public Schools enrolls more students than entire states like Wyoming or Vermont. It is one of the top 20 largest school districts in the nation.
+## Highlights
 
 ```r
 library(mdschooldata)
 library(dplyr)
+library(tidyr)
+```
+
+### 1. Math proficiency plummets from 40% in grade 3 to 7% by grade 8
+
+The math proficiency cliff is dramatic: 40% of 3rd graders are on grade level, but only 7% of 8th graders are. Students fall further behind each year.
+
+```r
+prof <- get_statewide_proficiency(2024)
+
+math_grades <- prof %>%
+  filter(grepl("Math [0-9]", subject)) %>%
+  mutate(grade = as.numeric(gsub("Math ", "", subject)))
+
+stopifnot(nrow(math_grades) > 0)
+
+math_grades %>%
+  select(grade, subject, pct_proficient) %>%
+  arrange(grade)
+#> # A tibble: 6 x 3
+#>   grade subject pct_proficient
+#>   <dbl> <chr>            <dbl>
+#> 1     3 Math 3            40.0
+#> 2     4 Math 4            32.8
+#> 3     5 Math 5            28.8
+#> 4     6 Math 6            19.8
+#> 5     7 Math 7            15.3
+#> 6     8 Math 8             7.0
+```
+
+![Math Proficiency Cliff: Grade 3 to Grade 8](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-04-math-decline-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html#math-decline)
+
+---
+
+### 2. Kindergarten dropped 10% in 2020 and never fully recovered
+
+COVID hit kindergarten hardest. Maryland lost 10.3% of kindergartners in the 2019-20 school year as families delayed enrollment. By 2024, kindergarten enrollment is still 8.5% below its 2019 peak.
+
+```r
+enr <- fetch_enr_multi(2016:2024, use_cache = TRUE)
+enr_current <- fetch_enr(2024, use_cache = TRUE)
 
 # Helper function to get unique district totals
 get_district_totals <- function(df) {
@@ -35,38 +70,6 @@ get_district_totals <- function(df) {
     distinct()
 }
 
-enr_current <- fetch_enr(2024, use_cache = TRUE)
-
-top_districts <- get_district_totals(enr_current) %>%
-  arrange(desc(n_students)) %>%
-  head(5) %>%
-  mutate(district_label = reorder(district_name, n_students))
-
-stopifnot(nrow(top_districts) > 0)
-
-top_districts %>%
-  select(district_name, n_students)
-#> # A tibble: 5 x 2
-#>   district_name   n_students
-#>   <chr>                <dbl>
-#> 1 Montgomery          154791
-#> 2 Prince George's     127330
-#> 3 Baltimore County    105944
-#> 4 Anne Arundel         82353
-#> 5 Baltimore City       72995
-```
-
-![Maryland's Largest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-01-top-districts-1.png)
-
----
-
-### 2. Maryland enrollment has been remarkably stable since 2016
-
-Maryland has maintained roughly 855,000-877,000 students over the past 9 years. A brief dip during COVID in 2020-2021 recovered by 2022, and enrollment has held steady near 859,000.
-
-```r
-enr <- fetch_enr_multi(2016:2024, use_cache = TRUE)
-
 # Helper function to get unique state totals
 get_state_totals <- function(df) {
   df %>%
@@ -75,62 +78,6 @@ get_state_totals <- function(df) {
     distinct()
 }
 
-state_trend <- get_state_totals(enr) %>%
-  arrange(end_year)
-
-stopifnot(nrow(state_trend) > 0)
-
-state_trend %>%
-  select(end_year, n_students)
-#> # A tibble: 9 x 2
-#>   end_year n_students
-#>      <int>      <dbl>
-#> 1     2016     854913
-#> 2     2017     862867
-#> 3     2018     865491
-#> 4     2019     876810
-#> 5     2020     858519
-#> 6     2021     853307
-#> 7     2022     858850
-#> 8     2023     858362
-#> 9     2024     859083
-```
-
-![Maryland Statewide Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-02-state-trend-1.png)
-
----
-
-### 3. Baltimore City lost nearly 5,000 students since 2016
-
-Baltimore City enrollment has declined 6.3% from 77,866 in 2016 to 72,995 in 2024. The decline has been steady, with a slight uptick in 2024. Population loss and suburban migration are driving forces.
-
-```r
-baltimore <- get_district_totals(enr) %>%
-  filter(district_name == "Baltimore City") %>%
-  arrange(end_year)
-
-stopifnot(nrow(baltimore) > 0)
-
-baltimore %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-#> # A tibble: 2 x 5
-#>   end_year district_name  n_students change pct_change
-#>      <int> <chr>               <dbl>  <dbl>      <dbl>
-#> 1     2016 Baltimore City      77866     NA       NA
-#> 2     2024 Baltimore City      72995  -4871       -6.3
-```
-
-![Baltimore City Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png)
-
----
-
-### 4. Kindergarten dropped 10% in 2020 and never fully recovered
-
-COVID hit kindergarten hardest. Maryland lost 10.3% of kindergartners in the 2019-20 school year as families delayed enrollment. By 2024, kindergarten enrollment is still 8.5% below its 2019 peak.
-
-```r
 k_trend <- enr %>%
   filter(is_state, subgroup == "total_enrollment",
          grade_level %in% c("K", "01", "06", "12")) %>%
@@ -160,126 +107,13 @@ k_trend %>%
 
 ![COVID Impact on Grade-Level Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-04-covid-k-1.png)
 
----
-
-### 5. The Eastern Shore has barely changed in a decade
-
-Five Eastern Shore counties collectively serve about 33,000 students. Unlike the dramatic declines seen elsewhere, the Eastern Shore has been remarkably stable since 2016.
-
-```r
-eastern_shore <- c("Worcester", "Somerset", "Dorchester", "Wicomico", "Caroline")
-
-eastern <- get_district_totals(enr) %>%
-  filter(district_name %in% eastern_shore) %>%
-  group_by(end_year) %>%
-  summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop") %>%
-  arrange(end_year)
-
-stopifnot(nrow(eastern) > 0)
-
-eastern %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-#> # A tibble: 2 x 4
-#>   end_year n_students change pct_change
-#>      <int>      <dbl>  <dbl>      <dbl>
-#> 1     2016      33326     NA       NA
-#> 2     2024      33491    165        0.5
-```
-
-![Eastern Shore Combined Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-05-eastern-shore-1.png)
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#covid-kindergarten)
 
 ---
 
-### 6. Western Maryland is shrinking: Garrett lost 12% since 2016
+### 3. Frederick County grew 16% -- fastest in the state
 
-Allegany and Garrett counties in Appalachian Maryland have lost 7% and 12% of students respectively since 2016.
-
-```r
-western <- c("Allegany", "Garrett")
-
-western_trend <- get_district_totals(enr) %>%
-  filter(district_name %in% western) %>%
-  arrange(district_name, end_year)
-
-stopifnot(nrow(western_trend) > 0)
-
-western_trend %>%
-  group_by(district_name) %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
-  filter(!is.na(change)) %>%
-  select(district_name, end_year, n_students, change, pct_change)
-#> # A tibble: 2 x 5
-#> # Groups:   district_name [2]
-#>   district_name end_year n_students change pct_change
-#>   <chr>            <int>      <dbl>  <dbl>      <dbl>
-#> 1 Allegany          2024       7640   -572       -7.0
-#> 2 Garrett           2024       3193   -445      -12.2
-```
-
-![Western Maryland Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-06-western-md-1.png)
-
----
-
-### 7. Anne Arundel grew 4% while nearby Baltimore County shrank
-
-Anne Arundel County has quietly added 3,200 students since 2016, growing 4.1%. The Annapolis-area county benefits from military families at Fort Meade and its proximity to both DC and Baltimore.
-
-```r
-aa <- get_district_totals(enr) %>%
-  filter(district_name == "Anne Arundel") %>%
-  arrange(end_year)
-
-stopifnot(nrow(aa) > 0)
-
-aa %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-#> # A tibble: 2 x 5
-#>   end_year district_name n_students change pct_change
-#>      <int> <chr>              <dbl>  <dbl>      <dbl>
-#> 1     2016 Anne Arundel       79126     NA       NA
-#> 2     2024 Anne Arundel       82353   3227        4.1
-```
-
-![Anne Arundel County Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-07-anne-arundel-1.png)
-
----
-
-### 8. The I-95 corridor enrolls 61% of all Maryland students
-
-Five counties along I-95 (Baltimore County, Montgomery, Prince George's, Howard, and Anne Arundel) enroll 526,000 of Maryland's 859,000 students.
-
-```r
-i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
-
-corridor <- get_district_totals(enr_current) %>%
-  mutate(corridor = ifelse(district_name %in% i95, "I-95 Corridor", "Rest of Maryland")) %>%
-  group_by(corridor) %>%
-  summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop")
-
-stopifnot(nrow(corridor) == 2)
-
-corridor %>%
-  mutate(pct = round(n_students / sum(n_students) * 100, 1))
-#> # A tibble: 2 x 3
-#>   corridor         n_students   pct
-#>   <chr>                 <dbl> <dbl>
-#> 1 I-95 Corridor        526451  61.3
-#> 2 Rest of Maryland     332632  38.7
-```
-
-![The I-95 Corridor Dominates Maryland Education](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-08-i95-corridor-1.png)
-
----
-
-### 9. Frederick County grew 16% -- fastest in the state
-
-Frederick County has added over 6,300 students since 2016, a 15.8% increase. Located between the DC suburbs and western Maryland, Frederick attracts families seeking more affordable housing.
+Frederick County has added over 6,300 students since 2016, a 15.8% increase. Located between the DC suburbs and western Maryland, Frederick attracts families seeking more affordable housing while maintaining access to the DC job market.
 
 ```r
 frederick <- get_district_totals(enr) %>%
@@ -301,432 +135,32 @@ frederick %>%
 
 ![Frederick County Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-09-frederick-growth-1.png)
 
----
-
-### 10. Baltimore County vs Baltimore City: Divergent paths
-
-While Baltimore City lost nearly 5,000 students (-6.3%), Baltimore County also shrank but from a higher base. Both are losing students, though at different rates.
-
-```r
-baltimore_both <- get_district_totals(enr) %>%
-  filter(district_name %in% c("Baltimore City", "Baltimore County")) %>%
-  arrange(district_name, end_year)
-
-stopifnot(nrow(baltimore_both) > 0)
-
-baltimore_both %>%
-  group_by(district_name) %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
-  filter(!is.na(change)) %>%
-  select(district_name, end_year, n_students, change, pct_change)
-#> # A tibble: 2 x 5
-#> # Groups:   district_name [2]
-#>   district_name    end_year n_students change pct_change
-#>   <chr>               <int>      <dbl>  <dbl>      <dbl>
-#> 1 Baltimore City       2024      72995  -4871       -6.3
-#> 2 Baltimore County     2024     105944  -2372       -2.2
-```
-
-![Baltimore City vs Baltimore County](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-10-baltimore-comparison-1.png)
-
----
-
-### 11. Howard County plateaued after years of growth
-
-Howard County grew from 54,348 in 2016 to 57,508 in 2019, then flattened. The county is now one of the few large districts where enrollment has stopped growing.
-
-```r
-howard <- get_district_totals(enr) %>%
-  filter(district_name == "Howard") %>%
-  arrange(end_year)
-
-stopifnot(nrow(howard) > 0)
-
-howard %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-#> # A tibble: 2 x 5
-#>   end_year district_name n_students change pct_change
-#>      <int> <chr>              <dbl>  <dbl>      <dbl>
-#> 1     2016 Howard             54348     NA       NA
-#> 2     2024 Howard             56033   1685        3.1
-```
-
-![Howard County Enrollment Plateau](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-11-howard-plateau-1.png)
-
----
-
-### 12. Charles County: Southern Maryland's steady growth
-
-Charles County has added 1,483 students (+5.8%) since 2016. The county serves as a bedroom community for DC-area workers seeking affordable housing.
-
-```r
-charles <- get_district_totals(enr) %>%
-  filter(district_name == "Charles") %>%
-  arrange(end_year)
-
-stopifnot(nrow(charles) > 0)
-
-charles %>%
-  filter(end_year %in% c(min(end_year), max(end_year))) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-#> # A tibble: 2 x 5
-#>   end_year district_name n_students change pct_change
-#>      <int> <chr>              <dbl>  <dbl>      <dbl>
-#> 1     2016 Charles            25522     NA       NA
-#> 2     2024 Charles            27005   1483        5.8
-```
-
-![Charles County Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-12-charles-county-1.png)
-
----
-
-### 13. Grade 9 is 21% larger than grade 12
-
-Maryland has 77,465 ninth-graders but only 63,844 twelfth-graders -- a 21% drop. This pattern reflects students leaving the system before graduation.
-
-```r
-grade_data <- enr_current %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level != "TOTAL") %>%
-  select(grade_level, n_students) %>%
-  mutate(grade_num = case_when(
-    grade_level == "K" ~ 0,
-    TRUE ~ as.numeric(grade_level)
-  )) %>%
-  arrange(grade_num)
-
-stopifnot(nrow(grade_data) > 0)
-
-grade_data %>%
-  select(grade_level, n_students) %>%
-  arrange(desc(n_students))
-#> # A tibble: 13 x 2
-#>   grade_level n_students
-#>   <chr>            <dbl>
-#> 1 09               77465
-#> 2 10               71084
-#> 3 03               66787
-#> 4 08               66456
-#> 5 05               66109
-#> 6 06               65065
-#> 7 11               65596
-#> 8 07               65407
-#> 9 04               65025
-#> 10 02              64126
-#> 11 12              63844
-#> 12 01              62557
-#> 13 K               59562
-```
-
-![Maryland Enrollment by Grade Level](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-13-grade-structure-1.png)
-
----
-
-### 14. Montgomery County peaked in 2019 and has been declining
-
-Maryland's largest district reached 160,587 students in 2019, then lost nearly 6,000 students by 2024. This 3.6% decline signals broader suburban enrollment pressure.
-
-```r
-montgomery <- get_district_totals(enr) %>%
-  filter(district_name == "Montgomery") %>%
-  arrange(end_year)
-
-stopifnot(nrow(montgomery) > 0)
-
-montgomery %>%
-  select(end_year, n_students) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-#> # A tibble: 9 x 4
-#>   end_year n_students change pct_change
-#>      <int>      <dbl>  <dbl>      <dbl>
-#> 1     2016     154690     NA       NA
-#> 2     2017     157123   2433        1.6
-#> 3     2018     158101    978        0.6
-#> 4     2019     160587   2486        1.6
-#> 5     2020     156967  -3620       -2.3
-#> 6     2021     154592  -2375       -1.5
-#> 7     2022     156246   1654        1.1
-#> 8     2023     155788   -458       -0.3
-#> 9     2024     154791   -997       -0.6
-```
-
-![Montgomery County: From Growth to Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-14-montgomery-trend-1.png)
-
----
-
-### 15. Small counties face existential challenges
-
-Kent County has just 1,591 students, Somerset has 2,619, and Garrett has 3,193. These are among the smallest school districts in the mid-Atlantic region.
-
-```r
-small_counties <- c("Kent", "Somerset", "Garrett")
-
-small_trend <- get_district_totals(enr) %>%
-  filter(district_name %in% small_counties) %>%
-  arrange(district_name, end_year)
-
-stopifnot(nrow(small_trend) > 0)
-
-small_trend %>%
-  filter(end_year == max(end_year)) %>%
-  select(district_name, n_students) %>%
-  arrange(n_students)
-#> # A tibble: 3 x 2
-#>   district_name n_students
-#>   <chr>              <dbl>
-#> 1 Kent                1591
-#> 2 Somerset            2619
-#> 3 Garrett             3193
-```
-
-![Maryland's Smallest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-15-small-counties-1.png)
-
----
-
-## Assessment Data: Maryland Comprehensive Assessment Program (MCAP)
-
-The MCAP is Maryland's statewide assessment program, aligned to the Maryland College and Career Ready Standards. Students are tested in English Language Arts (grades 3-8 and 10), Mathematics (grades 3-8 plus Algebra I, Algebra II, and Geometry), and Science (grades 5, 8, and high school).
-
----
-
-### 16. Less than half of Maryland students are proficient in ELA
-
-In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments -- meaning more than half struggle to meet grade-level standards in reading and writing.
-
-```r
-library(mdschooldata)
-library(dplyr)
-
-prof <- get_statewide_proficiency(2024)
-
-stopifnot(nrow(prof) > 0)
-
-ela_prof <- prof %>%
-  filter(subject == "ELA All")
-
-ela_prof %>%
-  select(subject, pct_proficient)
-#> # A tibble: 1 x 2
-#>   subject  pct_proficient
-#>   <chr>             <dbl>
-#> 1 ELA All            48.4
-```
-
-![ELA Proficiency by Grade, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-01-ela-proficiency-1.png)
-
----
-
-### 17. Math proficiency is half of ELA at just 24%
-
-Maryland's mathematics proficiency is alarmingly low at 24.1% statewide, less than half the ELA rate. Math 8 is the lowest at just 7% proficient.
-
-```r
-math_prof <- prof %>%
-  filter(subject == "Math All")
-
-math_prof %>%
-  select(subject, pct_proficient)
-#> # A tibble: 1 x 2
-#>   subject   pct_proficient
-#>   <chr>              <dbl>
-#> 1 Math All            24.1
-```
-
-![Math Proficiency by Course, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-02-math-proficiency-1.png)
-
----
-
-### 18. Math proficiency plummets from 40% in grade 3 to 7% by grade 8
-
-The math proficiency cliff is dramatic: 40% of 3rd graders are on grade level, but only 7% of 8th graders are.
-
-```r
-math_grades <- prof %>%
-  filter(grepl("Math [0-9]", subject)) %>%
-  mutate(grade = as.numeric(gsub("Math ", "", subject)))
-
-stopifnot(nrow(math_grades) > 0)
-
-math_grades %>%
-  select(grade, subject, pct_proficient) %>%
-  arrange(grade)
-#> # A tibble: 6 x 3
-#>   grade subject pct_proficient
-#>   <dbl> <chr>            <dbl>
-#> 1     3 Math 3            40.0
-#> 2     4 Math 4            32.8
-#> 3     5 Math 5            28.8
-#> 4     6 Math 6            19.8
-#> 5     7 Math 7            15.3
-#> 6     8 Math 8             7.0
-```
-
-![Math Proficiency Cliff: Grade 3 to Grade 8](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-04-math-decline-1.png)
-
----
-
-### 19. ELA proficiency improved 3 points since 2022
-
-Maryland's ELA proficiency has recovered from pandemic lows: 45.3% in 2022 to 48.4% in 2024, a gain of 3.1 percentage points.
-
-```r
-prof_2022 <- get_statewide_proficiency(2022)
-prof_2023 <- get_statewide_proficiency(2023)
-prof_2024 <- get_statewide_proficiency(2024)
-
-ela_trends <- bind_rows(
-  prof_2022 %>% filter(subject == "ELA All") %>% mutate(year = 2022),
-  prof_2023 %>% filter(subject == "ELA All") %>% mutate(year = 2023),
-  prof_2024 %>% filter(subject == "ELA All") %>% mutate(year = 2024)
-)
-
-stopifnot(nrow(ela_trends) == 3)
-
-ela_trends %>%
-  select(year, pct_proficient) %>%
-  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
-#> # A tibble: 3 x 3
-#>    year pct_proficient change_from_2022
-#>   <dbl>          <dbl>            <dbl>
-#> 1  2022           45.3              0
-#> 2  2023           47.9              2.6
-#> 3  2024           48.4              3.1
-```
-
-![ELA Recovery Since 2022](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-06-ela-recovery-1.png)
-
----
-
-### 20. Math proficiency is improving, but slowly
-
-Math proficiency increased from 21.0% in 2022 to 24.1% in 2024, a gain of 3.1 percentage points. Progress is real but pace is slow.
-
-```r
-math_trends <- bind_rows(
-  prof_2022 %>% filter(subject == "Math All") %>% mutate(year = 2022),
-  prof_2023 %>% filter(subject == "Math All") %>% mutate(year = 2023),
-  prof_2024 %>% filter(subject == "Math All") %>% mutate(year = 2024)
-)
-
-stopifnot(nrow(math_trends) == 3)
-
-math_trends %>%
-  select(year, pct_proficient) %>%
-  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
-#> # A tibble: 3 x 3
-#>    year pct_proficient change_from_2022
-#>   <dbl>          <dbl>            <dbl>
-#> 1  2022           21.0              0
-#> 2  2023           23.3              2.3
-#> 3  2024           24.1              3.1
-```
-
-![Math Recovery Since 2022](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-07-math-recovery-1.png)
-
----
-
-### 21. ELA vs Math: The proficiency gap by grade
-
-At every grade level, ELA proficiency is roughly double math proficiency. The gap is widest in grades 7-8.
-
-```r
-library(tidyr)
-
-comparison <- prof %>%
-  filter(grepl("^(ELA|Math) [0-9]$", subject)) %>%
-  mutate(
-    grade = gsub("(ELA|Math) ", "", subject),
-    subject_type = ifelse(grepl("ELA", subject), "ELA", "Math")
-  ) %>%
-  select(grade, subject_type, pct_proficient) %>%
-  pivot_wider(names_from = subject_type, values_from = pct_proficient) %>%
-  mutate(gap = ELA - Math)
-
-stopifnot(nrow(comparison) > 0)
-
-comparison
-#> # A tibble: 7 x 4
-#>   grade   ELA  Math   gap
-#>   <chr> <dbl> <dbl> <dbl>
-#> 1 3      46.5  40.0   6.5
-#> 2 4      49.3  32.8  16.5
-#> 3 5      44.2  28.8  15.4
-#> 4 6      47.9  19.8  28.1
-#> 5 7      48.6  15.3  33.3
-#> 6 8      46.2   7.0  39.2
-#> 7 10     55.3    NA    NA
-```
-
-![ELA vs Math Proficiency by Grade, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-11-ela-math-gap-1.png)
-
----
-
-### 22. Grade 3 ELA is a bellwether for future reading success
-
-Research shows 3rd grade reading is crucial for academic success. Maryland's Grade 3 ELA at 46.5% means over half of students enter 4th grade behind in reading.
-
-```r
-ela3_trends <- bind_rows(
-  prof_2022 %>% filter(subject == "ELA 3") %>% mutate(year = 2022),
-  prof_2023 %>% filter(subject == "ELA 3") %>% mutate(year = 2023),
-  prof_2024 %>% filter(subject == "ELA 3") %>% mutate(year = 2024)
-)
-
-stopifnot(nrow(ela3_trends) == 3)
-
-ela3_trends %>%
-  select(year, pct_proficient)
-#> # A tibble: 3 x 2
-#>    year pct_proficient
-#>   <dbl>          <dbl>
-#> 1  2022           45.8
-#> 2  2023           48.0
-#> 3  2024           46.5
-```
-
-![3rd Grade Reading: The Most Important Benchmark](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-09-grade3-reading-1.png)
-
----
-
-### 23. The path forward: Key challenges for Maryland
-
-Maryland faces significant assessment challenges: over half of students not proficient in ELA, three-quarters not proficient in Math, and dramatic proficiency decline from grade 3 to 8 in math.
-
-```r
-summary_stats <- data.frame(
-  metric = c("ELA Proficiency", "Math Proficiency", "Science 5", "Science 8",
-             "Math 3-to-8 Decline"),
-  value = c("48.4%", "24.1%", "30.6%", "26.4%", "-33 points")
-)
-
-summary_stats
-#>                metric      value
-#> 1     ELA Proficiency      48.4%
-#> 2    Math Proficiency      24.1%
-#> 3           Science 5      30.6%
-#> 4           Science 8      26.4%
-#> 5 Math 3-to-8 Decline -33 points
-```
-
----
-
-## Installation
-
-```r
-# install.packages("remotes")
-remotes::install_github("almartin82/mdschooldata")
-```
-
-## Quick start
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#frederick-growth)
+
+## Data Taxonomy
+
+| Category | Years | Function | Details |
+|----------|-------|----------|---------|
+| **Enrollment** | 2014-2024 | `fetch_enr()` / `fetch_enr_multi()` | State, district. Grade-level (K-12) |
+| **Assessments** | 2022-2024 | `fetch_assessment()` / `get_statewide_proficiency()` | State, district, school. ELA, Math, Science. Participation + proficiency |
+| **Directory** | current | `fetch_directory()` | Charter schools |
+| Graduation | -- | -- | Not yet available |
+| Per-Pupil Spending | -- | -- | Not yet available |
+| Accountability | -- | -- | Not yet available |
+| Chronic Absence | -- | -- | Not yet available |
+| EL Progress | -- | -- | Not yet available |
+| Special Ed | -- | -- | Not yet available |
+
+> See the full [data category taxonomy](DATA-CATEGORY-TAXONOMY.md)
+
+## Quick Start
 
 ### R
 
 ```r
+# install.packages("remotes")
+remotes::install_github("almartin82/mdschooldata")
+
 library(mdschooldata)
 library(dplyr)
 
@@ -785,6 +219,13 @@ prof_2024 = md.get_statewide_proficiency(2024)
 assess_2024 = md.fetch_assessment(2024)
 ```
 
+## Explore More
+
+Full analysis with 30 stories across two vignettes:
+- [Enrollment trends](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html) -- 15 stories
+- [Assessment analysis](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html) -- 15 stories
+- [Function reference](https://almartin82.github.io/mdschooldata/reference/)
+
 ## Data Notes
 
 ### Data Source
@@ -796,9 +237,9 @@ Data is sourced from the Maryland State Department of Education (MSDE):
 
 ### Available Years
 
-**Enrollment:** 2014-2024 - Grade-level enrollment from MD Department of Planning for state and 24 jurisdictions.
+**Enrollment:** 2014-2024 -- Grade-level enrollment from MD Department of Planning for state and 24 jurisdictions.
 
-**Assessment (MCAP):** 2022-2024 - Statewide proficiency summaries and school-level participation data.
+**Assessment (MCAP):** 2022-2024 -- Statewide proficiency summaries and school-level participation data.
 
 ### Census Day
 
@@ -824,20 +265,379 @@ MSDE may suppress data for privacy protection when counts are small. Specific su
 
 ### Maryland-specific notes
 
-- Maryland has exactly **24 Local School Systems** (LSS) - one per county plus Baltimore City
+- Maryland has exactly **24 Local School Systems** (LSS) -- one per county plus Baltimore City
 - **LSS Codes:** 2-digit codes (01 = Allegany through 24 = Worcester)
 - **Baltimore City** (03) is separate from **Baltimore County** (04)
 
-## Part of the State Schooldata Project
+## Deeper Dive
 
-A simple, consistent interface for accessing state-published school data in Python and R.
+### 4. Montgomery County is Maryland's largest district with 155,000 students
 
-**All 50 state packages:** [github.com/almartin82](https://github.com/almartin82?tab=repositories&q=schooldata)
+Montgomery County Public Schools enrolls more students than entire states like Wyoming or Vermont. It is one of the top 20 largest school districts in the nation.
 
-## Author
+```r
+top_districts <- get_district_totals(enr_current) %>%
+  arrange(desc(n_students)) %>%
+  head(5) %>%
+  mutate(district_label = reorder(district_name, n_students))
 
-[Andy Martin](https://github.com/almartin82) (almartin@gmail.com)
+stopifnot(nrow(top_districts) > 0)
 
-## License
+top_districts %>%
+  select(district_name, n_students)
+#> # A tibble: 5 x 2
+#>   district_name   n_students
+#>   <chr>                <dbl>
+#> 1 Montgomery          154791
+#> 2 Prince George's     127330
+#> 3 Baltimore County    105944
+#> 4 Anne Arundel         82353
+#> 5 Baltimore City       72995
+```
 
-MIT
+![Maryland's Largest School Systems](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-01-top-districts-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#montgomery-county)
+
+---
+
+### 5. Baltimore City lost nearly 5,000 students since 2016
+
+Baltimore City enrollment has declined 6.3% from 77,866 in 2016 to 72,995 in 2024. The decline has been steady, with a slight uptick in 2024. Population loss and suburban migration are driving forces.
+
+```r
+baltimore <- get_district_totals(enr) %>%
+  filter(district_name == "Baltimore City") %>%
+  arrange(end_year)
+
+stopifnot(nrow(baltimore) > 0)
+
+baltimore %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 x 5
+#>   end_year district_name  n_students change pct_change
+#>      <int> <chr>               <dbl>  <dbl>      <dbl>
+#> 1     2016 Baltimore City      77866     NA       NA
+#> 2     2024 Baltimore City      72995  -4871       -6.3
+```
+
+![Baltimore City Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#baltimore-city-decline)
+
+---
+
+### 6. Less than half of Maryland students are proficient in ELA
+
+In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments -- meaning more than half struggle to meet grade-level standards in reading and writing.
+
+```r
+ela_prof <- prof %>%
+  filter(subject == "ELA All")
+
+ela_prof %>%
+  select(subject, pct_proficient)
+#> # A tibble: 1 x 2
+#>   subject  pct_proficient
+#>   <chr>             <dbl>
+#> 1 ELA All            48.4
+```
+
+![ELA Proficiency by Grade, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-01-ela-proficiency-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html#ela-proficiency)
+
+---
+
+### 7. Math proficiency is half of ELA at just 24%
+
+Maryland's mathematics proficiency is alarmingly low at 24.1% statewide, less than half the ELA rate. Math 8 is the lowest at just 7% proficient.
+
+```r
+math_prof <- prof %>%
+  filter(subject == "Math All")
+
+math_prof %>%
+  select(subject, pct_proficient)
+#> # A tibble: 1 x 2
+#>   subject   pct_proficient
+#>   <chr>              <dbl>
+#> 1 Math All            24.1
+```
+
+![Math Proficiency by Course, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-02-math-proficiency-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html#math-crisis)
+
+---
+
+### 8. The I-95 corridor enrolls 61% of all Maryland students
+
+Five counties along I-95 (Baltimore County, Montgomery, Prince George's, Howard, and Anne Arundel) enroll 526,000 of Maryland's 859,000 students.
+
+```r
+i95 <- c("Baltimore County", "Montgomery", "Prince George's", "Howard", "Anne Arundel")
+
+corridor <- get_district_totals(enr_current) %>%
+  mutate(corridor = ifelse(district_name %in% i95, "I-95 Corridor", "Rest of Maryland")) %>%
+  group_by(corridor) %>%
+  summarize(n_students = sum(n_students, na.rm = TRUE), .groups = "drop")
+
+stopifnot(nrow(corridor) == 2)
+
+corridor %>%
+  mutate(pct = round(n_students / sum(n_students) * 100, 1))
+#> # A tibble: 2 x 3
+#>   corridor         n_students   pct
+#>   <chr>                 <dbl> <dbl>
+#> 1 I-95 Corridor        526451  61.3
+#> 2 Rest of Maryland     332632  38.7
+```
+
+![The I-95 Corridor Dominates Maryland Education](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-08-i95-corridor-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#i95-corridor)
+
+---
+
+### 9. ELA proficiency improved 3 points since 2022
+
+Maryland's ELA proficiency has recovered from pandemic lows: 45.3% in 2022 to 48.4% in 2024, a gain of 3.1 percentage points.
+
+```r
+prof_2022 <- get_statewide_proficiency(2022)
+prof_2023 <- get_statewide_proficiency(2023)
+prof_2024 <- get_statewide_proficiency(2024)
+
+ela_trends <- bind_rows(
+  prof_2022 %>% filter(subject == "ELA All") %>% mutate(year = 2022),
+  prof_2023 %>% filter(subject == "ELA All") %>% mutate(year = 2023),
+  prof_2024 %>% filter(subject == "ELA All") %>% mutate(year = 2024)
+)
+
+stopifnot(nrow(ela_trends) == 3)
+
+ela_trends %>%
+  select(year, pct_proficient) %>%
+  mutate(change_from_2022 = pct_proficient - first(pct_proficient))
+#> # A tibble: 3 x 3
+#>    year pct_proficient change_from_2022
+#>   <dbl>          <dbl>            <dbl>
+#> 1  2022           45.3              0
+#> 2  2023           47.9              2.6
+#> 3  2024           48.4              3.1
+```
+
+![ELA Recovery Since 2022](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-06-ela-recovery-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html#ela-recovery)
+
+---
+
+### 10. Western Maryland is shrinking: Garrett lost 12% since 2016
+
+Allegany and Garrett counties in Appalachian Maryland have lost 7% and 12% of students respectively since 2016.
+
+```r
+western <- c("Allegany", "Garrett")
+
+western_trend <- get_district_totals(enr) %>%
+  filter(district_name %in% western) %>%
+  arrange(district_name, end_year)
+
+stopifnot(nrow(western_trend) > 0)
+
+western_trend %>%
+  group_by(district_name) %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1)) %>%
+  filter(!is.na(change)) %>%
+  select(district_name, end_year, n_students, change, pct_change)
+#> # A tibble: 2 x 5
+#> # Groups:   district_name [2]
+#>   district_name end_year n_students change pct_change
+#>   <chr>            <int>      <dbl>  <dbl>      <dbl>
+#> 1 Allegany          2024       7640   -572       -7.0
+#> 2 Garrett           2024       3193   -445      -12.2
+```
+
+![Western Maryland Enrollment Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-06-western-md-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#western-maryland)
+
+---
+
+### 11. Grade 9 is 21% larger than grade 12
+
+Maryland has 77,465 ninth-graders but only 63,844 twelfth-graders -- a 21% drop. This pattern reflects students leaving the system before graduation.
+
+```r
+grade_data <- enr_current %>%
+  filter(is_state, subgroup == "total_enrollment", grade_level != "TOTAL") %>%
+  select(grade_level, n_students) %>%
+  mutate(grade_num = case_when(
+    grade_level == "K" ~ 0,
+    TRUE ~ as.numeric(grade_level)
+  )) %>%
+  arrange(grade_num)
+
+stopifnot(nrow(grade_data) > 0)
+
+grade_data %>%
+  select(grade_level, n_students) %>%
+  arrange(desc(n_students))
+#> # A tibble: 13 x 2
+#>   grade_level n_students
+#>   <chr>            <dbl>
+#> 1 09               77465
+#> 2 10               71084
+#> 3 03               66787
+#> 4 08               66456
+#> 5 05               66109
+#> 6 06               65065
+#> 7 11               65596
+#> 8 07               65407
+#> 9 04               65025
+#> 10 02              64126
+#> 11 12              63844
+#> 12 01              62557
+#> 13 K               59562
+```
+
+![Maryland Enrollment by Grade Level](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-13-grade-structure-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#grade-structure)
+
+---
+
+### 12. Montgomery County peaked in 2019 and has been declining
+
+Maryland's largest district reached 160,587 students in 2019, then lost nearly 6,000 students by 2024. This 3.6% decline signals broader suburban enrollment pressure.
+
+```r
+montgomery <- get_district_totals(enr) %>%
+  filter(district_name == "Montgomery") %>%
+  arrange(end_year)
+
+stopifnot(nrow(montgomery) > 0)
+
+montgomery %>%
+  select(end_year, n_students) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 9 x 4
+#>   end_year n_students change pct_change
+#>      <int>      <dbl>  <dbl>      <dbl>
+#> 1     2016     154690     NA       NA
+#> 2     2017     157123   2433        1.6
+#> 3     2018     158101    978        0.6
+#> 4     2019     160587   2486        1.6
+#> 5     2020     156967  -3620       -2.3
+#> 6     2021     154592  -2375       -1.5
+#> 7     2022     156246   1654        1.1
+#> 8     2023     155788   -458       -0.3
+#> 9     2024     154791   -997       -0.6
+```
+
+![Montgomery County: From Growth to Decline](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-14-montgomery-trend-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#montgomery-decline)
+
+---
+
+### 13. ELA vs Math: The proficiency gap by grade
+
+At every grade level, ELA proficiency is roughly double math proficiency. The gap is widest in grades 7-8.
+
+```r
+comparison <- prof %>%
+  filter(grepl("^(ELA|Math) [0-9]$", subject)) %>%
+  mutate(
+    grade = gsub("(ELA|Math) ", "", subject),
+    subject_type = ifelse(grepl("ELA", subject), "ELA", "Math")
+  ) %>%
+  select(grade, subject_type, pct_proficient) %>%
+  pivot_wider(names_from = subject_type, values_from = pct_proficient) %>%
+  mutate(gap = ELA - Math)
+
+stopifnot(nrow(comparison) > 0)
+
+comparison
+#> # A tibble: 7 x 4
+#>   grade   ELA  Math   gap
+#>   <chr> <dbl> <dbl> <dbl>
+#> 1 3      46.5  40.0   6.5
+#> 2 4      49.3  32.8  16.5
+#> 3 5      44.2  28.8  15.4
+#> 4 6      47.9  19.8  28.1
+#> 5 7      48.6  15.3  33.3
+#> 6 8      46.2   7.0  39.2
+#> 7 10     55.3    NA    NA
+```
+
+![ELA vs Math Proficiency by Grade, 2024](https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-11-ela-math-gap-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/maryland-assessment.html#ela-math-gap)
+
+---
+
+### 14. Anne Arundel grew 4% while nearby Baltimore County shrank
+
+Anne Arundel County has quietly added 3,200 students since 2016, growing 4.1%. The Annapolis-area county benefits from military families at Fort Meade and its proximity to both DC and Baltimore.
+
+```r
+aa <- get_district_totals(enr) %>%
+  filter(district_name == "Anne Arundel") %>%
+  arrange(end_year)
+
+stopifnot(nrow(aa) > 0)
+
+aa %>%
+  filter(end_year %in% c(min(end_year), max(end_year))) %>%
+  mutate(change = n_students - lag(n_students),
+         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
+#> # A tibble: 2 x 5
+#>   end_year district_name n_students change pct_change
+#>      <int> <chr>              <dbl>  <dbl>      <dbl>
+#> 1     2016 Anne Arundel       79126     NA       NA
+#> 2     2024 Anne Arundel       82353   3227        4.1
+```
+
+![Anne Arundel County Enrollment Growth](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-07-anne-arundel-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#anne-arundel)
+
+---
+
+### 15. Maryland enrollment has been remarkably stable since 2016
+
+Maryland has maintained roughly 855,000-877,000 students over the past 9 years. A brief dip during COVID in 2020-2021 recovered by 2022, and enrollment has held steady near 859,000.
+
+```r
+state_trend <- get_state_totals(enr) %>%
+  arrange(end_year)
+
+stopifnot(nrow(state_trend) > 0)
+
+state_trend %>%
+  select(end_year, n_students)
+#> # A tibble: 9 x 2
+#>   end_year n_students
+#>      <int>      <dbl>
+#> 1     2016     854913
+#> 2     2017     862867
+#> 3     2018     865491
+#> 4     2019     876810
+#> 5     2020     858519
+#> 6     2021     853307
+#> 7     2022     858850
+#> 8     2023     858362
+#> 9     2024     859083
+```
+
+![Maryland Statewide Enrollment](https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-02-state-trend-1.png)
+
+[(source)](https://almartin82.github.io/mdschooldata/articles/enrollment-trends.html#statewide-enrollment)
