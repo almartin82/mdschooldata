@@ -49,10 +49,12 @@ The MCAP is Maryland's statewide assessment program, aligned to the Maryland Col
 
 ## 1. Less than half of Maryland students are proficient in ELA {#ela-proficiency}
 
-In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments - meaning more than half struggle to meet grade-level standards in reading and writing.
+In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments -- meaning more than half struggle to meet grade-level standards in reading and writing.
 
 ```{r story-01-ela-proficiency}
 prof <- get_statewide_proficiency(2024)
+
+stopifnot(nrow(prof) > 0)
 
 ela_prof <- prof %>%
   filter(subject == "ELA All")
@@ -97,12 +99,14 @@ ggplot(prof %>% filter(grepl("Math|Algebra|Geometry", subject), !grepl("All", su
 
 ## 3. High schoolers on grade-level ELA far outperform middle schoolers {#hs-vs-ms}
 
-ELA 10 has the highest proficiency at 55.3%, while grades 5-8 cluster around 44-49%. High school students show stronger reading and writing skills than their younger peers.
+ELA 10 has the highest proficiency at 55.3%, while the middle grades cluster around 44-49%. High school students show stronger reading and writing skills than their younger peers.
 
 ```{r story-03-ela-by-grade}
 ela_grades <- prof %>%
   filter(grepl("ELA [0-9]", subject)) %>%
   mutate(grade = as.numeric(gsub("ELA ", "", subject)))
+
+stopifnot(nrow(ela_grades) > 0)
 
 ela_grades %>%
   select(subject, pct_proficient) %>%
@@ -128,6 +132,8 @@ math_grades <- prof %>%
   filter(grepl("Math [0-9]", subject)) %>%
   mutate(grade = as.numeric(gsub("Math ", "", subject)))
 
+stopifnot(nrow(math_grades) > 0)
+
 math_grades %>%
   select(grade, subject, pct_proficient) %>%
   arrange(grade)
@@ -145,7 +151,7 @@ ggplot(math_grades, aes(x = factor(grade), y = pct_proficient)) +
 
 ## 5. Science proficiency dropped sharply from 2023 to 2024 {#science-decline}
 
-Science grade 5 proficiency fell from 34.5% to 30.6%, and science 8 dropped from 35.4% to 26.4% - both moving in the wrong direction.
+Science grade 5 proficiency fell from 34.5% to 30.6%, and science 8 dropped from 35.4% to 26.4% -- both moving in the wrong direction.
 
 ```{r story-05-science-trends}
 prof_2023 <- get_statewide_proficiency(2023)
@@ -155,6 +161,8 @@ science_trends <- bind_rows(
   prof_2023 %>% filter(grepl("Science", subject)) %>% mutate(year = 2023),
   prof_2024 %>% filter(grepl("Science", subject)) %>% mutate(year = 2024)
 )
+
+stopifnot(nrow(science_trends) > 0)
 
 science_trends %>%
   select(year, subject, pct_proficient) %>%
@@ -183,6 +191,8 @@ ela_trends <- bind_rows(
   prof_2024 %>% filter(subject == "ELA All") %>% mutate(year = 2024)
 )
 
+stopifnot(nrow(ela_trends) == 3)
+
 ela_trends %>%
   select(year, pct_proficient) %>%
   mutate(change_from_2022 = pct_proficient - first(pct_proficient))
@@ -199,7 +209,7 @@ ggplot(ela_trends, aes(x = factor(year), y = pct_proficient)) +
 
 ## 7. Math proficiency is improving, but slowly {#math-recovery}
 
-Math proficiency increased from 21.0% in 2022 to 24.1% in 2024, a gain of 3.1 percentage points. Progress is real but pace is slow.
+Math proficiency increased from 21.0% in 2022 to 24.1% in 2024, a gain of 3.1 percentage points. Progress is real but pace is slow -- at this rate, it would take over a decade to reach 50%.
 
 ```{r story-07-math-recovery}
 math_trends <- bind_rows(
@@ -207,6 +217,8 @@ math_trends <- bind_rows(
   prof_2023 %>% filter(subject == "Math All") %>% mutate(year = 2023),
   prof_2024 %>% filter(subject == "Math All") %>% mutate(year = 2024)
 )
+
+stopifnot(nrow(math_trends) == 3)
 
 math_trends %>%
   select(year, pct_proficient) %>%
@@ -233,6 +245,8 @@ algebra_trends <- bind_rows(
   prof_2024 %>% filter(subject == "Algebra I") %>% mutate(year = 2024)
 )
 
+stopifnot(nrow(algebra_trends) == 3)
+
 algebra_trends %>%
   select(year, pct_proficient) %>%
   mutate(change_from_2022 = pct_proficient - first(pct_proficient))
@@ -248,6 +262,8 @@ ela3_trends <- bind_rows(
   prof_2023 %>% filter(subject == "ELA 3") %>% mutate(year = 2023),
   prof_2024 %>% filter(subject == "ELA 3") %>% mutate(year = 2024)
 )
+
+stopifnot(nrow(ela3_trends) == 3)
 
 ela3_trends %>%
   select(year, pct_proficient)
@@ -289,7 +305,7 @@ if (nrow(assess_2024) > 0) {
 
 ## 11. ELA vs Math: The proficiency gap by grade {#ela-math-gap}
 
-At every grade level, ELA proficiency is roughly double math proficiency. The gap is widest in grades 7-8.
+At every grade level, ELA proficiency is roughly double math proficiency. The gap is widest in grades 7-8, where ELA is around 47-49% but math is 7-15%.
 
 ```{r story-11-ela-math-gap}
 comparison <- prof %>%
@@ -301,6 +317,8 @@ comparison <- prof %>%
   select(grade, subject_type, pct_proficient) %>%
   pivot_wider(names_from = subject_type, values_from = pct_proficient) %>%
   mutate(gap = ELA - Math)
+
+stopifnot(nrow(comparison) > 0)
 
 comparison
 
@@ -322,6 +340,8 @@ hs_math <- bind_rows(
   prof_2022 %>% filter(subject %in% c("Algebra I", "Algebra II", "Geometry")) %>% mutate(year = 2022),
   prof_2024 %>% filter(subject %in% c("Algebra I", "Algebra II", "Geometry")) %>% mutate(year = 2024)
 )
+
+stopifnot(nrow(hs_math) > 0)
 
 hs_math %>%
   select(year, subject, pct_proficient) %>%

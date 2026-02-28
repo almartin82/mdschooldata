@@ -7,7 +7,7 @@
 
 ## CRITICAL DATA SOURCE RULES
 
-**NEVER use Urban Institute API, NCES CCD, or ANY federal data source** — the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source — do not fall back to federal data.
+**NEVER use Urban Institute API, NCES CCD, or ANY federal data source** -- the entire point of these packages is to provide STATE-LEVEL data directly from state DOEs. Federal sources aggregate/transform data differently and lose state-specific details. If a state DOE source is broken, FIX IT or find an alternative STATE source -- do not fall back to federal data.
 
 ---
 
@@ -49,9 +49,9 @@ pkgdown::build_site()
 ### Pre-PR Checklist
 
 Before opening a PR, verify:
-- [ ] `devtools::check()` — 0 errors, 0 warnings
-- [ ] `pytest tests/test_pymdschooldata.py` — all tests pass
-- [ ] `pkgdown::build_site()` — builds without errors
+- [ ] `devtools::check()` -- 0 errors, 0 warnings
+- [ ] `pytest tests/test_pymdschooldata.py` -- all tests pass
+- [ ] `pkgdown::build_site()` -- builds without errors
 - [ ] Vignettes render (no `eval=FALSE` hacks)
 
 ---
@@ -129,19 +129,45 @@ If CI fails, fix the issue and push - auto-merge triggers when checks pass.
 ## Valid Filter Values (tidy enrollment via `fetch_enr(tidy = TRUE)`)
 
 ### subgroup
-`total_enrollment`, `white`, `black`, `hispanic`, `asian`, `native_american`, `pacific_islander`, `multiracial`, `special_ed`, `lep`, `econ_disadv`
+`total_enrollment`
 
-**NOT in tidy enrollment:** No gender subgroups (`male`, `female`) are present in the Maryland tidy enrollment data.
+**NOTE:** Demographic subgroups (white, black, hispanic, asian, etc.) are NOT available
+via automated download. The MSDE PDF parser produces corrupted demographic data where
+subgroup counts exceed total enrollment. Use the
+[Maryland Report Card](https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment)
+for demographic breakdowns.
 
 ### grade_level
-`TOTAL`, `PK`, `K`, `01`-`12`
+`TOTAL`, `K`, `01`-`12`
 
-Grade columns are mapped from `grade_pk` -> `PK`, `grade_k` -> `K`, `grade_01` -> `01`, etc. The `enr_grade_aggs()` function adds computed aggregates: `K8`, `HS`, `K12`.
+Grade columns are mapped from `grade_k` -> `K`, `grade_01` -> `01`, etc. The `enr_grade_aggs()` function adds computed aggregates: `K8`, `HS`, `K12`.
+
+**NOTE:** `PK` (Prekindergarten) is not available in the MD Department of Planning data.
 
 ### entity flags
-`is_state`, `is_district`, `is_campus`, `is_charter`
+`is_state`, `is_district`, `is_campus`
 
-The `type` column has values `State`, `District`, and `Campus`. The `id_enr_aggs()` function creates boolean flags. `is_charter` is detected from the `charter_flag` column.
+The `type` column has values `State`, `District`, and `Campus`. The `id_enr_aggs()` function creates boolean flags.
+
+---
+
+## Data Source Architecture
+
+### Enrollment Data
+- **Primary source:** Maryland Department of Planning (MDP)
+  - URL: https://planning.maryland.gov/MSDC/Documents/school_enrollment/
+  - Years: 2014-2024
+  - Contains: Grade-level enrollment (K-12) for state and 24 jurisdictions
+  - Reliable, well-structured Excel files
+- **NOT used:** MSDE PDF publications
+  - The MSDE publishes enrollment PDFs with race/ethnicity breakdowns
+  - PDF parsing is unreliable: creates multiple rows per entity with incorrect demographic values
+  - Demographic counts can exceed total enrollment (e.g., white=165K for a district with 155K total)
+  - The `get_raw_enr()` function no longer falls back to MSDE PDFs
+
+### Assessment Data
+- **Statewide proficiency:** Hardcoded from MSDE State Board presentations (2022-2024)
+- **Participation data:** Downloaded from Maryland Report Card (2022-2024)
 
 ---
 
@@ -161,13 +187,13 @@ README images MUST come from pkgdown-generated vignette output so they auto-upda
 
 ## README and Vignette Code Matching (REQUIRED)
 
-**CRITICAL RULE (as of 2026-01-08):** ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).
+**CRITICAL RULE:** ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).
 
 ### Why This Matters
 
 The Idaho fix revealed critical bugs when README code didn't match vignettes:
 - Wrong district names (lowercase vs ALL CAPS)
-- Text claims that contradicted actual data  
+- Text claims that contradicted actual data
 - Missing data output in examples
 
 ### README Story Structure (REQUIRED)
@@ -179,110 +205,3 @@ Every story/section in the README MUST follow this structure:
 3. **Code**: R code that fetches and analyzes the data (MUST exist in a vignette)
 4. **Code Output**: Data table/print statement showing actual values (REQUIRED)
 5. **Visualization**: Chart from vignette (auto-generated from pkgdown)
-
-### Enforcement
-
-The `state-deploy` skill verifies this before deployment:
-- Extracts all README code blocks
-- Searches vignettes for EXACT matches
-- Fails deployment if code not found in vignettes
-- Randomly audits packages for claim accuracy
-
-### What This Prevents
-
-- ❌ Wrong district/entity names (case sensitivity, typos)
-- ❌ Text claims that contradict data
-- ❌ Broken code that fails silently
-- ❌ Missing data output
-- ✅ Verified, accurate, reproducible examples
-
-### Example
-
-```markdown
-### 1. State enrollment grew 28% since 2002
-
-State added 68,000 students from 2002 to 2026, bucking national trends.
-
-```r
-library(arschooldata)
-library(dplyr)
-
-enr <- fetch_enr_multi(2002:2026)
-
-enr %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, n_students) %>%
-  filter(end_year %in% c(2002, 2026)) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-# Prints: 2002=XXX, 2026=YYY, change=ZZZ, pct=PP.P%
-```
-
-![Chart](https://almartin82.github.io/arschooldata/articles/...)
-```
-
-
----
-
-## README and Vignette Code Matching (REQUIRED)
-
-**CRITICAL RULE (as of 2026-01-08):** ALL code blocks in the README MUST match code in a vignette EXACTLY (1:1 correspondence).
-
-### Why This Matters
-
-The Idaho fix revealed critical bugs when README code didn't match vignettes:
-- Wrong district names (lowercase vs ALL CAPS)
-- Text claims that contradicted actual data  
-- Missing data output in examples
-
-### README Story Structure (REQUIRED)
-
-Every story/section in the README MUST follow this structure:
-
-1. **Claim**: A factual statement about the data
-2. **Explication**: Brief explanation of why this matters
-3. **Code**: R code that fetches and analyzes the data (MUST exist in a vignette)
-4. **Code Output**: Data table/print statement showing actual values (REQUIRED)
-5. **Visualization**: Chart from vignette (auto-generated from pkgdown)
-
-### Enforcement
-
-The `state-deploy` skill verifies this before deployment:
-- Extracts all README code blocks
-- Searches vignettes for EXACT matches
-- Fails deployment if code not found in vignettes
-- Randomly audits packages for claim accuracy
-
-### What This Prevents
-
-- ❌ Wrong district/entity names (case sensitivity, typos)
-- ❌ Text claims that contradict data
-- ❌ Broken code that fails silently
-- ❌ Missing data output
-- ✅ Verified, accurate, reproducible examples
-
-### Example
-
-```markdown
-### 1. State enrollment grew 28% since 2002
-
-State added 68,000 students from 2002 to 2026, bucking national trends.
-
-```r
-library(idschooldata)
-library(dplyr)
-
-enr <- fetch_enr_multi(2002:2026)
-
-enr %>%
-  filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") %>%
-  select(end_year, n_students) %>%
-  filter(end_year %in% c(2002, 2026)) %>%
-  mutate(change = n_students - lag(n_students),
-         pct_change = round((n_students / lag(n_students) - 1) * 100, 1))
-# Prints: 2002=XXX, 2026=YYY, change=ZZZ, pct=PP.P%
-```
-
-![Chart](https://almartin82.github.io/idschooldata/articles/...)
-```
-
