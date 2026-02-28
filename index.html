@@ -57,12 +57,12 @@
 <div class="section level2">
 <h2 id="what-can-you-find-with-mdschooldata">What can you find with mdschooldata?<a class="anchor" aria-label="anchor" href="#what-can-you-find-with-mdschooldata"></a>
 </h2>
-<p><strong>10 years of enrollment data (2016-2025).</strong> 890,000 students. 24 local school systems. <strong>MCAP assessment data (2022-2024).</strong> Here are stories hiding in the numbers:</p>
+<p><strong>9 years of enrollment data (2016-2024).</strong> 859,000 students. 24 local school systems. <strong>MCAP assessment data (2022-2024).</strong> Here are stories hiding in the numbers:</p>
 <hr>
 <div class="section level3">
-<h3 id="id_1-montgomery-county-is-bigger-than-most-states">1. Montgomery County is bigger than most states<a class="anchor" aria-label="anchor" href="#id_1-montgomery-county-is-bigger-than-most-states"></a>
+<h3 id="id_1-montgomery-county-is-marylands-largest-district-with-155000-students">1. Montgomery County is Maryland’s largest district with 155,000 students<a class="anchor" aria-label="anchor" href="#id_1-montgomery-county-is-marylands-largest-district-with-155000-students"></a>
 </h3>
-<p>With over 160,000 students, Montgomery County Public Schools is the largest district in Maryland and among the top 20 in the nation. The district alone has more students than entire states like Wyoming or Vermont.</p>
+<p>Montgomery County Public Schools enrolls more students than entire states like Wyoming or Vermont. It is one of the top 20 largest school districts in the nation.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/mdschooldata">mdschooldata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -72,76 +72,82 @@
 <span>  <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">district_name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">n_students</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">enr_current</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2025</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">enr_current</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr.html">fetch_enr</a></span><span class="op">(</span><span class="fl">2024</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">top_districts</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr_current</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>district_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">top_districts</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">top_districts</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">n_students</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 5 x 2</span></span>
 <span><span class="co">#&gt;   district_name   n_students</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Montgomery          159181</span></span>
-<span><span class="co">#&gt; 2 Prince George's     132151</span></span>
-<span><span class="co">#&gt; 3 Anne Arundel         85029</span></span>
-<span><span class="co">#&gt; 4 Baltimore City       84730</span></span>
-<span><span class="co">#&gt; 5 Howard               57565</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Montgomery          154791</span></span>
+<span><span class="co">#&gt; 2 Prince George's     127330</span></span>
+<span><span class="co">#&gt; 3 Baltimore County    105944</span></span>
+<span><span class="co">#&gt; 4 Anne Arundel         82353</span></span>
+<span><span class="co">#&gt; 5 Baltimore City       72995</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-01-top-districts-1.png" alt="Maryland’s Largest School Systems"><div class="figcaption">Maryland’s Largest School Systems</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_2-prince-georges-and-montgomery-a-tale-of-two-counties">2. Prince George’s and Montgomery: A tale of two counties<a class="anchor" aria-label="anchor" href="#id_2-prince-georges-and-montgomery-a-tale-of-two-counties"></a>
+<h3 id="id_2-maryland-enrollment-has-been-remarkably-stable-since-2016">2. Maryland enrollment has been remarkably stable since 2016<a class="anchor" aria-label="anchor" href="#id_2-maryland-enrollment-has-been-remarkably-stable-since-2016"></a>
 </h3>
-<p>Maryland’s two largest systems serve similar numbers of students but have very different demographics. Montgomery is more diverse across groups while Prince George’s has a larger Black student population.</p>
+<p>Maryland has maintained roughly 855,000-877,000 students over the past 9 years. A brief dip during COVID in 2020-2021 recovered by 2022, and enrollment has held steady near 859,000.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pg_mont</span> <span class="op">&lt;-</span> <span class="va">enr_current</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
-<span>         <span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Montgomery"</span>, <span class="st">"Prince George's"</span><span class="op">)</span>,</span>
-<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">subgroup</span>, <span class="va">n_students</span>, <span class="va">pct</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">subgroup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">n_students</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">enr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2016</span><span class="op">:</span><span class="fl">2024</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pg_mont</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 8 x 3</span></span>
-<span><span class="co">#&gt;   district_name   subgroup n_students</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Montgomery      white        165267</span></span>
-<span><span class="co">#&gt; 2 Montgomery      hispanic     161546</span></span>
-<span><span class="co">#&gt; 3 Montgomery      black        159010</span></span>
-<span><span class="co">#&gt; 4 Montgomery      asian        156380</span></span>
-<span><span class="co">#&gt; 5 Prince George's white        135962</span></span>
-<span><span class="co">#&gt; 6 Prince George's hispanic     132322</span></span>
-<span><span class="co">#&gt; 7 Prince George's black        130814</span></span>
-<span><span class="co">#&gt; 8 Prince George's asian        128936</span></span></code></pre></div>
+<span><span class="co"># Helper function to get unique state totals</span></span>
+<span><span class="va">get_state_totals</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">state_trend</span> <span class="op">&lt;-</span> <span class="fu">get_state_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">state_trend</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">state_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 9 x 2</span></span>
+<span><span class="co">#&gt;   end_year n_students</span></span>
+<span><span class="co">#&gt;      &lt;int&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1     2016     854913</span></span>
+<span><span class="co">#&gt; 2     2017     862867</span></span>
+<span><span class="co">#&gt; 3     2018     865491</span></span>
+<span><span class="co">#&gt; 4     2019     876810</span></span>
+<span><span class="co">#&gt; 5     2020     858519</span></span>
+<span><span class="co">#&gt; 6     2021     853307</span></span>
+<span><span class="co">#&gt; 7     2022     858850</span></span>
+<span><span class="co">#&gt; 8     2023     858362</span></span>
+<span><span class="co">#&gt; 9     2024     859083</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-02-pg-vs-montgomery-1.png" alt="Demographics: Montgomery vs Prince George’s"><div class="figcaption">Demographics: Montgomery vs Prince George’s</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-02-state-trend-1.png" alt="Maryland Statewide Enrollment"><div class="figcaption">Maryland Statewide Enrollment</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_3-baltimore-city-enrollment-trends">3. Baltimore City enrollment trends<a class="anchor" aria-label="anchor" href="#id_3-baltimore-city-enrollment-trends"></a>
+<h3 id="id_3-baltimore-city-lost-nearly-5000-students-since-2016">3. Baltimore City lost nearly 5,000 students since 2016<a class="anchor" aria-label="anchor" href="#id_3-baltimore-city-lost-nearly-5000-students-since-2016"></a>
 </h3>
-<p>Baltimore City is Maryland’s fourth-largest district by enrollment. The district serves nearly 85,000 students in the 2024-25 school year.</p>
+<p>Baltimore City enrollment has declined 6.3% from 77,866 in 2016 to 72,995 in 2024. The decline has been steady, with a slight uptick in 2024. Population loss and suburban migration are driving forces.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">enr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fetch_enr_multi.html">fetch_enr_multi</a></span><span class="op">(</span><span class="fl">2016</span><span class="op">:</span><span class="fl">2025</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">baltimore</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Baltimore City"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">baltimore</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Baltimore City"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">baltimore</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">baltimore</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -151,53 +157,61 @@
 <span><span class="co">#&gt;   end_year district_name  n_students change pct_change</span></span>
 <span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;               &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1     2016 Baltimore City      77866     NA       NA</span></span>
-<span><span class="co">#&gt; 2     2025 Baltimore City      84730   6864        8.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     2024 Baltimore City      72995  -4871       -6.3</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png" alt="Baltimore City Enrollment"><div class="figcaption">Baltimore City Enrollment</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-03-baltimore-decline-1.png" alt="Baltimore City Enrollment Decline"><div class="figcaption">Baltimore City Enrollment Decline</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_4-maryland-is-a-majority-minority-state">4. Maryland is a majority-minority state<a class="anchor" aria-label="anchor" href="#id_4-maryland-is-a-majority-minority-state"></a>
+<h3 id="id_4-kindergarten-dropped-10-in-2020-and-never-fully-recovered">4. Kindergarten dropped 10% in 2020 and never fully recovered<a class="anchor" aria-label="anchor" href="#id_4-kindergarten-dropped-10-in-2020-and-never-fully-recovered"></a>
 </h3>
-<p>Maryland has a diverse student population with significant representation from multiple racial and ethnic groups.</p>
+<p>COVID hit kindergarten hardest. Maryland lost 10.3% of kindergartners in the 2019-20 school year as families delayed enrollment. By 2024, kindergarten enrollment is still 8.5% below its 2019 peak.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
-<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">subgroup</span>, <span class="va">n_students</span>, <span class="va">pct</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">subgroup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">n_students</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">k_trend</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>,</span>
+<span>         <span class="va">grade_level</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="st">"01"</span>, <span class="st">"06"</span>, <span class="st">"12"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">grade_level</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">demo</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 4 x 2</span></span>
-<span><span class="co">#&gt;   subgroup n_students</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 white        909414</span></span>
-<span><span class="co">#&gt; 2 hispanic     893689</span></span>
-<span><span class="co">#&gt; 3 black        886221</span></span>
-<span><span class="co">#&gt; 4 asian        879601</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">k_trend</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">k_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">grade_level</span> <span class="op">==</span> <span class="st">"K"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
+<span>         pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 9 x 4</span></span>
+<span><span class="co">#&gt;   end_year n_students change pct_change</span></span>
+<span><span class="co">#&gt;      &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1     2016      64472     NA       NA</span></span>
+<span><span class="co">#&gt; 2     2017      64045   -427       -0.7</span></span>
+<span><span class="co">#&gt; 3     2018      63779   -266       -0.4</span></span>
+<span><span class="co">#&gt; 4     2019      65087   1308        2.1</span></span>
+<span><span class="co">#&gt; 5     2020      58391  -6696      -10.3</span></span>
+<span><span class="co">#&gt; 6     2021      61671   3280        5.6</span></span>
+<span><span class="co">#&gt; 7     2022      60986   -685       -1.1</span></span>
+<span><span class="co">#&gt; 8     2023      60514   -472       -0.8</span></span>
+<span><span class="co">#&gt; 9     2024      59562   -952       -1.6</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-04-demographics-1.png" alt="Maryland Demographics"><div class="figcaption">Maryland Demographics</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-04-covid-k-1.png" alt="COVID Impact on Grade-Level Enrollment"><div class="figcaption">COVID Impact on Grade-Level Enrollment</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_5-the-eastern-shore-tells-a-different-story">5. The Eastern Shore tells a different story<a class="anchor" aria-label="anchor" href="#id_5-the-eastern-shore-tells-a-different-story"></a>
+<h3 id="id_5-the-eastern-shore-has-barely-changed-in-a-decade">5. The Eastern Shore has barely changed in a decade<a class="anchor" aria-label="anchor" href="#id_5-the-eastern-shore-has-barely-changed-in-a-decade"></a>
 </h3>
-<p>Rural counties like Worcester, Somerset, and Dorchester on Maryland’s Eastern Shore have distinct enrollment patterns compared to the state average.</p>
+<p>Five Eastern Shore counties collectively serve about 33,000 students. Unlike the dramatic declines seen elsewhere, the Eastern Shore has been remarkably stable since 2016.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eastern_shore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Worcester"</span>, <span class="st">"Somerset"</span>, <span class="st">"Dorchester"</span>, <span class="st">"Wicomico"</span>, <span class="st">"Caroline"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">eastern</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">eastern_shore</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n_students <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n_students <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">eastern</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">eastern</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -207,82 +221,24 @@
 <span><span class="co">#&gt;   end_year n_students change pct_change</span></span>
 <span><span class="co">#&gt;      &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1     2016      33326     NA       NA</span></span>
-<span><span class="co">#&gt; 2     2025      35943   2617        7.9</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     2024      33491    165        0.5</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-05-eastern-shore-1.png" alt="Eastern Shore Combined Enrollment"><div class="figcaption">Eastern Shore Combined Enrollment</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_6-kindergarten-enrollment-during-covid">6. Kindergarten enrollment during COVID<a class="anchor" aria-label="anchor" href="#id_6-kindergarten-enrollment-during-covid"></a>
+<h3 id="id_6-western-maryland-is-shrinking-garrett-lost-12-since-2016">6. Western Maryland is shrinking: Garrett lost 12% since 2016<a class="anchor" aria-label="anchor" href="#id_6-western-maryland-is-shrinking-garrett-lost-12-since-2016"></a>
 </h3>
-<p>COVID-19 impacted kindergarten enrollment patterns in Maryland, as families made different decisions about when to start school.</p>
+<p>Allegany and Garrett counties in Appalachian Maryland have lost 7% and 12% of students respectively since 2016.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">k_trend</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>,</span>
-<span>         <span class="va">grade_level</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"K"</span>, <span class="st">"01"</span>, <span class="st">"06"</span>, <span class="st">"12"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">grade_level</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">grade_level</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">n_students</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">k_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">grade_level</span> <span class="op">==</span> <span class="st">"K"</span>, <span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2020</span>, <span class="fl">2021</span>, <span class="fl">2024</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
-<span>         pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 3 x 4</span></span>
-<span><span class="co">#&gt;   end_year n_students change pct_change</span></span>
-<span><span class="co">#&gt;      &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     2020      58391     NA       NA</span></span>
-<span><span class="co">#&gt; 2     2021      61671   3280        5.6</span></span>
-<span><span class="co">#&gt; 3     2024      59562  -2109       -3.4</span></span></code></pre></div>
-<div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-06-covid-k-1.png" alt="COVID Impact on Grade-Level Enrollment"><div class="figcaption">COVID Impact on Grade-Level Enrollment</div>
-</div>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="id_7-howard-county-suburban-success-story">7. Howard County: Suburban success story<a class="anchor" aria-label="anchor" href="#id_7-howard-county-suburban-success-story"></a>
-</h3>
-<p>Howard County maintains high enrollment and exceptional diversity, making it a model for suburban integration. No single racial group dominates, reflecting demographic balance.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">howard</span> <span class="op">&lt;-</span> <span class="va">enr_current</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">district_name</span> <span class="op">==</span> <span class="st">"Howard"</span>,</span>
-<span>         <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
-<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span>, <span class="st">"multiracial"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span>, <span class="va">pct</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">subgroup</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">n_students</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">howard</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">subgroup</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 x 2</span></span>
-<span><span class="co">#&gt;   subgroup    n_students</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 white            58868</span></span>
-<span><span class="co">#&gt; 2 multiracial      57293</span></span>
-<span><span class="co">#&gt; 3 hispanic         56784</span></span>
-<span><span class="co">#&gt; 4 black            55626</span></span>
-<span><span class="co">#&gt; 5 asian            54870</span></span></code></pre></div>
-<div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-07-howard-diversity-1.png" alt="Howard County Demographics"><div class="figcaption">Howard County Demographics</div>
-</div>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="id_8-western-maryland-enrollment">8. Western Maryland enrollment<a class="anchor" aria-label="anchor" href="#id_8-western-maryland-enrollment"></a>
-</h3>
-<p>The westernmost counties (Allegany and Garrett) in Appalachian Maryland have smaller student populations than the urban/suburban corridor.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">western</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Allegany"</span>, <span class="st">"Garrett"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">western_trend</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">western</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">western</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">western_trend</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">western_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">district_name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -295,20 +251,23 @@
 <span><span class="co">#&gt; # Groups:   district_name [2]</span></span>
 <span><span class="co">#&gt;   district_name end_year n_students change pct_change</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;            &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Allegany          2025       8872    660        8</span></span>
-<span><span class="co">#&gt; 2 Garrett           2025       3886    248        6.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Allegany          2024       7640   -572       -7.0</span></span>
+<span><span class="co">#&gt; 2 Garrett           2024       3193   -445      -12.2</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-08-western-md-1.png" alt="Western Maryland Enrollment"><div class="figcaption">Western Maryland Enrollment</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-06-western-md-1.png" alt="Western Maryland Enrollment Decline"><div class="figcaption">Western Maryland Enrollment Decline</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_9-anne-arundel-holds-steady">9. Anne Arundel holds steady<a class="anchor" aria-label="anchor" href="#id_9-anne-arundel-holds-steady"></a>
+<h3 id="id_7-anne-arundel-grew-4-while-nearby-baltimore-county-shrank">7. Anne Arundel grew 4% while nearby Baltimore County shrank<a class="anchor" aria-label="anchor" href="#id_7-anne-arundel-grew-4-while-nearby-baltimore-county-shrank"></a>
 </h3>
-<p>Maryland’s fifth-largest district has maintained enrollment stability. The Annapolis-area county benefits from military families at Fort Meade and Naval Academy presence.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>Anne Arundel County has quietly added 3,200 students since 2016, growing 4.1%. The Annapolis-area county benefits from military families at Fort Meade and its proximity to both DC and Baltimore.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aa</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Anne Arundel"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Anne Arundel"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">aa</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">aa</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -318,17 +277,17 @@
 <span><span class="co">#&gt;   end_year district_name n_students change pct_change</span></span>
 <span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1     2016 Anne Arundel       79126     NA       NA</span></span>
-<span><span class="co">#&gt; 2     2025 Anne Arundel       85029   5903        7.5</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     2024 Anne Arundel       82353   3227        4.1</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-09-anne-arundel-1.png" alt="Anne Arundel County Enrollment"><div class="figcaption">Anne Arundel County Enrollment</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-07-anne-arundel-1.png" alt="Anne Arundel County Enrollment Growth"><div class="figcaption">Anne Arundel County Enrollment Growth</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_10-the-i-95-corridor-dominates">10. The I-95 corridor dominates<a class="anchor" aria-label="anchor" href="#id_10-the-i-95-corridor-dominates"></a>
+<h3 id="id_8-the-i-95-corridor-enrolls-61-of-all-maryland-students">8. The I-95 corridor enrolls 61% of all Maryland students<a class="anchor" aria-label="anchor" href="#id_8-the-i-95-corridor-enrolls-61-of-all-maryland-students"></a>
 </h3>
-<p>Five counties along I-95 (Baltimore County, Montgomery, Prince George’s, Howard, and Anne Arundel) enroll the majority of Maryland students. This concentration reflects the state’s population center.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Five counties along I-95 (Baltimore County, Montgomery, Prince George’s, Howard, and Anne Arundel) enroll 526,000 of Maryland’s 859,000 students.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i95</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore County"</span>, <span class="st">"Montgomery"</span>, <span class="st">"Prince George's"</span>, <span class="st">"Howard"</span>, <span class="st">"Anne Arundel"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">corridor</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr_current</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -336,25 +295,30 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">corridor</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>n_students <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">corridor</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">corridor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 x 3</span></span>
 <span><span class="co">#&gt;   corridor         n_students   pct</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 I-95 Corridor        433926  55.9</span></span>
-<span><span class="co">#&gt; 2 Rest of Maryland     343007  44.1</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 I-95 Corridor        526451  61.3</span></span>
+<span><span class="co">#&gt; 2 Rest of Maryland     332632  38.7</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-10-i95-corridor-1.png" alt="The I-95 Corridor Dominates Maryland"><div class="figcaption">The I-95 Corridor Dominates Maryland</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-08-i95-corridor-1.png" alt="The I-95 Corridor Dominates Maryland Education"><div class="figcaption">The I-95 Corridor Dominates Maryland Education</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_11-frederick-county-is-growing">11. Frederick County is growing<a class="anchor" aria-label="anchor" href="#id_11-frederick-county-is-growing"></a>
+<h3 id="id_9-frederick-county-grew-16--fastest-in-the-state">9. Frederick County grew 16% – fastest in the state<a class="anchor" aria-label="anchor" href="#id_9-frederick-county-grew-16--fastest-in-the-state"></a>
 </h3>
-<p>Frederick County, located between the DC suburbs and western Maryland, has seen enrollment growth as families seek more affordable housing while maintaining access to the DC job market.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>Frederick County has added over 6,300 students since 2016, a 15.8% increase. Located between the DC suburbs and western Maryland, Frederick attracts families seeking more affordable housing.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">frederick</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Frederick"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Frederick"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">frederick</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">frederick</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -364,46 +328,22 @@
 <span><span class="co">#&gt;   end_year district_name n_students change pct_change</span></span>
 <span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1     2016 Frederick          40111     NA       NA</span></span>
-<span><span class="co">#&gt; 2     2025 Frederick          48054   7943       19.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     2024 Frederick          46468   6357       15.8</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-11-frederick-growth-1.png" alt="Frederick County Enrollment Growth"><div class="figcaption">Frederick County Enrollment Growth</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-09-frederick-growth-1.png" alt="Frederick County Enrollment Growth"><div class="figcaption">Frederick County Enrollment Growth</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_12-hispanic-enrollment-is-growing-statewide">12. Hispanic enrollment is growing statewide<a class="anchor" aria-label="anchor" href="#id_12-hispanic-enrollment-is-growing-statewide"></a>
+<h3 id="id_10-baltimore-county-vs-baltimore-city-divergent-paths">10. Baltimore County vs Baltimore City: Divergent paths<a class="anchor" aria-label="anchor" href="#id_10-baltimore-county-vs-baltimore-city-divergent-paths"></a>
 </h3>
-<p>Hispanic students represent a significant and growing portion of Maryland enrollment. This demographic shift is reshaping schools across the state.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hispanic_trend</span> <span class="op">&lt;-</span> <span class="va">enr</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"hispanic"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span>, <span class="va">pct</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">n_students</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">hispanic_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
-<span>         pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 2 x 5</span></span>
-<span><span class="co">#&gt;   end_year n_students   pct  change pct_change</span></span>
-<span><span class="co">#&gt;      &lt;int&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     2016     118000  0.14      NA         NA</span></span>
-<span><span class="co">#&gt; 2     2025     893689  1.03  775689        658</span></span></code></pre></div>
-<div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-12-hispanic-growth-1.png" alt="Hispanic Student Enrollment Growth"><div class="figcaption">Hispanic Student Enrollment Growth</div>
-</div>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="id_13-baltimore-county-vs-baltimore-city-divergent-paths">13. Baltimore County vs Baltimore City: Divergent paths<a class="anchor" aria-label="anchor" href="#id_13-baltimore-county-vs-baltimore-city-divergent-paths"></a>
-</h3>
-<p>Baltimore County and Baltimore City are separate districts with different enrollment patterns. The county surrounds but is entirely separate from the city.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>While Baltimore City lost nearly 5,000 students (-6.3%), Baltimore County also shrank but from a higher base. Both are losing students, though at different rates.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">baltimore_both</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore City"</span>, <span class="st">"Baltimore County"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baltimore City"</span>, <span class="st">"Baltimore County"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">baltimore_both</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">baltimore_both</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">district_name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -416,20 +356,48 @@
 <span><span class="co">#&gt; # Groups:   district_name [2]</span></span>
 <span><span class="co">#&gt;   district_name    end_year n_students change pct_change</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;               &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Baltimore County     2024     105944  -2372       -2.2</span></span>
-<span><span class="co">#&gt; 2 Baltimore City       2025      84730   6864        8.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Baltimore City       2024      72995  -4871       -6.3</span></span>
+<span><span class="co">#&gt; 2 Baltimore County     2024     105944  -2372       -2.2</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-13-baltimore-comparison-1.png" alt="Baltimore City vs Baltimore County"><div class="figcaption">Baltimore City vs Baltimore County</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-10-baltimore-comparison-1.png" alt="Baltimore City vs Baltimore County"><div class="figcaption">Baltimore City vs Baltimore County</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_14-charles-county-southern-marylands-anchor">14. Charles County: Southern Maryland’s anchor<a class="anchor" aria-label="anchor" href="#id_14-charles-county-southern-marylands-anchor"></a>
+<h3 id="id_11-howard-county-plateaued-after-years-of-growth">11. Howard County plateaued after years of growth<a class="anchor" aria-label="anchor" href="#id_11-howard-county-plateaued-after-years-of-growth"></a>
 </h3>
-<p>Charles County is the largest district in Southern Maryland and has maintained steady enrollment. The county serves as a bedroom community for DC-area workers.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>Howard County grew from 54,348 in 2016 to 57,508 in 2019, then flattened. The county is now one of the few large districts where enrollment has stopped growing.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">howard</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Howard"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">howard</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">howard</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
+<span>         pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 x 5</span></span>
+<span><span class="co">#&gt;   end_year district_name n_students change pct_change</span></span>
+<span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1     2016 Howard             54348     NA       NA</span></span>
+<span><span class="co">#&gt; 2     2024 Howard             56033   1685        3.1</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-11-howard-plateau-1.png" alt="Howard County Enrollment Plateau"><div class="figcaption">Howard County Enrollment Plateau</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_12-charles-county-southern-marylands-steady-growth">12. Charles County: Southern Maryland’s steady growth<a class="anchor" aria-label="anchor" href="#id_12-charles-county-southern-marylands-steady-growth"></a>
+</h3>
+<p>Charles County has added 1,483 students (+5.8%) since 2016. The county serves as a bedroom community for DC-area workers seeking affordable housing.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">charles</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Charles"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Charles"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">charles</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">charles</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -439,21 +407,96 @@
 <span><span class="co">#&gt;   end_year district_name n_students change pct_change</span></span>
 <span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1     2016 Charles            25522     NA       NA</span></span>
-<span><span class="co">#&gt; 2     2025 Charles            28162   2640       10.3</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     2024 Charles            27005   1483        5.8</span></span></code></pre></div>
 <div class="float">
-<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-14-charles-county-1.png" alt="Charles County Enrollment"><div class="figcaption">Charles County Enrollment</div>
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-12-charles-county-1.png" alt="Charles County Enrollment"><div class="figcaption">Charles County Enrollment</div>
 </div>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="id_15-small-counties-face-challenges">15. Small counties face challenges<a class="anchor" aria-label="anchor" href="#id_15-small-counties-face-challenges"></a>
+<h3 id="id_13-grade-9-is-21-larger-than-grade-12">13. Grade 9 is 21% larger than grade 12<a class="anchor" aria-label="anchor" href="#id_13-grade-9-is-21-larger-than-grade-12"></a>
 </h3>
-<p>Kent County, Somerset, and Garrett are Maryland’s smallest districts. Small enrollment presents unique challenges for offering diverse programs and maintaining facilities.</p>
+<p>Maryland has 77,465 ninth-graders but only 63,844 twelfth-graders – a 21% drop. This pattern reflects students leaving the system before graduation.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grade_data</span> <span class="op">&lt;-</span> <span class="va">enr_current</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_state</span>, <span class="va">subgroup</span> <span class="op">==</span> <span class="st">"total_enrollment"</span>, <span class="va">grade_level</span> <span class="op">!=</span> <span class="st">"TOTAL"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">grade_level</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>grade_num <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"K"</span> <span class="op">~</span> <span class="fl">0</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">grade_level</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">grade_num</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grade_data</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">grade_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">grade_level</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 13 x 2</span></span>
+<span><span class="co">#&gt;   grade_level n_students</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 09               77465</span></span>
+<span><span class="co">#&gt; 2 10               71084</span></span>
+<span><span class="co">#&gt; 3 03               66787</span></span>
+<span><span class="co">#&gt; 4 08               66456</span></span>
+<span><span class="co">#&gt; 5 05               66109</span></span>
+<span><span class="co">#&gt; 6 06               65065</span></span>
+<span><span class="co">#&gt; 7 11               65596</span></span>
+<span><span class="co">#&gt; 8 07               65407</span></span>
+<span><span class="co">#&gt; 9 04               65025</span></span>
+<span><span class="co">#&gt; 10 02              64126</span></span>
+<span><span class="co">#&gt; 11 12              63844</span></span>
+<span><span class="co">#&gt; 12 01              62557</span></span>
+<span><span class="co">#&gt; 13 K               59562</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-13-grade-structure-1.png" alt="Maryland Enrollment by Grade Level"><div class="figcaption">Maryland Enrollment by Grade Level</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_14-montgomery-county-peaked-in-2019-and-has-been-declining">14. Montgomery County peaked in 2019 and has been declining<a class="anchor" aria-label="anchor" href="#id_14-montgomery-county-peaked-in-2019-and-has-been-declining"></a>
+</h3>
+<p>Maryland’s largest district reached 160,587 students in 2019, then lost nearly 6,000 students by 2024. This 3.6% decline signals broader suburban enrollment pressure.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">montgomery</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op">==</span> <span class="st">"Montgomery"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">montgomery</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">montgomery</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">end_year</span>, <span class="va">n_students</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change <span class="op">=</span> <span class="va">n_students</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span>,</span>
+<span>         pct_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_students</span> <span class="op">/</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html" class="external-link">lag</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 9 x 4</span></span>
+<span><span class="co">#&gt;   end_year n_students change pct_change</span></span>
+<span><span class="co">#&gt;      &lt;int&gt;      &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1     2016     154690     NA       NA</span></span>
+<span><span class="co">#&gt; 2     2017     157123   2433        1.6</span></span>
+<span><span class="co">#&gt; 3     2018     158101    978        0.6</span></span>
+<span><span class="co">#&gt; 4     2019     160587   2486        1.6</span></span>
+<span><span class="co">#&gt; 5     2020     156967  -3620       -2.3</span></span>
+<span><span class="co">#&gt; 6     2021     154592  -2375       -1.5</span></span>
+<span><span class="co">#&gt; 7     2022     156246   1654        1.1</span></span>
+<span><span class="co">#&gt; 8     2023     155788   -458       -0.3</span></span>
+<span><span class="co">#&gt; 9     2024     154791   -997       -0.6</span></span></code></pre></div>
+<div class="float">
+<img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-14-montgomery-trend-1.png" alt="Montgomery County: From Growth to Decline"><div class="figcaption">Montgomery County: From Growth to Decline</div>
+</div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="id_15-small-counties-face-existential-challenges">15. Small counties face existential challenges<a class="anchor" aria-label="anchor" href="#id_15-small-counties-face-existential-challenges"></a>
+</h3>
+<p>Kent County has just 1,591 students, Somerset has 2,619, and Garrett has 3,193. These are among the smallest school districts in the mid-Atlantic region.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">small_counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Kent"</span>, <span class="st">"Somerset"</span>, <span class="st">"Garrett"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">small_trend</span> <span class="op">&lt;-</span> <span class="fu">get_district_totals</span><span class="op">(</span><span class="va">enr</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">small_counties</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">district_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">small_counties</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">end_year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">small_trend</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">small_trend</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">end_year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">end_year</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -462,9 +505,9 @@
 <span><span class="co">#&gt; # A tibble: 3 x 2</span></span>
 <span><span class="co">#&gt;   district_name n_students</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Kent                2268</span></span>
-<span><span class="co">#&gt; 2 Somerset            2945</span></span>
-<span><span class="co">#&gt; 3 Garrett             3886</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Kent                1591</span></span>
+<span><span class="co">#&gt; 2 Somerset            2619</span></span>
+<span><span class="co">#&gt; 3 Garrett             3193</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/enrollment-trends_files/figure-html/story-15-small-counties-1.png" alt="Maryland’s Smallest School Systems"><div class="figcaption">Maryland’s Smallest School Systems</div>
 </div>
@@ -479,12 +522,14 @@
 <div class="section level3">
 <h3 id="id_16-less-than-half-of-maryland-students-are-proficient-in-ela">16. Less than half of Maryland students are proficient in ELA<a class="anchor" aria-label="anchor" href="#id_16-less-than-half-of-maryland-students-are-proficient-in-ela"></a>
 </h3>
-<p>In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments - meaning more than half struggle to meet grade-level standards in reading and writing.</p>
+<p>In 2024, only 48.4% of Maryland students scored proficient or above on ELA assessments – meaning more than half struggle to meet grade-level standards in reading and writing.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://almartin82.github.io/mdschooldata">mdschooldata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_statewide_proficiency.html">get_statewide_proficiency</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">prof</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ela_prof</span> <span class="op">&lt;-</span> <span class="va">prof</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"ELA All"</span><span class="op">)</span></span>
@@ -522,11 +567,13 @@
 <div class="section level3">
 <h3 id="id_18-math-proficiency-plummets-from-40-in-grade-3-to-7-by-grade-8">18. Math proficiency plummets from 40% in grade 3 to 7% by grade 8<a class="anchor" aria-label="anchor" href="#id_18-math-proficiency-plummets-from-40-in-grade-3-to-7-by-grade-8"></a>
 </h3>
-<p>The math proficiency cliff is dramatic: 40% of 3rd graders are on grade level, but only 7% of 8th graders are. Students fall further behind each year.</p>
+<p>The math proficiency cliff is dramatic: 40% of 3rd graders are on grade level, but only 7% of 8th graders are.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">math_grades</span> <span class="op">&lt;-</span> <span class="va">prof</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Math [0-9]"</span>, <span class="va">subject</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>grade <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"Math "</span>, <span class="st">""</span>, <span class="va">subject</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">math_grades</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">math_grades</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">grade</span>, <span class="va">subject</span>, <span class="va">pct_proficient</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -534,12 +581,12 @@
 <span><span class="co">#&gt; # A tibble: 6 x 3</span></span>
 <span><span class="co">#&gt;   grade subject pct_proficient</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     3 Math 3            40.1</span></span>
-<span><span class="co">#&gt; 2     4 Math 4            31.9</span></span>
-<span><span class="co">#&gt; 3     5 Math 5            22.4</span></span>
-<span><span class="co">#&gt; 4     6 Math 6            18.4</span></span>
-<span><span class="co">#&gt; 5     7 Math 7            12.7</span></span>
-<span><span class="co">#&gt; 6     8 Math 8             6.9</span></span></code></pre></div>
+<span><span class="co">#&gt; 1     3 Math 3            40.0</span></span>
+<span><span class="co">#&gt; 2     4 Math 4            32.8</span></span>
+<span><span class="co">#&gt; 3     5 Math 5            28.8</span></span>
+<span><span class="co">#&gt; 4     6 Math 6            19.8</span></span>
+<span><span class="co">#&gt; 5     7 Math 7            15.3</span></span>
+<span><span class="co">#&gt; 6     8 Math 8             7.0</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-04-math-decline-1.png" alt="Math Proficiency Cliff: Grade 3 to Grade 8"><div class="figcaption">Math Proficiency Cliff: Grade 3 to Grade 8</div>
 </div>
@@ -560,6 +607,8 @@
 <span>  <span class="va">prof_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"ELA All"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ela_trends</span><span class="op">)</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">ela_trends</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">pct_proficient</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change_from_2022 <span class="op">=</span> <span class="va">pct_proficient</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">pct_proficient</span><span class="op">)</span><span class="op">)</span></span>
@@ -567,7 +616,7 @@
 <span><span class="co">#&gt;    year pct_proficient change_from_2022</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1  2022           45.3              0</span></span>
-<span><span class="co">#&gt; 2  2023           47.3              2</span></span>
+<span><span class="co">#&gt; 2  2023           47.9              2.6</span></span>
 <span><span class="co">#&gt; 3  2024           48.4              3.1</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-06-ela-recovery-1.png" alt="ELA Recovery Since 2022"><div class="figcaption">ELA Recovery Since 2022</div>
@@ -585,6 +634,8 @@
 <span>  <span class="va">prof_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"Math All"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">math_trends</span><span class="op">)</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">math_trends</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">pct_proficient</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>change_from_2022 <span class="op">=</span> <span class="va">pct_proficient</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">pct_proficient</span><span class="op">)</span><span class="op">)</span></span>
@@ -592,7 +643,7 @@
 <span><span class="co">#&gt;    year pct_proficient change_from_2022</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1  2022           21.0              0</span></span>
-<span><span class="co">#&gt; 2  2023           22.4              1.4</span></span>
+<span><span class="co">#&gt; 2  2023           23.3              2.3</span></span>
 <span><span class="co">#&gt; 3  2024           24.1              3.1</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-07-math-recovery-1.png" alt="Math Recovery Since 2022"><div class="figcaption">Math Recovery Since 2022</div>
@@ -616,16 +667,18 @@
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">subject_type</span>, values_from <span class="op">=</span> <span class="va">pct_proficient</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gap <span class="op">=</span> <span class="va">ELA</span> <span class="op">-</span> <span class="va">Math</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">comparison</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">comparison</span></span>
 <span><span class="co">#&gt; # A tibble: 7 x 4</span></span>
 <span><span class="co">#&gt;   grade   ELA  Math   gap</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 3      46.5  40.1   6.4</span></span>
-<span><span class="co">#&gt; 2 4      49.2  31.9  17.3</span></span>
-<span><span class="co">#&gt; 3 5      44.2  22.4  21.8</span></span>
-<span><span class="co">#&gt; 4 6      47.9  18.4  29.5</span></span>
-<span><span class="co">#&gt; 5 7      47.9  12.7  35.2</span></span>
-<span><span class="co">#&gt; 6 8      49.3   6.9  42.4</span></span>
+<span><span class="co">#&gt; 1 3      46.5  40.0   6.5</span></span>
+<span><span class="co">#&gt; 2 4      49.3  32.8  16.5</span></span>
+<span><span class="co">#&gt; 3 5      44.2  28.8  15.4</span></span>
+<span><span class="co">#&gt; 4 6      47.9  19.8  28.1</span></span>
+<span><span class="co">#&gt; 5 7      48.6  15.3  33.3</span></span>
+<span><span class="co">#&gt; 6 8      46.2   7.0  39.2</span></span>
 <span><span class="co">#&gt; 7 10     55.3    NA    NA</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-11-ela-math-gap-1.png" alt="ELA vs Math Proficiency by Grade, 2024"><div class="figcaption">ELA vs Math Proficiency by Grade, 2024</div>
@@ -643,13 +696,15 @@
 <span>  <span class="va">prof_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"ELA 3"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ela3_trends</span><span class="op">)</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">ela3_trends</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">pct_proficient</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 3 x 2</span></span>
 <span><span class="co">#&gt;    year pct_proficient</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1  2022           42.0</span></span>
-<span><span class="co">#&gt; 2  2023           44.6</span></span>
+<span><span class="co">#&gt; 1  2022           45.8</span></span>
+<span><span class="co">#&gt; 2  2023           48.0</span></span>
 <span><span class="co">#&gt; 3  2024           46.5</span></span></code></pre></div>
 <div class="float">
 <img src="https://almartin82.github.io/mdschooldata/articles/maryland-assessment_files/figure-html/story-09-grade3-reading-1.png" alt="3rd Grade Reading: The Most Important Benchmark"><div class="figcaption">3rd Grade Reading: The Most Important Benchmark</div>
@@ -710,12 +765,6 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_students</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Demographics by county</span></span>
-<span><span class="va">enr_2024</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_district</span>, <span class="va">grade_level</span> <span class="op">==</span> <span class="st">"TOTAL"</span>,</span>
-<span>         <span class="va">subgroup</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"black"</span>, <span class="st">"hispanic"</span>, <span class="st">"asian"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">district_name</span>, <span class="va">subgroup</span>, <span class="va">n_students</span>, <span class="va">pct</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># Assessment data - statewide proficiency</span></span>
 <span><span class="va">prof_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_statewide_proficiency.html">get_statewide_proficiency</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
 <span></span>
@@ -747,18 +796,11 @@
 <span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>)</span>
 <span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>].sort_values(<span class="st">'n_students'</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span>
 <span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a></span>
-<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co"># Demographics by county</span></span>
-<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a>demographics <span class="op">=</span> enr_2024[</span>
-<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a>    (enr_2024[<span class="st">'is_district'</span>] <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span></span>
-<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>    (enr_2024[<span class="st">'grade_level'</span>] <span class="op">==</span> <span class="st">'TOTAL'</span>) <span class="op">&amp;</span></span>
-<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a>    (enr_2024[<span class="st">'subgroup'</span>].isin([<span class="st">'white'</span>, <span class="st">'black'</span>, <span class="st">'hispanic'</span>, <span class="st">'asian'</span>]))</span>
-<span id="cb26-28"><a href="#cb26-28" tabindex="-1"></a>][[<span class="st">'district_name'</span>, <span class="st">'subgroup'</span>, <span class="st">'n_students'</span>, <span class="st">'pct'</span>]]</span>
-<span id="cb26-29"><a href="#cb26-29" tabindex="-1"></a></span>
-<span id="cb26-30"><a href="#cb26-30" tabindex="-1"></a><span class="co"># Assessment data - statewide proficiency</span></span>
-<span id="cb26-31"><a href="#cb26-31" tabindex="-1"></a>prof_2024 <span class="op">=</span> md.get_statewide_proficiency(<span class="dv">2024</span>)</span>
-<span id="cb26-32"><a href="#cb26-32" tabindex="-1"></a></span>
-<span id="cb26-33"><a href="#cb26-33" tabindex="-1"></a><span class="co"># School-level assessment data</span></span>
-<span id="cb26-34"><a href="#cb26-34" tabindex="-1"></a>assess_2024 <span class="op">=</span> md.fetch_assessment(<span class="dv">2024</span>)</span></code></pre></div>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co"># Assessment data - statewide proficiency</span></span>
+<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a>prof_2024 <span class="op">=</span> md.get_statewide_proficiency(<span class="dv">2024</span>)</span>
+<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a></span>
+<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a><span class="co"># School-level assessment data</span></span>
+<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a>assess_2024 <span class="op">=</span> md.fetch_assessment(<span class="dv">2024</span>)</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -767,12 +809,12 @@
 <div class="section level3">
 <h3 id="data-source">Data Source<a class="anchor" aria-label="anchor" href="#data-source"></a>
 </h3>
-<p>Data is sourced from the Maryland State Department of Education (MSDE): - Maryland Report Card: <a href="https://reportcard.msde.maryland.gov" class="external-link uri">https://reportcard.msde.maryland.gov</a> - MSDE Publications: <a href="https://marylandpublicschools.org/about/Pages/DCAA/SSP/" class="external-link uri">https://marylandpublicschools.org/about/Pages/DCAA/SSP/</a></p>
+<p>Data is sourced from the Maryland State Department of Education (MSDE): - Maryland Report Card: <a href="https://reportcard.msde.maryland.gov" class="external-link uri">https://reportcard.msde.maryland.gov</a> - Maryland Department of Planning: <a href="https://planning.maryland.gov/MSDC/Pages/s3_projection.aspx" class="external-link uri">https://planning.maryland.gov/MSDC/Pages/s3_projection.aspx</a> - MSDE Publications: <a href="https://marylandpublicschools.org/about/Pages/DCAA/SSP/" class="external-link uri">https://marylandpublicschools.org/about/Pages/DCAA/SSP/</a></p>
 </div>
 <div class="section level3">
 <h3 id="available-years">Available Years<a class="anchor" aria-label="anchor" href="#available-years"></a>
 </h3>
-<p><strong>Enrollment:</strong> 2014-2025 - Data coverage varies by year and data type.</p>
+<p><strong>Enrollment:</strong> 2014-2024 - Grade-level enrollment from MD Department of Planning for state and 24 jurisdictions.</p>
 <p><strong>Assessment (MCAP):</strong> 2022-2024 - Statewide proficiency summaries and school-level participation data.</p>
 </div>
 <div class="section level3">
@@ -788,7 +830,8 @@
 <div class="section level3">
 <h3 id="whats-included">What’s Included<a class="anchor" aria-label="anchor" href="#whats-included"></a>
 </h3>
-<p><strong>Enrollment:</strong> - <strong>Levels:</strong> State, District (24 Local School Systems), School (~1,400) - <strong>Demographics:</strong> White, Black, Hispanic, Asian, Native American, Pacific Islander, Multiracial - <strong>Gender:</strong> Male, Female - <strong>Grade levels:</strong> PK through 12</p>
+<p><strong>Enrollment:</strong> - <strong>Levels:</strong> State, District (24 Local School Systems) - <strong>Grade levels:</strong> K through 12 - <strong>Years:</strong> 2014-2024</p>
+<p><strong>Note:</strong> Demographic breakdowns (race/ethnicity, gender) are not available via automated download due to MSDE PDF parsing limitations. For demographics, use the <a href="https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment" class="external-link">Maryland Report Card</a> interactive site.</p>
 <p><strong>Assessment:</strong> - <strong>Subjects:</strong> ELA (grades 3-8, 10), Math (grades 3-8, Algebra I/II, Geometry), Science (grades 5, 8) - <strong>Levels:</strong> State, District, School - <strong>Student Groups:</strong> All Students, by demographics, special populations</p>
 </div>
 <div class="section level3">
