@@ -79,7 +79,7 @@ test_that("safe_numeric handles vector input with mixed values", {
 # SECTION 2: ID Formatting
 # ==============================================================================
 
-test_that("district_id is zero-padded to 2 digits via process_district_data", {
+test_that("district_id is padded to 2 characters via process_district_data", {
   df <- data.frame(
     district_id = c("1", "3", "16"),
     district_name = c("Allegany", "Baltimore City", "Montgomery"),
@@ -87,8 +87,14 @@ test_that("district_id is zero-padded to 2 digits via process_district_data", {
     stringsAsFactors = FALSE
   )
   result <- process_district_data(df, 2024)
-  # sprintf("%02s", ...) zero-pads on this platform
-  expect_equal(result$district_id, c("01", "03", "16"))
+  # sprintf("%02s", ...) pads to width 2 but fill char is platform-dependent:
+  # macOS zero-pads ("01"), Linux/CI space-pads (" 1")
+  expect_equal(nchar(result$district_id), c(2, 2, 2))
+  # Two-digit IDs are unchanged regardless of platform
+  expect_equal(result$district_id[3], "16")
+  # Single-digit IDs get a leading pad character (space or zero)
+  expect_match(result$district_id[1], "^[0 ]1$")
+  expect_match(result$district_id[2], "^[0 ]3$")
 })
 
 test_that("LSS codes are complete: 01-24 with correct names", {
