@@ -1274,8 +1274,9 @@ test_that("get_available_years returns correct structure", {
 
   expect_true(is.list(years))
   expect_equal(years$min_year, 2014)
-  expect_equal(years$max_year, 2024)
-  expect_equal(years$available, 2014:2024)
+  expect_equal(years$max_year, 2026)
+  expect_equal(years$available, 2014:2026)
+  expect_equal(years$mdp_max_year, 2024)
   expect_equal(length(years$demographic_years), 0,
                info = "No demographic years available due to PDF parsing issues")
   expect_true(nchar(years$description) > 0)

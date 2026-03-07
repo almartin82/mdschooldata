@@ -7,7 +7,7 @@
 #
 # Primary data sources:
 # 1. Maryland Department of Planning (https://planning.maryland.gov)
-#    - Historical enrollment data from 2014-present
+#    - Historical enrollment data from 2014-2024
 #    - Enrollment by grade (K-12) for state and all 24 jurisdictions
 #    - URL: planning.maryland.gov/MSDC/Documents/school_enrollment/
 #
@@ -24,8 +24,9 @@
 # - School level: Individual school enrollment (MSDE sources only)
 #
 # Data availability:
-# - 2014-present: Enrollment by grade via MD Dept of Planning
-# - 2019-present: Enrollment with demographics via MSDE publications
+# - 2014-2024: Enrollment by grade via MD Dept of Planning
+# - 2025-2026: Enrollment by grade via MSDE PDF publications (Table 2)
+# - 2019-present: Enrollment with demographics via MSDE publications (unreliable)
 #
 # ==============================================================================
 
@@ -56,24 +57,29 @@ get_available_years <- function() {
   # Use Maryland Report Card website for demographic breakdowns.
 
   # MDP 2025 release contains data through 2024
-  # Max reliable year is 2024 (last year in MDP 2025 release)
+  # MSDE PDF publications extend coverage to 2025-26 (end_year 2026)
+  # For years beyond MDP coverage, get_raw_enr() falls back to MSDE PDF Table 2
   list(
     min_year = 2014,
-    max_year = 2024,
-    available = 2014:2024,
+    max_year = 2026,
+    available = 2014:2026,
+    # MDP covers 2014-2024; MSDE PDF covers 2025-2026
+    mdp_max_year = 2024,
     # No reliable demographic data available from automated sources
     demographic_years = integer(0),
     description = paste(
-      "Maryland enrollment data from MD Department of Planning.",
-      "Available years: 2014-2024.",
+      "Maryland enrollment data from MD Department of Planning (2014-2024)",
+      "and MSDE Staff and Student Publications (2025-2026).",
+      "Available years: 2014-2026.",
       "Provides enrollment by grade (K-12) for state and 24 jurisdictions.",
       "NOTE: Demographic breakdowns (race/ethnicity, gender) are not available",
       "via automated download due to MSDE PDF parsing issues.",
       "Use Maryland Report Card for demographics."
     ),
     notes = paste(
-      "Data from Maryland Department of Planning (2014-2024).",
-      "MD Planning provides enrollment by grade for state and 24 jurisdictions.",
+      "Data from Maryland Department of Planning (2014-2024) and",
+      "MSDE Staff and Student Publications (2025-2026).",
+      "Both sources provide enrollment by grade for state and 24 jurisdictions.",
       "For demographic breakdowns (race/ethnicity, gender), use Maryland Report Card:",
       "https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment",
       "Enrollment collected as of September 30 each year."
@@ -101,10 +107,9 @@ get_raw_enr <- function(end_year, include_demographics = FALSE) {
 
   message(paste("Downloading Maryland enrollment data for", format_school_year(end_year), "..."))
 
-  # Use MD Department of Planning exclusively (reliable, grade-level data)
-  # MSDE PDF publications have unreliable parsing that creates corrupted
-
-  # demographic data (subgroup counts exceeding totals, duplicate rows)
+  # Try MD Department of Planning first (reliable, grade-level data, 2014-2024)
+  # For years beyond MDP coverage, fall back to MSDE PDF Table 2
+  # (grade-level totals only -- demographic parsing from PDFs is unreliable)
   message("  Fetching enrollment data from MD Department of Planning...")
   result <- tryCatch({
     download_mdp_enrollment(end_year)
@@ -113,10 +118,22 @@ get_raw_enr <- function(end_year, include_demographics = FALSE) {
     NULL
   })
 
+  # If MDP failed (e.g., year not yet in MDP releases), try MSDE PDF Table 2
+  if (is.null(result) || nrow(result) == 0) {
+    message("  MDP data not available, trying MSDE PDF publication (Table 2)...")
+    result <- tryCatch({
+      download_msde_table2_enrollment(end_year)
+    }, error = function(e) {
+      message(paste("  MSDE PDF download failed:", e$message))
+      NULL
+    })
+  }
+
   if (is.null(result) || nrow(result) == 0) {
     stop(paste("Could not download enrollment data for", end_year,
-               "from MD Department of Planning.",
+               "from MD Department of Planning or MSDE publications.",
                "\nMD Planning data is available for years 2014-2024.",
+               "\nMSDE PDF publications may cover more recent years.",
                "\nFor demographic data, use Maryland Report Card:",
                "\nhttps://reportcard.msde.maryland.gov"))
   }
@@ -1147,4 +1164,343 @@ fetch_historical_enrollment <- function(start_year, end_year,
   }
 
   dplyr::bind_rows(all_data)
+}
+
+
+# ==============================================================================
+# MSDE PDF Table 2 Parser (Grade-Level Enrollment)
+# ==============================================================================
+#
+# For years not yet covered by MD Department of Planning, MSDE publishes
+# enrollment PDFs with grade-level totals per jurisdiction (Table 2).
+#
+# This parser extracts ONLY grade-level total enrollment (not demographics).
+# Demographic parsing from MSDE PDFs is unreliable and is not attempted here.
+#
+# PDF URL pattern:
+# marylandpublicschools.org/about/Documents/DCAA/SSP/{folder}/{file}.pdf
+#
+# ==============================================================================
+
+
+#' Download and parse MSDE PDF Table 2 (grade-level enrollment)
+#'
+#' Downloads the MSDE Staff and Student Publication PDF and extracts
+#' Table 2 (Enrollment by Grade: Total Students) which has grade-level
+#' enrollment for all 24 jurisdictions plus state total.
+#'
+#' This is used as a fallback when MD Department of Planning data is not
+#' yet available for the requested year.
+#'
+#' @param end_year School year end (e.g., 2026 for 2025-26)
+#' @return Data frame with grade-level enrollment per jurisdiction
+#' @keywords internal
+download_msde_table2_enrollment <- function(end_year) {
+
+  if (!requireNamespace("pdftools", quietly = TRUE)) {
+    stop("Package 'pdftools' is required to parse MSDE PDF publications. ",
+         "Install it with: install.packages('pdftools')")
+  }
+
+  # The data year is end_year - 1 (September 30 of the prior calendar year)
+  # e.g., end_year 2026 = September 30, 2025 data
+  data_year <- end_year - 1
+
+  # Build folder and file URL patterns
+  # MSDE uses folder pattern like "20242025Student" or "20242025student"
+  # and file names like "2025-2026-Enrollment-By-Race-Ethnicity-Gender-A.pdf"
+  # Note: The folder year range doesn't always match the file year range
+  base_url <- "https://marylandpublicschools.org/about/Documents/DCAA/SSP/"
+
+  # Try multiple folder/file combinations
+  start_year <- end_year - 1
+  folder_patterns <- c(
+    paste0(start_year - 1, start_year, "Student"),
+    paste0(start_year - 1, start_year, "student"),
+    paste0(start_year, end_year, "Student"),
+    paste0(start_year, end_year, "student")
+  )
+
+  file_patterns <- c(
+    paste0(start_year, "-", end_year, "-Enrollment-By-Race-Ethnicity-Gender-A.pdf"),
+    paste0(start_year, "-", end_year, "-enrollment-by-race-ethnicity-gender-a.pdf"),
+    paste0(end_year, "-Enrollment-By-Race-Ethnicity-Gender-A.pdf")
+  )
+
+  # Build all URL combinations
+  urls <- character(0)
+  for (folder in folder_patterns) {
+    for (fname in file_patterns) {
+      urls <- c(urls, paste0(base_url, folder, "/", fname))
+    }
+  }
+
+  pdf_file <- NULL
+  for (url in urls) {
+    result <- tryCatch({
+      tname <- tempfile(pattern = "msde_table2_", fileext = ".pdf")
+      response <- httr::GET(
+        url,
+        httr::write_disk(tname, overwrite = TRUE),
+        httr::timeout(120)
+      )
+      if (!httr::http_error(response) && file.exists(tname) &&
+          file.info(tname)$size > 50000) {
+        pdf_file <- tname
+        message(paste("    Downloaded from:", url))
+        break
+      } else {
+        unlink(tname)
+        NULL
+      }
+    }, error = function(e) {
+      NULL
+    })
+    if (!is.null(pdf_file)) break
+  }
+
+  if (is.null(pdf_file)) {
+    stop(paste("Could not download MSDE enrollment PDF for", end_year))
+  }
+
+  # Parse Table 2 from the PDF
+  result <- tryCatch({
+    parse_msde_table2(pdf_file, end_year)
+  }, finally = {
+    unlink(pdf_file)
+  })
+
+  result
+}
+
+
+#' Parse MSDE PDF Table 2 (Enrollment by Grade: Total Students)
+#'
+#' Extracts grade-level enrollment from Table 2 of the MSDE publication.
+#' Table 2 spans two pages: first page has K through grade 6,
+#' second page (continuation) has grades 7 through 12.
+#'
+#' @param pdf_path Path to the downloaded PDF
+#' @param end_year School year end
+#' @return Data frame with enrollment by jurisdiction and grade
+#' @keywords internal
+parse_msde_table2 <- function(pdf_path, end_year) {
+
+  pdf_text <- pdftools::pdf_text(pdf_path)
+
+  # Find pages containing Table 2 data (not just Table 2 in TOC)
+  # Table 2 data pages have "Table 2 -" or "Table 2 (continued)" in them
+  table2_pages <- which(
+    grepl("Table 2 -|Table 2 \\(continued\\)", pdf_text)
+  )
+
+  if (length(table2_pages) == 0) {
+    stop("Could not find Table 2 in MSDE PDF")
+  }
+
+  # Table 2 spans 2 pages: first has K through grade 6, second has 7-12
+  lss_codes <- get_lss_codes()
+
+  # Parse first page of Table 2 (Grand Total, Total Elementary, Pre-K, K, 1-6)
+  page1_data <- parse_msde_table2_page(
+    pdf_text[table2_pages[1]], lss_codes,
+    col_names = c("grand_total", "total_elementary", "grade_pk", "grade_k",
+                   "grade_01", "grade_02", "grade_03", "grade_04", "grade_05", "grade_06")
+  )
+
+  # Parse second page (continuation: Total Secondary, 7-12)
+  page2_data <- NULL
+  if (length(table2_pages) >= 2) {
+    page2_data <- parse_msde_table2_page(
+      pdf_text[table2_pages[2]], lss_codes,
+      col_names = c("total_secondary", "grade_07", "grade_08", "grade_09",
+                     "grade_10", "grade_11", "grade_12")
+    )
+  }
+
+  # Merge the two pages by jurisdiction
+  if (!is.null(page2_data)) {
+    # Match by jurisdiction name
+    result <- merge(page1_data, page2_data, by = "jurisdiction", all.x = TRUE)
+  } else {
+    result <- page1_data
+  }
+
+  # Build output in the same format as download_mdp_enrollment
+  output_list <- list()
+
+  for (i in seq_len(nrow(result))) {
+    jname <- result$jurisdiction[i]
+
+    row <- data.frame(row.names = 1, stringsAsFactors = FALSE)
+
+    # Extract grade columns
+    grade_cols <- c("grade_pk", "grade_k", paste0("grade_", sprintf("%02d", 1:12)))
+    for (gc in grade_cols) {
+      if (gc %in% names(result)) {
+        row[[gc]] <- result[[gc]][i]
+      }
+    }
+
+    # Determine entity type and IDs
+    if (grepl("^Total State$|^Maryland$", jname, ignore.case = TRUE)) {
+      row$type <- "State"
+      row$district_id <- NA_character_
+      row$district_name <- "Maryland"
+    } else {
+      row$type <- "District"
+      # Match jurisdiction to LSS code
+      clean_name <- gsub(" County$", "", jname)
+      code_idx <- which(lss_codes == jname)
+      if (length(code_idx) == 0) code_idx <- which(lss_codes == clean_name)
+      if (length(code_idx) == 0) {
+        code_idx <- which(grepl(paste0("^", clean_name), lss_codes))
+        if (length(code_idx) > 1 && grepl("County", jname)) {
+          code_idx <- which(lss_codes == paste0(clean_name, " County"))
+        } else if (length(code_idx) > 1 && grepl("City", jname)) {
+          code_idx <- which(lss_codes == paste0(clean_name, " City"))
+        }
+      }
+      if (length(code_idx) > 0) {
+        row$district_id <- names(lss_codes)[code_idx[1]]
+        row$district_name <- lss_codes[code_idx[1]]
+      } else {
+        row$district_id <- NA_character_
+        row$district_name <- clean_name
+      }
+    }
+
+    row$campus_id <- NA_character_
+    row$campus_name <- NA_character_
+    row$end_year <- end_year
+
+    output_list[[length(output_list) + 1]] <- row
+  }
+
+  result_df <- dplyr::bind_rows(output_list)
+
+  # Calculate row_total from grade columns
+  grade_cols <- c("grade_k", paste0("grade_", sprintf("%02d", 1:12)))
+  grade_cols_present <- grade_cols[grade_cols %in% names(result_df)]
+
+  if (length(grade_cols_present) > 0) {
+    result_df$row_total <- rowSums(
+      result_df[, grade_cols_present, drop = FALSE], na.rm = TRUE
+    )
+  }
+
+  result_df
+}
+
+
+#' Parse a single page of MSDE Table 2
+#'
+#' Extracts jurisdiction rows and numeric columns from one page of Table 2.
+#'
+#' @param page_text Text content of a PDF page
+#' @param lss_codes Named vector of LSS codes
+#' @param col_names Names to assign to the extracted numeric columns (in order)
+#' @return Data frame with jurisdiction and enrollment columns
+#' @keywords internal
+parse_msde_table2_page <- function(page_text, lss_codes, col_names) {
+
+  lines <- strsplit(page_text, "\n")[[1]]
+  lines <- trimws(lines)
+  lines <- lines[lines != ""]
+
+  # Build jurisdiction name patterns for matching
+  # The PDF uses names like "Allegany", "Anne Arundel", "Baltimore City",
+  # "Baltimore" (for Baltimore County), "Saint Mary's" (vs "St. Mary's"),
+  # "Prince George's", "Queen Anne's", and also "SEED School"
+  lss_names <- unname(lss_codes)
+
+
+  # Build a mapping from PDF alternate names to canonical LSS names
+  # Keys are PDF names, values are canonical names from get_lss_codes()
+  pdf_name_map <- list(
+    "Saint Mary's" = "St. Mary's",
+    "Saint Mary" = "St. Mary's",
+    "Baltimore" = "Baltimore County"
+  )
+  # Note: "Baltimore City" is in lss_names and will match first (longer)
+  # "Baltimore" only matches when "Baltimore City" doesn't (sorted by length)
+
+  # All names to try matching: canonical LSS names + PDF alternate names
+  all_search_names <- unique(c(lss_names, names(pdf_name_map)))
+
+  result_rows <- list()
+
+  for (line in lines) {
+    # Skip header/footer lines
+    if (grepl("^(Enrollment|Table|Local|Maryland State Dept|December|Agency|Grand|Total\\s+Students|Pre-)", line, ignore.case = TRUE)) next
+    if (grepl("^(Total\\s+(Elementary|Secondary))", line, ignore.case = TRUE) && !grepl("^Total State", line, ignore.case = TRUE)) next
+    # Skip lines that are just numbers (column headers with years)
+    if (grepl("^[0-9,\\s]+$", line)) next
+
+    # Check for "Total State" line
+    is_state <- grepl("^Total State", line, ignore.case = TRUE)
+
+    matched_name <- NULL
+    canonical_name <- NULL
+
+    if (is_state) {
+      matched_name <- "Total State"
+      canonical_name <- "Total State"
+    } else {
+      # Skip SEED School (not a regular LSS)
+      if (grepl("^\\s*SEED", line, ignore.case = TRUE)) next
+
+      # Normalize apostrophes in line for matching (PDF may use smart quotes)
+      norm_line <- gsub("\u2018|\u2019|\u201B|\u0060|\u00B4", "'", line)
+
+      # Try matching each jurisdiction name at the start of the line
+      # Sort by length (longest first) to avoid partial matches
+      # e.g., "Baltimore City" before "Baltimore"
+      sorted_names <- all_search_names[order(-nchar(all_search_names))]
+      for (nm in sorted_names) {
+        # Build regex: replace apostrophes with flexible apostrophe match
+        escaped <- gsub("'", "['\u2018\u2019\u201B\u0060\u00B4]", nm)
+        # Escape dots
+        escaped <- gsub("\\.", "\\\\.", escaped)
+        if (grepl(paste0("^\\s*", escaped, "(\\s|$)"), norm_line, ignore.case = TRUE)) {
+          matched_name <- nm
+          # Resolve canonical name
+          if (!is.null(pdf_name_map[[nm]])) {
+            canonical_name <- pdf_name_map[[nm]]
+          } else {
+            canonical_name <- nm
+          }
+          break
+        }
+      }
+
+    }
+
+    if (is.null(matched_name)) next
+
+    # Extract all numbers from the line
+    numbers <- regmatches(line, gregexpr("[0-9,]+", line))[[1]]
+    numbers <- as.numeric(gsub(",", "", numbers))
+
+    if (length(numbers) == 0) next
+
+    row <- data.frame(jurisdiction = canonical_name, stringsAsFactors = FALSE)
+
+    # Map numbers to column names
+    for (j in seq_along(col_names)) {
+      if (j <= length(numbers)) {
+        row[[col_names[j]]] <- numbers[j]
+      } else {
+        row[[col_names[j]]] <- NA_real_
+      }
+    }
+
+    result_rows[[length(result_rows) + 1]] <- row
+  }
+
+  if (length(result_rows) == 0) {
+    stop("Could not extract jurisdiction data from MSDE Table 2 page")
+  }
+
+  dplyr::bind_rows(result_rows)
 }
