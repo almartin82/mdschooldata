@@ -150,11 +150,11 @@ subgroup counts exceed total enrollment. Use the
 for demographic breakdowns.
 
 ### grade_level
-`TOTAL`, `K`, `01`-`12`
+`TOTAL`, `PK`, `K`, `01`-`12`
 
 Grade columns are mapped from `grade_k` -> `K`, `grade_01` -> `01`, etc. The `enr_grade_aggs()` function adds computed aggregates: `K8`, `HS`, `K12`.
 
-**NOTE:** `PK` (Prekindergarten) is not available in the MD Department of Planning data.
+**NOTE:** `PK` (Prekindergarten) is available from MSDE PDF data (2025+) but not from MD Department of Planning data (2014-2024).
 
 ### entity flags
 `is_state`, `is_district`, `is_campus`
@@ -166,16 +166,20 @@ The `type` column has values `State`, `District`, and `Campus`. The `id_enr_aggs
 ## Data Source Architecture
 
 ### Enrollment Data
-- **Primary source:** Maryland Department of Planning (MDP)
+- **Primary source (2014-2024):** Maryland Department of Planning (MDP)
   - URL: https://planning.maryland.gov/MSDC/Documents/school_enrollment/
-  - Years: 2014-2024
   - Contains: Grade-level enrollment (K-12) for state and 24 jurisdictions
   - Reliable, well-structured Excel files
-- **NOT used:** MSDE PDF publications
+- **Secondary source (2025-2026):** MSDE Staff and Student Publications (PDF Table 2)
+  - URL: https://marylandpublicschools.org/about/Documents/DCAA/SSP/
+  - Contains: Grade-level enrollment (K-12 + PK) for state and 24 jurisdictions
+  - Only Table 2 (total enrollment by grade) is parsed; demographic tables are NOT used
+  - `get_raw_enr()` falls back to MSDE PDF Table 2 when MDP data is unavailable
+- **NOT used for demographics:** MSDE PDF demographic tables
   - The MSDE publishes enrollment PDFs with race/ethnicity breakdowns
-  - PDF parsing is unreliable: creates multiple rows per entity with incorrect demographic values
+  - PDF parsing of demographic tables is unreliable: creates multiple rows per entity with incorrect values
   - Demographic counts can exceed total enrollment (e.g., white=165K for a district with 155K total)
-  - The `get_raw_enr()` function no longer falls back to MSDE PDFs
+  - Only the total enrollment table (Table 2) is parsed from MSDE PDFs
 
 ### Assessment Data
 - **Statewide proficiency:** Hardcoded from MSDE State Board presentations (2022-2024)
