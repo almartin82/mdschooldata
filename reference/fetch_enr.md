@@ -16,8 +16,9 @@ fetch_enr(end_year, tidy = TRUE, use_cache = TRUE)
 - end_year:
 
   A school year. Year is the end of the academic year - eg 2023-24
-  school year is year '2024'. Valid values are 2019-present (MSDE Report
-  Card and publications provide data from 2019 onwards).
+  school year is year '2024'. Valid values are 2014-2026 (MD Dept of
+  Planning provides data for 2014-2024; MSDE publications for
+  2025-2026).
 
 - tidy:
 
