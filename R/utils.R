@@ -138,14 +138,13 @@ format_school_year <- function(end_year) {
 #' Validate end_year parameter
 #'
 #' @param end_year Year to validate
-#' @param min_year Minimum valid year (default 2014, when MD Planning data begins)
-#' @param max_year Maximum valid year (default 2024, most recent confirmed data)
+#' @param min_year Minimum valid year (default 2015, earliest MDP end_year)
+#' @param max_year Maximum valid year (default from get_available_years)
 #' @return TRUE if valid, throws error otherwise
 #' @keywords internal
-validate_year <- function(end_year, min_year = 2014, max_year = NULL) {
+validate_year <- function(end_year, min_year = 2015, max_year = NULL) {
   if (is.null(max_year)) {
-    # Cap at 2024 - most recent confirmed data availability
-    max_year <- min(as.integer(format(Sys.Date(), "%Y")) + 1, 2024L)
+    max_year <- get_available_years()$max_year
   }
 
   if (!is.numeric(end_year) || length(end_year) != 1) {

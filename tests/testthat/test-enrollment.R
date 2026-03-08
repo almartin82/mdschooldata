@@ -37,17 +37,17 @@ test_that("get_lss_codes returns all 24 Maryland school systems", {
 })
 
 test_that("validate_year rejects invalid years", {
-  # Too old - default min is 2014 (when MD Planning data begins)
+  # Too old - default min is 2015 (MDP fall-year 2014 = end_year 2015)
   expect_error(validate_year(2000), "must be between")
-  expect_error(validate_year(2013), "must be between")
+  expect_error(validate_year(2014), "must be between")
 
   # Too new
   expect_error(validate_year(2050), "must be between")
 
-  # Valid years should not error (2014 is default min)
+  # Valid years should not error (2015 is default min)
   expect_true(validate_year(2020))
   expect_true(validate_year(2024))
-  expect_true(validate_year(2014))  # Default min
+  expect_true(validate_year(2015))  # Default min
 
   # Test with custom min_year
   expect_error(validate_year(2015, min_year = 2016), "must be between")
@@ -69,10 +69,10 @@ test_that("get_available_years returns expected structure", {
   expect_true("available" %in% names(years))
   expect_true("demographic_years" %in% names(years))
 
-  # MD Planning provides data from 2014+
-  expect_equal(years$min_year, 2014)
+  # MD Planning provides data from end_year 2015+ (MDP fall-year 2014+)
+  expect_equal(years$min_year, 2015)
   expect_true(years$max_year >= 2024)
-  expect_true(length(years$available) >= 10)  # 2014-2024 = 11 years
+  expect_true(length(years$available) >= 10)  # 2015-2026 = 12 years
   # Demographic data not available due to PDF parsing issues
   expect_equal(length(years$demographic_years), 0)
 })
@@ -178,7 +178,7 @@ test_that("fetch_enr validates year parameter", {
 })
 
 test_that("fetch_enr_multi validates years", {
-  # 2000-2001 are before the min_year of 2014
+  # 2000-2001 are before the min_year of 2015
   expect_error(fetch_enr_multi(c(2000, 2001)), "Invalid years")
 })
 

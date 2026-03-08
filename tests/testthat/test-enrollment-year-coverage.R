@@ -3,7 +3,7 @@
 # ==============================================================================
 #
 # Exhaustive per-year tests for enrollment data across all available years
-# (2014-2024). Each year is tested for:
+# (2015-2025). Each year is tested for:
 # - Data loads with >0 rows
 # - Required columns present
 # - State total within expected range (~840K-880K for MD)
@@ -20,38 +20,42 @@
 library(testthat)
 
 # All available enrollment years from MD Department of Planning
-enrollment_years <- 2014:2024
+# MDP fall-year columns + 1 = end_year (e.g., MDP "2014" = end_year 2015)
+enrollment_years <- 2015:2025
 
 # Known state totals from real MDP data (pinned values)
 # These are K-12 totals for the state from the MDP Excel file
+# Labels are end_year (MDP fall-year + 1), e.g. MDP column "2014" = end_year 2015
 known_state_totals <- list(
-  "2014" = 843724,
-  "2015" = 848166,
-  "2016" = 854913,
-  "2017" = 862867,
-  "2018" = 865491,
-  "2019" = 876810,
-  "2020" = 858519,
-  "2021" = 853307,
-  "2022" = 858850,
-  "2023" = 858362,
-  "2024" = 859083
+  "2015" = 843724,
+  "2016" = 848166,
+  "2017" = 854913,
+  "2018" = 862867,
+  "2019" = 865491,
+  "2020" = 876810,
+  "2021" = 858519,
+  "2022" = 853307,
+  "2023" = 858850,
+  "2024" = 858362,
+  "2025" = 859083
 )
 
 # Known Montgomery County totals (district_id = "16")
+# Labels are end_year (MDP fall-year + 1)
 known_montgomery_totals <- list(
-  "2014" = 150320,
-  "2018" = 158101,
-  "2022" = 156246,
-  "2024" = 154791
+  "2015" = 150320,
+  "2019" = 158101,
+  "2023" = 156246,
+  "2025" = 154791
 )
 
 # Known Prince George's County totals (district_id = "17")
+# Labels are end_year (MDP fall-year + 1)
 known_pg_totals <- list(
-  "2014" = 121783,
-  "2018" = 127524,
-  "2022" = 126319,
-  "2024" = 127330
+  "2015" = 121783,
+  "2019" = 127524,
+  "2023" = 126319,
+  "2025" = 127330
 )
 
 # ==============================================================================
@@ -97,7 +101,7 @@ for (yr in enrollment_years) {
       dplyr::pull(n_students)
 
     expect_length(state_total, 1)
-    # MD state enrollment has been between ~840K and ~880K across 2014-2024
+    # MD state enrollment has been between ~840K and ~880K across 2015-2025
     expect_true(state_total > 800000,
                 info = paste("Year", yr, "state total too low:", state_total))
     expect_true(state_total < 950000,
@@ -356,7 +360,7 @@ test_that("fetch_enr_multi returns combined data for all available years", {
 
 test_that("State totals are monotonically reasonable across years", {
   skip_if_offline()
-  d <- fetch_enr_multi(2014:2024, tidy = TRUE, use_cache = TRUE)
+  d <- fetch_enr_multi(2015:2025, tidy = TRUE, use_cache = TRUE)
 
   state_totals <- d |>
     dplyr::filter(is_state, subgroup == "total_enrollment",
@@ -376,9 +380,9 @@ test_that("State totals are monotonically reasonable across years", {
 
 test_that("District count is consistently 24 across all years", {
   skip_if_offline()
-  d <- fetch_enr_multi(2014:2024, tidy = TRUE, use_cache = TRUE)
+  d <- fetch_enr_multi(2015:2025, tidy = TRUE, use_cache = TRUE)
 
-  for (yr in 2014:2024) {
+  for (yr in 2015:2025) {
     n_dists <- d |>
       dplyr::filter(end_year == yr, is_district,
                     subgroup == "total_enrollment",
@@ -394,7 +398,7 @@ test_that("District count is consistently 24 across all years", {
 # TIDY <-> WIDE FIDELITY TESTS
 # ==============================================================================
 
-for (yr in c(2014, 2018, 2022, 2024)) {
+for (yr in c(2015, 2018, 2022, 2024)) {
   test_that(paste0("fetch_enr(", yr, "): tidy totals match wide row_total"), {
     skip_if_offline()
     wide <- fetch_enr(yr, tidy = FALSE, use_cache = TRUE)
