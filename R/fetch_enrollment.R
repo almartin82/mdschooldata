@@ -19,8 +19,8 @@
 #' at state, district (Local School System), and school levels.
 #'
 #' @param end_year A school year. Year is the end of the academic year - eg 2023-24
-#'   school year is year '2024'. Valid values are 2014-2026 (MD Dept of Planning
-#'   provides data for 2014-2024; MSDE publications for 2025-2026).
+#'   school year is year '2024'. Valid values are 2015-2026 (MD Dept of Planning
+#'   provides data for 2015-2025; MSDE publications for 2026).
 #' @param tidy If TRUE (default), returns data in long (tidy) format with subgroup
 #'   column. If FALSE, returns wide format.
 #' @param use_cache If TRUE (default), uses locally cached data when available.

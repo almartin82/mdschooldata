@@ -7,7 +7,7 @@
 #
 # Primary data sources:
 # 1. Maryland Department of Planning (https://planning.maryland.gov)
-#    - Historical enrollment data from 2014-2024
+#    - Historical enrollment data from 2014-2025 (uses fall-year column labels)
 #    - Enrollment by grade (K-12) for state and all 24 jurisdictions
 #    - URL: planning.maryland.gov/MSDC/Documents/school_enrollment/
 #
@@ -24,8 +24,8 @@
 # - School level: Individual school enrollment (MSDE sources only)
 #
 # Data availability:
-# - 2014-2024: Enrollment by grade via MD Dept of Planning
-# - 2025-2026: Enrollment by grade via MSDE PDF publications (Table 2)
+# - 2014-2025: Enrollment by grade via MD Dept of Planning (fall-year labels + 1 = end_year)
+# - 2026: Enrollment by grade via MSDE PDF publications (Table 2)
 # - 2019-present: Enrollment with demographics via MSDE publications (unreliable)
 #
 # ==============================================================================
@@ -56,20 +56,21 @@ get_available_years <- function() {
   # per entity with incorrectly mapped demographic values.
   # Use Maryland Report Card website for demographic breakdowns.
 
-  # MDP 2025 release contains data through 2024
+  # MDP 2025 release has columns 2014-2024 (fall years) = end_years 2015-2025
+  # MDP 2024 release has columns 2013-2023 (fall years) = end_years 2014-2024
   # MSDE PDF publications extend coverage to 2025-26 (end_year 2026)
   # For years beyond MDP coverage, get_raw_enr() falls back to MSDE PDF Table 2
   list(
-    min_year = 2014,
+    min_year = 2015,
     max_year = 2026,
-    available = 2014:2026,
-    # MDP covers 2014-2024; MSDE PDF covers 2025-2026
-    mdp_max_year = 2024,
+    available = 2015:2026,
+    # MDP covers 2014-2025 (across multiple releases); MSDE PDF covers 2026
+    mdp_max_year = 2025,
     # No reliable demographic data available from automated sources
     demographic_years = integer(0),
     description = paste(
-      "Maryland enrollment data from MD Department of Planning (2014-2024)",
-      "and MSDE Staff and Student Publications (2025-2026).",
+      "Maryland enrollment data from MD Department of Planning (2014-2025)",
+      "and MSDE Staff and Student Publications (2026).",
       "Available years: 2014-2026.",
       "Provides enrollment by grade (K-12) for state and 24 jurisdictions.",
       "NOTE: Demographic breakdowns (race/ethnicity, gender) are not available",
@@ -77,8 +78,8 @@ get_available_years <- function() {
       "Use Maryland Report Card for demographics."
     ),
     notes = paste(
-      "Data from Maryland Department of Planning (2014-2024) and",
-      "MSDE Staff and Student Publications (2025-2026).",
+      "Data from Maryland Department of Planning (2014-2025) and",
+      "MSDE Staff and Student Publications (2026).",
       "Both sources provide enrollment by grade for state and 24 jurisdictions.",
       "For demographic breakdowns (race/ethnicity, gender), use Maryland Report Card:",
       "https://reportcard.msde.maryland.gov/Graphs/#/Demographics/Enrollment",
@@ -764,16 +765,18 @@ find_mdp_release_year <- function(end_year) {
   latest_release <- if (current_month >= 9) current_year else current_year - 1
 
   # Each release contains ~11 years of historical data
-  # 2025 release: 2014-2024
-  # 2024 release: 2013-2023
+  # MDP uses fall/calendar year labels (e.g., column "2024" = fall 2024 = 2024-25 school year)
+  # So MDP column label = end_year - 1
+  # 2025 release: MDP columns 2014-2024 = end_years 2015-2025
+  # 2024 release: MDP columns 2013-2023 = end_years 2014-2024
   # etc.
 
   # Check if the requested year is within the range of available releases
   # We'll start from the latest release and work backwards
   for (release in latest_release:2018) {
-    # Calculate the data range for this release
-    # Latest data year is typically release_year - 1
-    max_data_year <- release - 1
+    # Calculate the data range for this release (in end_year terms)
+    # MDP latest column = release - 1 (fall year), which = end_year release
+    max_data_year <- release
     min_data_year <- max_data_year - 10  # ~11 years of data
 
     if (end_year >= min_data_year && end_year <= max_data_year) {
@@ -864,22 +867,24 @@ parse_mdp_enrollment_xlsx <- function(xlsx_path, end_year) {
   jurisdiction_names <- unique(jurisdiction_names)
 
   # Find the year column
-  # Years are in a row that has grade labels
+  # MDP uses fall/calendar year labels: column "2024" = fall 2024 = 2024-25 school year
+  # Convert end_year to MDP's fall-year convention: mdp_year = end_year - 1
+  mdp_year <- end_year - 1
   year_col <- NULL
   year_row <- NULL
 
   for (i in 1:min(10, nrow(df))) {
     row_vals <- as.character(df[i, ])
-    # Look for the year in the row
-    if (as.character(end_year) %in% row_vals) {
-      year_col <- which(row_vals == as.character(end_year))
+    # Look for the MDP fall-year label in the row
+    if (as.character(mdp_year) %in% row_vals) {
+      year_col <- which(row_vals == as.character(mdp_year))
       year_row <- i
       break
     }
   }
 
   if (is.null(year_col)) {
-    stop(paste("Year", end_year, "not found in MD Planning file"))
+    stop(paste("Year", mdp_year, "(fall year for end_year", end_year, ") not found in MD Planning file"))
   }
 
   # Parse each jurisdiction block
@@ -906,14 +911,14 @@ parse_mdp_enrollment_xlsx <- function(xlsx_path, end_year) {
     j_row <- j_rows[1]
 
     # Find the data year column for this block (blocks may have different layouts)
-    # Look for year row within 5 rows after jurisdiction header
+    # Look for MDP fall-year label within 5 rows after jurisdiction header
     block_year_col <- NULL
     for (offset in 1:5) {
       check_row <- j_row + offset
       if (check_row > nrow(df)) break
       row_vals <- as.character(df[check_row, ])
-      if (as.character(end_year) %in% row_vals) {
-        block_year_col <- which(row_vals == as.character(end_year))
+      if (as.character(mdp_year) %in% row_vals) {
+        block_year_col <- which(row_vals == as.character(mdp_year))
         break
       }
     }
@@ -1202,29 +1207,31 @@ download_msde_table2_enrollment <- function(end_year) {
          "Install it with: install.packages('pdftools')")
   }
 
-  # The data year is end_year - 1 (September 30 of the prior calendar year)
-  # e.g., end_year 2026 = September 30, 2025 data
-  data_year <- end_year - 1
+  # MDP labels years by calendar year of the September 30 enrollment count.
+  # e.g., MDP "2024" = September 30, 2024 = package end_year 2024.
+  # MSDE labels PDFs by school year span: "2024-2025" = September 30, 2024.
+  # So for end_year N, the MSDE PDF is "N-(N+1)" (the school year starting fall N).
+  # e.g., end_year 2025 -> MSDE "2025-2026" PDF (September 2025 data)
 
   # Build folder and file URL patterns
   # MSDE uses folder pattern like "20242025Student" or "20242025student"
-  # and file names like "2025-2026-Enrollment-By-Race-Ethnicity-Gender-A.pdf"
-  # Note: The folder year range doesn't always match the file year range
+  # and file names like "2024-2025-Enrollment-By-Race-Ethnicity-Gender-A.pdf"
   base_url <- "https://marylandpublicschools.org/about/Documents/DCAA/SSP/"
 
-  # Try multiple folder/file combinations
-  start_year <- end_year - 1
+  # School year span: fall end_year to spring end_year+1
+  sy_start <- end_year
+  sy_end <- end_year + 1
   folder_patterns <- c(
-    paste0(start_year - 1, start_year, "Student"),
-    paste0(start_year - 1, start_year, "student"),
-    paste0(start_year, end_year, "Student"),
-    paste0(start_year, end_year, "student")
+    paste0(sy_start - 1, sy_start, "Student"),
+    paste0(sy_start - 1, sy_start, "student"),
+    paste0(sy_start, sy_end, "Student"),
+    paste0(sy_start, sy_end, "student")
   )
 
   file_patterns <- c(
-    paste0(start_year, "-", end_year, "-Enrollment-By-Race-Ethnicity-Gender-A.pdf"),
-    paste0(start_year, "-", end_year, "-enrollment-by-race-ethnicity-gender-a.pdf"),
-    paste0(end_year, "-Enrollment-By-Race-Ethnicity-Gender-A.pdf")
+    paste0(sy_start, "-", sy_end, "-Enrollment-By-Race-Ethnicity-Gender-A.pdf"),
+    paste0(sy_start, "-", sy_end, "-enrollment-by-race-ethnicity-gender-a.pdf"),
+    paste0(sy_end, "-Enrollment-By-Race-Ethnicity-Gender-A.pdf")
   )
 
   # Build all URL combinations

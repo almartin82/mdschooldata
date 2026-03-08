@@ -853,8 +853,8 @@ test_that("race codes map correctly in disaggregated pivot", {
 # SECTION 12: Year Validation
 # ==============================================================================
 
-test_that("validate_year accepts years 2014-2024 (default range)", {
-  for (yr in c(2014, 2018, 2020, 2024)) {
+test_that("validate_year accepts years 2015-2026 (default range)", {
+  for (yr in c(2015, 2018, 2020, 2024)) {
     expect_true(validate_year(yr))
   }
 })
@@ -996,7 +996,9 @@ test_that("statewide proficiency ELA improved 2022-2024", {
 # SECTION 15: Pinned Spot Checks (Real Data - Network Required)
 # ==============================================================================
 
-test_that("2024 state total enrollment = 859,083", {
+# Pinned values updated after off-by-one fix: MDP column labels are fall years,
+# so end_year = MDP_column + 1. Old pins were off by one year.
+test_that("2024 state total enrollment = 858,362", {
   skip_if_offline()
 
   enr <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
@@ -1004,10 +1006,10 @@ test_that("2024 state total enrollment = 859,083", {
 
   state_total <- enr[enr$is_state & enr$subgroup == "total_enrollment" &
                        enr$grade_level == "TOTAL", ]
-  expect_equal(state_total$n_students, 859083)
+  expect_equal(state_total$n_students, 858362)
 })
 
-test_that("2024 state K enrollment = 59,562", {
+test_that("2024 state K enrollment = 60,514", {
   skip_if_offline()
 
   enr <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
@@ -1015,10 +1017,10 @@ test_that("2024 state K enrollment = 59,562", {
 
   state_k <- enr[enr$is_state & enr$subgroup == "total_enrollment" &
                     enr$grade_level == "K", ]
-  expect_equal(state_k$n_students, 59562)
+  expect_equal(state_k$n_students, 60514)
 })
 
-test_that("2024 state grade 09 enrollment = 77,465", {
+test_that("2024 state grade 09 enrollment = 79,658", {
   skip_if_offline()
 
   enr <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
@@ -1026,10 +1028,10 @@ test_that("2024 state grade 09 enrollment = 77,465", {
 
   state_09 <- enr[enr$is_state & enr$subgroup == "total_enrollment" &
                      enr$grade_level == "09", ]
-  expect_equal(state_09$n_students, 77465)
+  expect_equal(state_09$n_students, 79658)
 })
 
-test_that("2024 Baltimore City total enrollment = 72,995", {
+test_that("2024 Baltimore City total enrollment = 71,894", {
   skip_if_offline()
 
   enr <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
@@ -1039,10 +1041,10 @@ test_that("2024 Baltimore City total enrollment = 72,995", {
               enr$subgroup == "total_enrollment" &
               enr$grade_level == "TOTAL", ]
   expect_equal(nrow(bc), 1)
-  expect_equal(bc$n_students, 72995)
+  expect_equal(bc$n_students, 71894)
 })
 
-test_that("2024 Montgomery total enrollment = 154,791", {
+test_that("2024 Montgomery total enrollment = 155,788", {
   skip_if_offline()
 
   enr <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
@@ -1052,10 +1054,10 @@ test_that("2024 Montgomery total enrollment = 154,791", {
               enr$subgroup == "total_enrollment" &
               enr$grade_level == "TOTAL", ]
   expect_equal(nrow(mc), 1)
-  expect_equal(mc$n_students, 154791)
+  expect_equal(mc$n_students, 155788)
 })
 
-test_that("2024 Howard total enrollment = 56,033", {
+test_that("2024 Howard total enrollment = 56,112", {
   skip_if_offline()
 
   enr <- fetch_enr(2024, tidy = TRUE, use_cache = TRUE)
@@ -1065,7 +1067,7 @@ test_that("2024 Howard total enrollment = 56,033", {
               enr$subgroup == "total_enrollment" &
               enr$grade_level == "TOTAL", ]
   expect_equal(nrow(hw), 1)
-  expect_equal(hw$n_students, 56033)
+  expect_equal(hw$n_students, 56112)
 })
 
 test_that("2024 has exactly 24 districts", {
@@ -1147,7 +1149,8 @@ test_that("2024 only subgroup is total_enrollment (no demographics via MDP)", {
 # SECTION 16: Cross-Year Consistency
 # ==============================================================================
 
-test_that("2018 state total enrollment = 865,491", {
+# Pinned values updated after off-by-one fix
+test_that("2018 state total enrollment = 862,867", {
   skip_if_offline()
 
   enr <- fetch_enr(2018, tidy = TRUE, use_cache = TRUE)
@@ -1155,10 +1158,10 @@ test_that("2018 state total enrollment = 865,491", {
 
   state_total <- enr[enr$is_state & enr$subgroup == "total_enrollment" &
                        enr$grade_level == "TOTAL", ]
-  expect_equal(state_total$n_students, 865491)
+  expect_equal(state_total$n_students, 862867)
 })
 
-test_that("2022 state total enrollment = 858,850", {
+test_that("2022 state total enrollment = 853,307", {
   skip_if_offline()
 
   enr <- fetch_enr(2022, tidy = TRUE, use_cache = TRUE)
@@ -1166,13 +1169,13 @@ test_that("2022 state total enrollment = 858,850", {
 
   state_total <- enr[enr$is_state & enr$subgroup == "total_enrollment" &
                        enr$grade_level == "TOTAL", ]
-  expect_equal(state_total$n_students, 858850)
+  expect_equal(state_total$n_students, 853307)
 })
 
 test_that("all available years have exactly 24 districts", {
   skip_if_offline()
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     enr <- fetch_enr(yr, tidy = TRUE, use_cache = TRUE)
     enr <- enr[!is.na(enr$n_students), ]
 
@@ -1188,7 +1191,7 @@ test_that("all available years have exactly 24 districts", {
 test_that("state total is between 800K and 1M for all years (sanity check)", {
   skip_if_offline()
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     enr <- fetch_enr(yr, tidy = TRUE, use_cache = TRUE)
     enr <- enr[!is.na(enr$n_students), ]
 
@@ -1273,10 +1276,10 @@ test_that("get_available_years returns correct structure", {
   years <- get_available_years()
 
   expect_true(is.list(years))
-  expect_equal(years$min_year, 2014)
+  expect_equal(years$min_year, 2015)
   expect_equal(years$max_year, 2026)
-  expect_equal(years$available, 2014:2026)
-  expect_equal(years$mdp_max_year, 2024)
+  expect_equal(years$available, 2015:2026)
+  expect_equal(years$mdp_max_year, 2025)
   expect_equal(length(years$demographic_years), 0,
                info = "No demographic years available due to PDF parsing issues")
   expect_true(nchar(years$description) > 0)

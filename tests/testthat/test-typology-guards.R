@@ -54,7 +54,7 @@ test_that("tidy_enr handles zero row_total without Inf", {
 test_that("Real data: no Inf in pct column for any year", {
   skip_if_offline()
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     d <- fetch_enr(yr, tidy = TRUE, use_cache = TRUE)
     expect_false(any(is.infinite(d$pct)),
                  info = paste("Year", yr, "has Inf in pct"))
@@ -64,7 +64,7 @@ test_that("Real data: no Inf in pct column for any year", {
 test_that("Real data: no NaN in n_students for any year", {
   skip_if_offline()
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     d <- fetch_enr(yr, tidy = TRUE, use_cache = TRUE)
     expect_false(any(is.nan(d$n_students)),
                  info = paste("Year", yr, "has NaN in n_students"))
@@ -227,7 +227,7 @@ test_that("Tidy enrollment: minimum row count per year", {
 test_that("Wide enrollment: exactly 25 rows per year", {
   skip_if_offline()
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     w <- fetch_enr(yr, tidy = FALSE, use_cache = TRUE)
     expect_equal(nrow(w), 25,
                  info = paste("Year", yr, "has", nrow(w),
@@ -525,7 +525,7 @@ test_that("Core column names are consistent across enrollment years", {
                  "subgroup", "n_students", "pct",
                  "is_state", "is_district", "is_campus")
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     d <- fetch_enr(yr, tidy = TRUE, use_cache = TRUE)
     yr_cols <- names(d)
 
@@ -563,7 +563,7 @@ test_that("Column names are consistent across assessment years", {
 test_that("No negative enrollment counts in any year", {
   skip_if_offline()
 
-  for (yr in c(2014, 2018, 2022, 2024)) {
+  for (yr in c(2015, 2018, 2022, 2024)) {
     d <- fetch_enr(yr, tidy = TRUE, use_cache = TRUE)
     neg_count <- sum(d$n_students < 0, na.rm = TRUE)
     expect_equal(neg_count, 0,
